@@ -12,20 +12,25 @@ int main(int argc, char **argv)
 	//initialize network
 	Twitch::startup();
 
-	//init user name, oauth
+	char *username = "your_twitch_username";
+	//get this token from https://twitchapps.com/tmi/ and keep it safe
+	char *token = "8rwzvhzranlxx858wheg3n7hogo09b";
+
+	//init connection data
 	Twitch::Connection connection;
-	Twitch::init(&connection, "plogp", "8rqzvhzsaplxo858wheg3n7hogo09b");
+	Twitch::init(&connection, username, token);
 	
 	//make TCP connection to twitch and login
 	Twitch::connect(&connection);
 
 	//join a channel
-	Twitch::join_Channel(&connection, "sodapoppin");
-	
+	//pass channel name
+	Twitch::join_Channel(&connection, "Warcraft");
 	//join another channel
-	Twitch::join_Channel(&connection, "destiny");
+	Twitch::join_Channel(&connection, "Method");
 
-	//incoming message list from all connected channels
+	//initialize message table
+	//will contaain incoming message list from all connected channels
 	Twitch::Message::Table incoming;
 	Twitch::Message::init(&incoming);
 

@@ -18,6 +18,26 @@ namespace Simple_TCP
 {
 	void terminate(SOCKET _socket);
 
+	void init_Network();
+
+	hostent *get_Host(const char *hostname);
+
+	SOCKET make_Nonblocking_TCP_Connection(hostent *host, int port);
+
+	SOCKET make_Nonblocking_TCP_Listener(int port);
+
+	SOCKET accept(SOCKET _socket);
+
+	int read(char *buffer, int buffer_size, SOCKET _socket);
+
+	void close(SOCKET _socket);
+
+	void terminate(SOCKET _socket);
+}
+
+namespace Simple_TCP
+{
+
 	void init_Network()
 	{
 		WSADATA wsadata;
@@ -39,7 +59,7 @@ namespace Simple_TCP
 		return host;
 	}
 
-	SOCKET make_Nonblocking_TCP_Connection(hostent *host, int port)
+	SOCKET make_Connection(hostent *host, int port)
 	{
 		SOCKET _socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (_socket == INVALID_SOCKET)
@@ -104,7 +124,7 @@ namespace Simple_TCP
 		return _socket;
 	}
 	
-	SOCKET make_Nonblocking_TCP_Listener(int port)
+	SOCKET make_Server(int port)
 	{
 		SOCKET _socket = socket(AF_INET, SOCK_STREAM, 0);
 		if (_socket == INVALID_SOCKET)

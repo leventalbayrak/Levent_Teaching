@@ -12,18 +12,52 @@ using namespace std;
 
 namespace Twitch
 {
+
+	//call once to initialize network
+	void startup();
+
+	//initialize connection data
+	void init(Connection *c, const char *username, const char *oauth);
+
+	//close active socket
+	void close(Connection *c);
+
+	//creates a socket and makes a TCP connection
+	//shutsdown connection if it already exists and reconnects
+	void connect(Connection *c);
+
+	//update tcp buffer, responds to pings immediately
+	//returns number of bytes read from socket
+	int update(Connection *c);
+
+	//joins a channel
+	//static string read/write inside
+	void join_Channel(Connection *c, const char *channel);
+
+	//send message to channel
+	//static string read/write inside
+	void send_Message(Connection *c, const char *channel, const char *msg);
+
+	//populates message table with unread messages from the chat
+	//returns if connection is closed
+	//call this repeatedly in a loop
+	void communicate(Message::Table *t, Connection *c, unsigned int timestamp);
+}
+
+namespace Twitch
+{
+	//call once to initialize network
+	void startup()
+	{
+		Simple_TCP::init_Network();
+	}
+
 	void init(Connection *c, const char *username, const char *oauth)
 	{
 		c->username = (char*)username;
 		c->oauth = (char*)oauth;
 		c->socket = INVALID_SOCKET;
 		c->active = false;
-	}
-
-	//call once to initialize network
-	void startup()
-	{
-		Simple_TCP::init_Network();
 	}
 
 	//close active socket
