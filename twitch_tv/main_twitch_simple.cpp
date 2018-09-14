@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "Twitch.h"
+#include "Twitch_core.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -14,7 +14,8 @@ int main(int argc, char **argv)
 
 	char *username = "your_twitch_username";
 	//get this token from https://twitchapps.com/tmi/ and keep it safe
-	char *token = "8rwzvhzranlxx858wheg3n7hogo09b";
+	//remove the oauth: part when you copy paste
+	char *token = "nh1j5iqhldef284o6nn80sj1ij3ixi";
 
 	//init connection data
 	Twitch::Connection connection;
@@ -25,6 +26,7 @@ int main(int argc, char **argv)
 
 	//join a channel
 	//pass channel name
+	printf("connecting to channels\n");
 	Twitch::join_Channel(&connection, "Warcraft");
 	//join another channel
 	Twitch::join_Channel(&connection, "Method");
@@ -33,8 +35,6 @@ int main(int argc, char **argv)
 	//will contaain incoming message list from all connected channels
 	Twitch::Message::Table incoming;
 	Twitch::Message::init(&incoming);
-
-	FILE *f_log = fopen("log.txt", "w+"); assert(f_log);
 
 	printf("chat log\n");
 	for(;;)
@@ -52,13 +52,10 @@ int main(int argc, char **argv)
 		//print received messages from all channels
 		for (int i = 0; i < incoming.n_count; i++)
 		{
-			fprintf(f_log, "%s@%s|(%.2f)-> %s\n",incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
+			printf("%s@%s|(%.2f)-> %s\n",incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
 		}
 		
-
 	}
 	
-	fclose(f_log);
-
 	getchar();
 }

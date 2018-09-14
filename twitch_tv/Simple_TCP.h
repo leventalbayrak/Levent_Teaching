@@ -22,9 +22,9 @@ namespace Simple_TCP
 
 	hostent *get_Host(const char *hostname);
 
-	SOCKET make_Nonblocking_TCP_Connection(hostent *host, int port);
+	SOCKET make_Connection(const hostent *host, int port);
 
-	SOCKET make_Nonblocking_TCP_Listener(int port);
+	SOCKET make_Server(int port);
 
 	SOCKET accept(SOCKET _socket);
 
@@ -59,7 +59,7 @@ namespace Simple_TCP
 		return host;
 	}
 
-	SOCKET make_Connection(hostent *host, int port)
+	SOCKET make_Connection(const hostent *host, int port)
 	{
 		SOCKET _socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (_socket == INVALID_SOCKET)

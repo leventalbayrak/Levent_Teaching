@@ -70,7 +70,10 @@ namespace Twitch
 	//shutsdown connection if it already exists and reconnects
 	void connect(Connection *c)
 	{
-		if (c->socket != INVALID_SOCKET) close(c);
+		if (c->socket != INVALID_SOCKET)
+		{
+			close(c);
+		}
 	
 		const char *hostname = "irc.chat.twitch.tv";
 		int port = 6667;
@@ -125,6 +128,7 @@ namespace Twitch
 	}
 
 	//populates message table with unread messages from the chat
+	//each call clears out the previous list of messages
 	//returns false if connection is closed
 	void communicate(Message::Table *t, Connection *c, unsigned int timestamp)
 	{

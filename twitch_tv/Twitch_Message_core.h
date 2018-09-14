@@ -13,6 +13,25 @@ namespace Twitch
 {
 	namespace Message
 	{
+		void init(Table *t);
+
+		void resize(Table *t);
+
+		void clear(Table *t);
+
+		void add(Table *t, const char *channel, const char *username, const char *msg, unsigned int timestamp);
+
+		void append(Table *dest, const Table *src);
+
+		void copy(Table *dest, const Table *src);
+
+	}
+}
+
+namespace Twitch
+{
+	namespace Message
+	{
 		void init(Table *t)
 		{
 			t->array_size = 1024;
@@ -55,7 +74,7 @@ namespace Twitch
 			t->n_count = 0;
 		}
 
-		void add(Table *t, char *channel, char *username, char *msg, unsigned int timestamp)
+		void add(Table *t, const char *channel, const char *username, const char *msg, unsigned int timestamp)
 		{
 			if (t->n_count >= t->array_size) resize(t);
 			
@@ -66,7 +85,7 @@ namespace Twitch
 			++t->n_count;
 		}
 		
-		void append(Table *dest, Table *src)
+		void append(Table *dest, const Table *src)
 		{
 			for (int i = 0; i < src->n_count; i++)
 			{
@@ -74,7 +93,7 @@ namespace Twitch
 			}
 		}
 
-		void copy(Table *dest, Table *src)
+		void copy(Table *dest, const Table *src)
 		{
 			clear(dest);
 			append(dest, src);
