@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>
-#include "../Stopwatch.h"
+#include "Stopwatch.h"
 using namespace std;
 
 namespace Queue
@@ -89,53 +89,32 @@ namespace Queue_Core_Fast
 
 int main()
 {
-	Stopwatch::init();
-
-	int n_repeat = 1000000;
-	int *n = new int[n_repeat];
-	int *op = new int[n_repeat];
-	for (int i = 0; i < n_repeat; i++)
-	{
-		n[i] = i;
-		n[i] = (i % 6) == 0 ? 0 : 1;
-	}
+	srand(time(0));
 
 	Queue::Queue qA;
 	Queue_Core::init(&qA, 8);
 
-	Queue::Queue qB;
-	Queue_Core_Fast::init(&qB, 8);
-
-	Stopwatch::begin();
-	for (int i = 0; i < n_repeat; i++)
+	//draw content of array every operation?
+	for (int i = 0; i < 64; i++)
 	{
-		if (op[i] == 0)
+		if (rand() % 2)
 		{
+			cout << "enqueue: " << i << endl;
 			Queue_Core::enqueue(&qA, i);
 		}
 		else
 		{
-			n[i] = Queue_Core::dequeue(&qA);
+			if (qA.n_data != 0)
+			{
+				cout << "dequeue: " << Queue_Core::dequeue(&qA) << endl;
+			}
+			else
+			{
+				//cout << "cannot dequeue from empty queue" << endl;
+			}
 		}
 	}
-	Stopwatch::end();
-	
-	Stopwatch::begin();
-	for (int i = 0; i < n_repeat; i++)
-	{
-		if (op[i] == 0)
-		{
-			Queue_Core_Fast::enqueue(&qB, i);
-		}
-		else
-		{
-			n[i] = Queue_Core_Fast::dequeue(&qB);
-		}
-	}
-	Stopwatch::end();
-
-	Stopwatch::print();
-
 
 	getchar();
+
 }
