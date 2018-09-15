@@ -81,20 +81,42 @@ void draw_Stack(int x, int y, Stack::Stack *s)
 	}
 	else if (s->n_data == 0)
 	{
-		sprintf(tmp, "n_data = %4d ->", s->n_data);
+		sprintf(tmp, "n_data %4d ->", s->n_data);
 		FWC::color(0x0F);
 		FWC::put(x - strlen(tmp), y, tmp);
+		
+		sprintf(tmp, "size %4d ->", s->size);
+		FWC::color(0x0F);
+		FWC::put(x - strlen(tmp), y + s->size, tmp);
+
 		FWC::color(0xC0);
 		FWC::put(x, y - 1, "!cannot pop!");
 	}
 	else
 	{
-		sprintf(tmp, "n_data = %4d ->", s->n_data);
+		sprintf(tmp, "n_data %4d ->", s->n_data);
 		FWC::color(0x0F);
 		FWC::put(x - strlen(tmp), y + s->n_data, tmp);
 
-		sprintf(tmp, "size = %4d ->", s->size);
+		sprintf(tmp, "size %4d ->", s->size);
 		FWC::color(0x0F);
 		FWC::put(x - strlen(tmp), y + s->size, tmp);
+	}
+
+	if (s->n_data == 1)
+	{
+		sprintf(tmp, "first and last %4d ->", s->n_data - 1);
+		FWC::color(0x0F);
+		FWC::put(x - strlen(tmp), y, tmp);
+	}
+	else if (s->n_data > 1)
+	{
+		sprintf(tmp, "first %4d ->", 0);
+		FWC::color(0x0F);
+		FWC::put(x - strlen(tmp), y, tmp);
+
+		sprintf(tmp, "last %4d ->", s->n_data-1);
+		FWC::color(0x0F);
+		FWC::put(x - strlen(tmp), y + s->n_data - 1, tmp);
 	}
 }
