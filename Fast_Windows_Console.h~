@@ -9,7 +9,6 @@ levent albayrak 2018
 #include <stdio.h>
 #include <Windows.h>
 #include <assert.h>
-#pragma warning(disable:4996)
 
 namespace FWC
 {
@@ -23,7 +22,7 @@ namespace FWC
 
 	void color(unsigned char color);
 	void put(int x, int y, char c);
-	void put(int x, int y, char* str);
+	void put(int x, int y, const char* str);
 	void vertical_Line(int x, int y, int height, char c);
 	void horizontal_Line(int x, int y, int width, char c);
 	void rectangle(int x, int y, int width, int height, char c);
@@ -130,18 +129,6 @@ namespace FWC
 			text_row[i].Char.AsciiChar = str[i];
 			text_row[i].Attributes = Internals::G_brush;
 		}
-	}
-	void put(int x, int y, float f)
-	{
-		static char tmp[128];
-		sprintf(tmp, "%f", f);
-		put(x, y, tmp);
-	}
-	void put(int x, int y, int d)
-	{
-		static char tmp[128];
-		sprintf(tmp, "%d", d);
-		put(x, y, tmp);
 	}
 	void vertical_Line(int x, int y, int height, char c)
 	{
