@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#pragma warning(disable:4996)
 
 namespace Queue
 {

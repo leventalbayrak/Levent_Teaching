@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#pragma warning(disable:4996)
+
 namespace Stack
 {
 	struct Stack
