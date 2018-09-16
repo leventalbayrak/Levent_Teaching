@@ -45,7 +45,8 @@ int main()
 		//do not go out of screen bounds
 		FWC::color(0x0F);
 		FWC::put(1, y - 4, "QUEUE EXAMPLE");
-		FWC::put(1, y - 3, "PRESS 'S' to enqueue, 'W' to dequeue!");
+		FWC::put(20, y - 4, "PRESS 'S' to enqueue, 'W' to dequeue!");
+		FWC::put(1, y - 3, "repeat: enqueue 3 times followed by 2 dequeues");
 		draw_Queue(x, y, &my_queue);
 
 		//present drawing
@@ -78,51 +79,45 @@ void draw_Queue(int x, int y, const Queue::Queue *q)
 
 	if (q->n_data == q->size)
 	{
-		sprintf(tmp, "n_data == size %2d ->", q->n_data);
+		sprintf(tmp, "n_data == size %2d ->", q->size);
 		FWC::color(0x0F);
-		FWC::put(x - strlen(tmp), y + s->n_data, tmp);
+		FWC::put(x - strlen(tmp), y + q->size, tmp);
 
 		FWC::color(0xC0);
-		FWC::put(x, y + s->n_data, "!resize next push!");
+		FWC::put(x, y + q->size, "!resize next enqueue!");
 	}
-	else if (s->n_data == 0)
+	else if (q->n_data == 0)
 	{
-		sprintf(tmp, "n_data %2d ->", s->n_data);
+		sprintf(tmp, "(n_data = %d) size %2d ->",q->n_data, q->size);
 		FWC::color(0x0F);
-		FWC::put(x - strlen(tmp), y, tmp);
-
-		sprintf(tmp, "size %2d ->", s->size);
-		FWC::color(0x0F);
-		FWC::put(x - strlen(tmp), y + s->size, tmp);
+		FWC::put(x - strlen(tmp), y + q->size, tmp);
+		sprintf(tmp, "<- %2d offset", q->offset);
+		FWC::put(x + 10, y + q->offset, tmp);
 
 		FWC::color(0xC0);
-		FWC::put(x, y - 1, "!cannot pop!");
+		FWC::put(x, y - 1, "!cannot dequeue!");
 	}
 	else
 	{
-		sprintf(tmp, "n_data %2d ->", s->n_data);
+		sprintf(tmp, "size %2d ->", q->size);
 		FWC::color(0x0F);
-		FWC::put(x - strlen(tmp), y + s->n_data, tmp);
-
-		sprintf(tmp, "size %2d ->", s->size);
-		FWC::color(0x0F);
-		FWC::put(x - strlen(tmp), y + s->size, tmp);
+		FWC::put(x - strlen(tmp), y + q->size, tmp);
 	}
 
-	if (s->n_data == 1)
+	if (q->n_data == 1)
 	{
-		sprintf(tmp, "<- %2d first and last", s->n_data - 1);
+		sprintf(tmp, "<- %2d offset (n_data = %d)", q->offset, q->n_data);
 		FWC::color(0x0F);
-		FWC::put(x + 10, y, tmp);
+		FWC::put(x + 10, y + q->offset, tmp);
 	}
-	else if (s->n_data > 1)
+	else if (q->n_data > 1)
 	{
-		sprintf(tmp, "<- %2d first", 0);
+		sprintf(tmp, "<- %2d offset", q->offset);
 		FWC::color(0x0F);
-		FWC::put(x + 9, y, tmp);
+		FWC::put(x + 9, y + q->offset, tmp);
 
-		sprintf(tmp, "<- %2d last", s->n_data - 1);
+		sprintf(tmp, "<- %2d last element (n_data = %d)", ((q->offset + q->n_data - 1) % q->size),q->n_data);
 		FWC::color(0x0F);
-		FWC::put(x + 9, y + s->n_data - 1, tmp);
+		FWC::put(x + 9, y + ((q->offset + q->n_data - 1) % q->size), tmp);
 	}
 }

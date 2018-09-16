@@ -24,6 +24,7 @@ namespace Queue
 		memcpy(tmp, &c->data[c->offset], sizeof(int)*n_elements_after_offset);
 		memcpy(&tmp[n_elements_after_offset], c->data, sizeof(int)*n_elements_before_offset);
 
+		c->offset = 0;
 		c->size = new_size;
 		free(c->data);
 		c->data = tmp;
