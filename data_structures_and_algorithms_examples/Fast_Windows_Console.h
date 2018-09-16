@@ -23,10 +23,9 @@ namespace FWC
 
 	void color(unsigned char color);
 	void put(int x, int y, char c);
-	void put(int x, int y, char* str);
+	void put(int x, int y, const char* str);
 	void vertical_Line(int x, int y, int height, char c);
 	void horizontal_Line(int x, int y, int width, char c);
-	void rectangle(int x, int y, int width, int height, char c);
 
 	void clear();
 	void present();
@@ -121,7 +120,7 @@ namespace FWC
 		Internals::G_char_buffer[index].Char.AsciiChar = c;
 		Internals::G_char_buffer[index].Attributes = Internals::G_brush;
 	}
-	void put(int x, int y, char* str)
+	void put(int x, int y, const char* str)
 	{
 		int len = strlen(str);
 		CHAR_INFO *text_row = &Internals::G_char_buffer[Internals::G_width*y + x];
@@ -164,23 +163,6 @@ namespace FWC
 		{
 			Internals::G_char_buffer[index + i].Char.AsciiChar = c;
 			Internals::G_char_buffer[index + i].Attributes = Internals::G_brush;
-		}
-	}
-	void rectangle(int x, int y, int width, int height, char c)
-	{
-		int from_y = y;
-		int to_y = y + height;
-		for (int i = from_y; i < to_y; i++)
-		{
-			CHAR_INFO *text_row = &Internals::G_char_buffer[Internals::G_width*i];
-
-			int from_x = x;
-			int to_x = x + width;
-			for (int j = from_x; j < to_x; j++)
-			{
-				text_row[j].Char.AsciiChar = c;
-				text_row[j].Attributes = Internals::G_brush;
-			}
 		}
 	}
 	void clear()
