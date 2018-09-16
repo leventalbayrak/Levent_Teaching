@@ -1,7 +1,7 @@
 #include "Fast_Windows_Console.h"
 #include "Stack_Example.h"
 
-void draw_Stack(int x, int y, Stack::Stack *s);
+void draw_Stack(int x, int y, const Stack::Stack *s);
 
 int main()
 {
@@ -55,7 +55,7 @@ int main()
 	return 0;
 }
 
-void draw_Stack(int x, int y, Stack::Stack *s)
+void draw_Stack(int x, int y, const Stack::Stack *s)
 {
 	static char tmp[128];
 

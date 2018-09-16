@@ -1,4 +1,6 @@
 #pragma once
+#include <stdlib.h>
+#include <assert.h>
 
 namespace Stack
 {
