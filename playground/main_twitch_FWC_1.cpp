@@ -80,16 +80,6 @@ int main(int argc, char **argv)
 			}
 			avg_msg_length /= (incoming.n_count - last_msg_count);
 
-			for (int i = last_msg_count; i < incoming.n_count; i++)
-			{
-				int len = strlen(incoming.message[i]);
-				for (int j = 0; j < len; j++)
-				{
-					histogram[incoming.message[i][j]]++;
-				}
-				n_total_histogram += len;
-			}
-
 			avg_msg_rate = (double)(incoming.n_count - last_msg_count) * CLOCKS_PER_SEC / (timestamp - last_print_time);
 			last_print_time = timestamp;
 			last_msg_count = incoming.n_count;
@@ -102,20 +92,6 @@ int main(int argc, char **argv)
 		FWC::put(msg_x, msg_y + 1, tmp_str);	
 		sprintf(tmp_str, "avg message length %.4f", avg_msg_length);
 		FWC::put(msg_x, msg_y + 2, tmp_str);
-
-		int k = 0;
-		for (char c = 'a'; c <= 'z'; c++)
-		{
-			sprintf(tmp_str, "%.1f", (float)histogram[c] / n_total_histogram);
-			FWC::put(histogram_x+k*3, histogram_y, tmp_str);
-			k++;
-		}
-		k = 0;
-		for (char c = 'a'; c <= 'z'; c++)
-		{
-			FWC::put(histogram_x+k*3, histogram_y + 1, c);
-			k++;
-		}
 
 		FWC::present();
 	}
