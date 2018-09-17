@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 
 	FWC::put(sys_log_x + tmp_offset_x, sys_log_y + tmp_offset_y++, "connecting to a channel"); FWC::present();
 
-	Twitch::join_Channel(&connection, "nickmercs");
+	Twitch::join_Channel(&connection, "xqcow");
 
 	FWC::put(sys_log_x + tmp_offset_x, sys_log_y + tmp_offset_y++, "initializing message table"); FWC::present();
 	Twitch::Message::Table incoming;
@@ -49,6 +49,13 @@ int main(int argc, char **argv)
 	unsigned int last_print_time = clock();
 	int last_msg_count = 0;
 	float avg_msg_rate = 0.0;
+	float avg_msg_length = 0.0;
+
+	int *histogram = new int[256]; assert(histogram);
+	memset(histogram, 0, sizeof(int) * 256);
+	int n_total_histogram = 0;
+	int histogram_x = 0;
+	int histogram_y = 10;
 
 	Sleep(1000);
 
@@ -66,6 +73,23 @@ int main(int argc, char **argv)
 
 		if ((double)(timestamp - last_print_time)/CLOCKS_PER_SEC > 2.0)
 		{
+			avg_msg_length = 0.0;
+			for (int i = last_msg_count; i < incoming.n_count; i++)
+			{
+				avg_msg_length += strlen(incoming.message[i]);
+			}
+			avg_msg_length /= (incoming.n_count - last_msg_count);
+
+			for (int i = last_msg_count; i < incoming.n_count; i++)
+			{
+				int len = strlen(incoming.message[i]);
+				for (int j = 0; j < len; j++)
+				{
+					histogram[incoming.message[i][j]]++;
+				}
+				n_total_histogram += len;
+			}
+
 			avg_msg_rate = (double)(incoming.n_count - last_msg_count) * CLOCKS_PER_SEC / (timestamp - last_print_time);
 			last_print_time = timestamp;
 			last_msg_count = incoming.n_count;
@@ -74,8 +98,24 @@ int main(int argc, char **argv)
 		FWC::color(0x0F);
 		sprintf(tmp_str, "received %d messages", incoming.n_count);
 		FWC::put(msg_x, msg_y, tmp_str);
-		sprintf(tmp_str, "average message rate per second %.4f", avg_msg_rate);
+		sprintf(tmp_str, "message rate per second %.4f", avg_msg_rate);
 		FWC::put(msg_x, msg_y + 1, tmp_str);	
+		sprintf(tmp_str, "avg message length %.4f", avg_msg_length);
+		FWC::put(msg_x, msg_y + 2, tmp_str);
+
+		int k = 0;
+		for (char c = 'a'; c <= 'z'; c++)
+		{
+			sprintf(tmp_str, "%.1f", (float)histogram[c] / n_total_histogram);
+			FWC::put(histogram_x+k*3, histogram_y, tmp_str);
+			k++;
+		}
+		k = 0;
+		for (char c = 'a'; c <= 'z'; c++)
+		{
+			FWC::put(histogram_x+k*3, histogram_y + 1, c);
+			k++;
+		}
 
 		FWC::present();
 	}
