@@ -132,8 +132,6 @@ namespace Twitch
 	//returns false if connection is closed
 	void communicate(Message::Table *t, Connection *c, unsigned int timestamp)
 	{
-		Message::clear(t);
-
 		int r = update(c);
 		if (c->active == false) return;
 		if (r == 0) return;

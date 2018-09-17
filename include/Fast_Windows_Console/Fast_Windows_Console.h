@@ -9,6 +9,7 @@ levent albayrak 2018
 #include <stdio.h>
 #include <Windows.h>
 #include <assert.h>
+#include <stdarg.h>
 #pragma warning(disable:4996)
 
 namespace FWC
@@ -130,6 +131,7 @@ namespace FWC
 			text_row[i].Attributes = Internals::G_brush;
 		}
 	}
+
 	void put(int x, int y, float f)
 	{
 		static char tmp[128];

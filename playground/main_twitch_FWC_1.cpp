@@ -1,60 +1,83 @@
-#ifndef _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
-#endif
+#pragma warning(disable:4996)
 
-#include "Twitch_core.h"
+#include "../include/twitch_tv/Twitch_core.h"
+#include "../include/twitch_tv/Twitch_Message_core.h"
+#include "../include/Fast_Windows_Console/Fast_Windows_Console.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
 
 int main(int argc, char **argv)
 {
+	FWC::init();
+
+	int sys_log_x = 0;
+	int sys_log_y = 0;
+	int tmp_offset_x = 0;
+	int tmp_offset_y = 0;
+
+	int msg_x = 0;
+	int msg_y = 1;
+	
+	FWC::clear();
+
+	FWC::color(0x0F);
+	FWC::put(sys_log_x + tmp_offset_x, sys_log_y+ tmp_offset_y++, "initializing network"); FWC::present();
+	
 	//initialize network
 	Twitch::startup();
 
-	char *username = "your_twitch_username";
-	//get this token from https://twitchapps.com/tmi/ and keep it safe
-	//remove the oauth: part when you copy paste
-	char *token = "nh1j5iqhldef284o6nn80sj1ij3ixi";
+	const char *username = "plogp";
+	const char *token = "zi5igvfgn3914hg3hczbe497m8uzpp";
 
-	//init connection data
+	FWC::put(sys_log_x + tmp_offset_x, sys_log_y + tmp_offset_y++, "connecting to twitch.tv and logging in"); FWC::present();
+
 	Twitch::Connection connection;
 	Twitch::init(&connection, username, token);
-	
-	//make TCP connection to twitch and login
 	Twitch::connect(&connection);
 
-	//join a channel
-	//pass channel name
-	printf("connecting to channels\n");
-	Twitch::join_Channel(&connection, "Warcraft");
-	//join another channel
-	Twitch::join_Channel(&connection, "Method");
+	FWC::put(sys_log_x + tmp_offset_x, sys_log_y + tmp_offset_y++, "connecting to a channel"); FWC::present();
 
-	//initialize message table
-	//will contaain incoming message list from all connected channels
+	Twitch::join_Channel(&connection, "nickmercs");
+
+	FWC::put(sys_log_x + tmp_offset_x, sys_log_y + tmp_offset_y++, "initializing message table"); FWC::present();
 	Twitch::Message::Table incoming;
 	Twitch::Message::init(&incoming);
 
-	printf("chat log\n");
+	static char tmp_str[4096];
+	
+	unsigned int last_print_time = clock();
+	int last_msg_count = 0;
+	float avg_msg_rate = 0.0;
+
+	Sleep(1000);
+
 	for(;;)
 	{
+		FWC::clear();
+
 		unsigned int timestamp = clock();
 		
-		//collect all messages from all channels
 		Twitch::communicate(&incoming, &connection, timestamp);
 		if (connection.active == false)
 		{
-			printf("connection was closed!\n");
-			break;
+			exit(0);
 		}
 
-		//print received messages from all channels
-		for (int i = 0; i < incoming.n_count; i++)
+		if ((double)(timestamp - last_print_time)/CLOCKS_PER_SEC > 2.0)
 		{
-			printf("%s@%s|(%.2f)-> %s\n",incoming.username[i], incoming.channel[i], (double)timestamp / CLOCKS_PER_SEC, incoming.message[i]);
+			avg_msg_rate = (double)(incoming.n_count - last_msg_count) * CLOCKS_PER_SEC / (timestamp - last_print_time);
+			last_print_time = timestamp;
+			last_msg_count = incoming.n_count;
 		}
-		
+
+		FWC::color(0x0F);
+		sprintf(tmp_str, "received %d messages", incoming.n_count);
+		FWC::put(msg_x, msg_y, tmp_str);
+		sprintf(tmp_str, "average message rate per second %.4f", avg_msg_rate);
+		FWC::put(msg_x, msg_y + 1, tmp_str);	
+
+		FWC::present();
 	}
 	
 	getchar();
