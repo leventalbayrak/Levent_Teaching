@@ -38,6 +38,8 @@ namespace Twitch
 			t->n_count = 0;
 			//TODO
 			//aloc one block this is ugly
+			//need persistent blocks so that address doesnt change
+			//need to allocate large blocks and string them together instead of realloc and change addresses
 			t->channel = (char**)malloc(sizeof(char*)*t->array_size); assert(t->channel);
 			t->username = (char**)malloc(sizeof(char*)*t->array_size); assert(t->username);
 			t->message = (char**)malloc(sizeof(char*)*t->array_size); assert(t->message);
