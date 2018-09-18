@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 
 	FWC::put(sys_log_x + tmp_offset_x, sys_log_y + tmp_offset_y++, "connecting to a channel"); FWC::present();
 
-	Twitch::join_Channel(&connection, "xqcow");
+	Twitch::join_Channel(&connection, "shroud");
 
 	FWC::put(sys_log_x + tmp_offset_x, sys_log_y + tmp_offset_y++, "initializing message table"); FWC::present();
 	Twitch::Message::Table incoming;
