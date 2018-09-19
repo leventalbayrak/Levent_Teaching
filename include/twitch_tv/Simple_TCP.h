@@ -110,14 +110,14 @@ namespace Simple_TCP
 				{
 					//printf("error_code: %d\n", error_code);
 					terminate(_socket);
-					assert(0);
+					return INVALID_SOCKET;
 				}
 			}
 			else
 			{
 				//printf("could not connect to: %s\n", host->h_name);
 				terminate(_socket);
-				assert(0);
+				return INVALID_SOCKET;
 			}
 		}
 
