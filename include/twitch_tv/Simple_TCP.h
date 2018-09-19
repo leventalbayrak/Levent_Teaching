@@ -53,7 +53,7 @@ namespace Simple_TCP
 		while (host == NULL)
 		{
 			host = gethostbyname(hostname);
-			if (++n_tries >= 10) assert(0);
+			if (++n_tries >= 10) return NULL;
 			Sleep(100);
 		}
 		return host;
@@ -65,14 +65,14 @@ namespace Simple_TCP
 		if (_socket == INVALID_SOCKET)
 		{
 			//printf("socket failure\n");
-			assert(0);
+			return INVALID_SOCKET;
 		}
 		unsigned long mode = 1;
 		int r = ioctlsocket(_socket, FIONBIO, &mode);
 		if (r != 0)
 		{
 			//printf("ioctlsocket failed: %d\n", r);
-			assert(0);
+			return INVALID_SOCKET;
 		}
 
 		SOCKADDR_IN sockaddr;
