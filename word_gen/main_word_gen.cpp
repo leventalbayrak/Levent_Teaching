@@ -3,25 +3,33 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <random>
+#include <time.h>
+using namespace std;
+
 namespace WG
 {
 	unsigned int n_alphabet = 256;
+
+	namespace Random
+	{
+		mt19937 engine;
+		static void init(unsigned int _seed)
+		{
+			if (_seed == 0) _seed = time(0);
+			engine.seed(_seed);
+		}
+		inline unsigned int rand_UINT() { return engine(); }
+		inline double rand_DOUBLE() { return (double)engine() / engine.max(); }
+	}
+
 	inline unsigned int n_Nmers(unsigned int nmer_size)
 	{
 		return 1 << (nmer_size << 3);
 	}
 
-	void load_Dictionary(char **&words, unsigned int &n_words, const char *filename)
+	void tokenize(char **&words, unsigned int &n_words, char *buffer, const char *delim)
 	{
-		char *delim = "\n\r\t ";
-		FILE *f = fopen(filename, "rb");
-		fseek(f, 0, SEEK_END);
-		unsigned int size = ftell(f);
-		fseek(f, 0, SEEK_SET);
-		char *buffer = (char*)malloc(size + 1); assert(buffer);
-		fread(buffer, 1, size + 1, f);//strtok wont work without a NULL terminator
-		buffer[size] = 0;
-
 		unsigned int words_size = 1024;
 		n_words = 0;
 		words = (char**)malloc(sizeof(char*)*words_size); assert(words);
@@ -40,16 +48,31 @@ namespace WG
 		}
 	}
 
+	void load_Dictionary(char **&words, unsigned int &n_words, const char *filename)
+	{
+		FILE *f = fopen(filename, "rb");
+		fseek(f, 0, SEEK_END);
+		unsigned int size = ftell(f);
+		fseek(f, 0, SEEK_SET);
+		char *buffer = (char*)malloc(size + 1); assert(buffer);
+		fread(buffer, 1, size + 1, f);//strtok wont work without a NULL terminator
+		buffer[size] = 0;
+		tokenize(words, n_words, buffer, (char*)"\n\r\t ");
+		fclose(f);
+	}
+
 	void alloc(double *&p2D, double *&sum1D, unsigned int &n_nmers, unsigned int nmer_size)
 	{
 		n_nmers = n_Nmers(nmer_size);
+		printf("n_nmers: %u allocation: %.2fgb\n", n_nmers, sizeof(double)*n_nmers*(n_alphabet + 1) / (1024.0*1024.0*1024.0));
 		p2D = (double*)malloc(sizeof(double)*n_nmers*n_alphabet); assert(p2D);
 		sum1D = (double*)malloc(sizeof(double)*n_nmers); assert(sum1D);
+
+		memset(p2D, 0, sizeof(double)*n_nmers*n_alphabet);
+		memset(sum1D, 0, sizeof(double)*n_nmers);
 	}
 
-	
-
-	unsigned int get_Nmer_Profile_Index(const char *nmer, unsigned int nmer_size)
+	unsigned int nmer_to_uint(const char *nmer, unsigned int nmer_size)
 	{
 		unsigned int s = 0;
 		unsigned int m = 1;
@@ -57,59 +80,167 @@ namespace WG
 		{
 			s += nmer[i] * m;
 			m <<= 8;
-		}	
-		return s*n_alphabet;
+		}
+		return s;
 	}
-	void extract_Counts(double *p2D,double *sum1D, const char **words, unsigned int n_words, unsigned int nmer_size)
+
+	void uint_to_nmer(char *nmer, unsigned int nmer_uint, unsigned int nmer_size)
+	{
+		unsigned int s = nmer_uint;
+		for (unsigned int i = 0; i < nmer_size; i++)
+		{
+			nmer[i] = s % 256;
+			s >>= 8;
+		}
+		nmer[nmer_size] = 0;
+	}
+
+	unsigned int get_Nmer_Profile_Index_1D(const char *nmer, unsigned int nmer_size)
+	{
+		return nmer_to_uint(nmer,nmer_size) * n_alphabet;
+	}
+
+	void extract_Counts(double *p2D, double *sum1D, const char **words, unsigned int n_words, unsigned int nmer_size)
 	{
 		for (int i = 0; i < n_words; i++)
 		{
 			int len = strlen(words[i]);
-			for (int j = 0; j <= len - nmer_size - 1; j++)
+			if (len < nmer_size) continue;
+
+			if (len != nmer_size)
 			{
-				unsigned int nmer_index = get_Nmer_Profile_Index(&words[i][j], nmer_size);
-				unsigned int offset = words[i][j + nmer_size];
-				p2D[nmer_index + offset] += 1.0;
-				sum1D[nmer_index] += 1.0;
+				for (unsigned int j = 0; j <= len - nmer_size - 1; j++)
+				{
+					unsigned int nmer_index = get_Nmer_Profile_Index_1D(&words[i][j], nmer_size);
+					unsigned int offset = words[i][j + nmer_size];
+					p2D[nmer_index + offset] += 1.0;
+					sum1D[nmer_index >> 8] += 1.0;
+				}
 			}
 			//zero terminator
-			unsigned int nmer_index = get_Nmer_Profile_Index(&words[i][len-nmer_size], nmer_size);
+			unsigned int nmer_index = get_Nmer_Profile_Index_1D(&words[i][len - nmer_size], nmer_size);
 			p2D[nmer_index] += 1.0;
-			sum1D[nmer_index] += 1.0;
+			sum1D[nmer_index >> 8] += 1.0;
 		}
 	}
 
-	void normalize(double *p, double *sum, unsigned int nmer_size)
+	//will also normalize sum
+	void normalize(double *normalized_profile, double *normalized_sum, unsigned int nmer_size)
 	{
 		unsigned int n_nmers = n_Nmers(nmer_size);
+
+		double total_sum = 0.0;
 		for (unsigned int i = 0; i < n_nmers; i++)
 		{
-			for(unsigned int j=0;j<n_alphabet;j++) p[i*n_alphabet + j] /= sum[i];
+			if (normalized_sum[i] != 0)
+			{
+				for (unsigned int j = 0; j < n_alphabet; j++) normalized_profile[i*n_alphabet + j] /= normalized_sum[i];
+			}
+
+			total_sum += normalized_sum[i];
 		}
+
+		
+		for (unsigned int i = 0; i < n_nmers; i++)
+		{
+			normalized_sum[i] /= total_sum;
+		}
+
 	}
 
+	void gen_Seed(char *seed,const double *normalized_sum, unsigned int nmer_size)
+	{
+		unsigned int n_nmers = n_Nmers(nmer_size);
+		double s = 0.0;
+		double c = Random::rand_DOUBLE();
+		unsigned int k = 0;
+		for (unsigned int i = 0; i < n_nmers; i++)
+		{
+			s += normalized_sum[i];
+			if (s >= c)
+			{
+				k = i;
+				break;
+			}
+		}
+
+		uint_to_nmer(seed, k, nmer_size);
+	}
+
+	void gen_Word(char *dest, const char *seed, const double *p2D, unsigned int nmer_size)
+	{
+		for (unsigned int i = 0; i < nmer_size; i++) dest[i] = seed[i];
+
+		unsigned int pos = 0;
+		for (;;)
+		{
+			unsigned int nmer_index = get_Nmer_Profile_Index_1D(&dest[pos], nmer_size);
+			double c = Random::rand_DOUBLE();
+			double s = 0.0;
+			int k = 0;
+			for (int i = 0; i < 256; i++)
+			{
+				s += p2D[nmer_index+i];
+				if (s >= c)
+				{
+					k = i;
+					break;
+				}
+			}
+			dest[pos+nmer_size] = k;
+			pos++;
+			if (k == 0) break;
+		}
+
+	}
 }
 
 int main()
 {
+	unsigned int nmer_size = 3;
+	unsigned int n_gen = 2000000;
+	char *filename_dictionary = (char*)"words_alpha.txt";
+	char *filename_gen_output = (char*)"generated_words.txt";
 
 	char **words = NULL;
 	unsigned int n_words = 0;
-	WG::load_Dictionary(words, n_words, "dict.txt");
-	getchar();
+	WG::load_Dictionary(words, n_words, filename_dictionary);
 
-	unsigned int nmer_size = 3;
+	printf("loaded %u words\n", n_words);
+
+	WG::Random::init(0);
 
 	double *profiles = NULL;
 	double *sum = NULL;
 	unsigned int n_nmers = 0;
 	WG::alloc(profiles, sum, n_nmers, nmer_size);
-
-	
-
 	WG::extract_Counts(profiles, sum, (const char**)words, n_words, nmer_size);
+	WG::normalize(profiles, sum, nmer_size);
 
+	unsigned int n_total_nmers = 0;
+	for (unsigned int i = 0; i < n_nmers; i++) n_total_nmers += sum[i];
 
+	FILE *f = fopen(filename_gen_output, "w+");
+	static char seed[1024];
+	static char dest[1024];
+	unsigned int completed_counter = 0;
+	for (unsigned int i = 0; i < n_gen; i++)
+	{
+		if (++completed_counter > n_gen / 100)
+		{
+			printf("completed %.2f\n", 100.0*i / n_gen);
+			completed_counter = 0;
+		}
+		WG::gen_Seed(seed, sum, nmer_size);
+		WG::gen_Word(dest, seed, profiles, nmer_size);
+		fprintf(f, "%s\n", dest);
 
+		if (strcmp("wolf", dest) == 0)
+		{
+			printf("found wolf\n");
+			getchar();
+		}
+	}
+	fclose(f);
 	return 0;
 }
