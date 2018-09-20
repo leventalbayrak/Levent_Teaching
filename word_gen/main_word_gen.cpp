@@ -18,7 +18,17 @@ namespace WG
 		unsigned char size;
 	};
 
-	void init(Node *n) { *n = {}; }
+	namespace Random
+	{
+		mt19937 engine;
+		static void init(unsigned int _seed)
+		{
+			if (_seed == 0) _seed = time(0);
+			engine.seed(_seed);
+		}
+		inline unsigned int rand_UINT() { return engine(); }
+		inline double rand_DOUBLE() { return (double)engine() / engine.max(); }
+	}
 
 	void add(Node *root, const char *word, unsigned int len)
 	{
@@ -39,8 +49,8 @@ namespace WG
 				current->children[current->n_children] = {};
 				current->children[current->n_children].sum++;
 				current->edge[current->n_children] = word[i];
-				
-				current = &current->children[current->n_children++];
+				current->n_children++;
+				current = &current->children[current->n_children - 1];
 			}
 			else
 			{
@@ -72,7 +82,8 @@ namespace WG
 					current->children[current->n_children].sum++;
 					current->edge[current->n_children] = word[i];
 
-					current = &current->children[current->n_children++];
+					current->n_children++;
+					current = &current->children[current->n_children - 1];
 				}
 
 			}
@@ -84,16 +95,16 @@ namespace WG
 		for (unsigned int i = 0; i < n_words; i++)
 		{
 			unsigned int len = strlen(words[i]);
-			for (unsigned int j = 0; j <= len - nmer_size; j++)
+			//+1 makes NULL terminator be treated as a valid character
+			for (unsigned int j = 0; j <= len - nmer_size + 1; j++)
 			{
 				add(root, &words[i][j], nmer_size);
 			}
 		}
 	}
 	
-	unsigned int copy_Number(Node *root, const char *word,unsigned int len)
+	unsigned char random_Edge(Node *root, const char *word, unsigned int len)
 	{
-		unsigned int parent_copy = 0;
 		Node *current = root;
 		for (unsigned int i = 0; i < len; i++)
 		{
@@ -109,7 +120,6 @@ namespace WG
 
 			if (which_edge >= 0)
 			{
-				parent_copy = current->sum;
 				current = &current->children[which_edge];
 			}
 			else
@@ -118,23 +128,73 @@ namespace WG
 			}
 		}
 
-		return current->sum;
-	}
-
-	namespace Random
-	{
-		mt19937 engine;
-		static void init(unsigned int _seed)
+		int next = -1;
+		double z = Random::rand_DOUBLE();
+		unsigned int s = z*current->sum;
+		unsigned int t = 0;
+		for (int j = 0; j < current->n_children; j++)
 		{
-			if (_seed == 0) _seed = time(0);
-			engine.seed(_seed);
+			t += current->children[j].sum;
+			if (t > s)
+			{
+				next = j;
+				break;
+			}
 		}
-		inline unsigned int rand_UINT() { return engine(); }
-		inline double rand_DOUBLE() { return (double)engine() / engine.max(); }
+
+		if (next < 0)
+		{
+			return 0;
+		}
+		return current->edge[next];
 	}
 
-	
-	
+
+	void random_Leaf(char *leaf_path, unsigned int len, Node *root)
+	{
+		unsigned int k = 0;
+		Node *current = root;
+		for (unsigned int i = 0; i < len; i++)
+		{
+			int next = -1;
+			unsigned int s = Random::rand_DOUBLE()*current->sum;
+			unsigned int t = 0;
+			for (int j = 0; j < current->n_children; j++)
+			{
+				t += current->children[j].sum;
+				if (t > s)
+				{
+					next = j;
+					break;
+				}
+			}
+
+			if (next < 0)
+			{
+				break;
+			}
+			else
+			{
+				leaf_path[k++] = current->edge[next];
+				current = &current->children[next];
+			}
+		}
+
+		leaf_path[k] = 0;
+	}
+
+	void random_Word(char *word, Node *root, unsigned int len)
+	{
+		random_Leaf(word, len, root);
+		unsigned int k = 0;
+		for (;;)
+		{
+			unsigned char c = random_Edge(root, &word[k], len);
+			word[len + k++] = c;
+			if (c == 0) return;
+		}
+	}
+
 	void tokenize(char **&words, unsigned int &n_words, char *buffer, const char *delim)
 	{
 		unsigned int words_size = 1024;
@@ -177,7 +237,7 @@ int main()
 	char *filename_dictionary = (char*)"dict.txt";
 	char *filename_gen_output = (char*)"generated_words.txt";
 
-
+	WG::Random::init(0);
 	char **words = NULL;
 	unsigned int n_words = 0;
 	WG::load_Dictionary(words, n_words, filename_dictionary);
@@ -185,8 +245,20 @@ int main()
 	WG::Node root = {};
 	WG::add(&root, words, n_words, nmer_size);
 
-	printf("%u\n", WG::copy_Number(&root, "le", 2));
-
+	FILE *f = fopen(filename_gen_output, "w+");
+	static char word[1024];
+	unsigned int completed_counter = 0;
+	for (unsigned int i = 0; i < n_gen; i++)
+	{
+		if (++completed_counter > n_gen / 100)
+		{
+			printf("completed %.2f\n", 100.0*i / n_gen);
+			completed_counter = 0;
+		}
+		WG::random_Word(word, &root, nmer_size - 1);
+		fprintf(f, "%s\n", word);
+	}
+	fclose(f);
 	getchar();
 	return 0;
 }
