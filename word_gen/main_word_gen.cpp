@@ -95,6 +95,7 @@ namespace WG
 		for (unsigned int i = 0; i < n_words; i++)
 		{
 			unsigned int len = strlen(words[i]);
+			if (len < nmer_size) continue;
 			//+1 makes NULL terminator be treated as a valid character
 			for (unsigned int j = 0; j <= len - nmer_size + 1; j++)
 			{
@@ -186,11 +187,11 @@ namespace WG
 	void random_Word(char *word, Node *root, unsigned int len)
 	{
 		random_Leaf(word, len, root);
-		unsigned int k = 0;
+		unsigned int k = len;
 		for (;;)
 		{
-			unsigned char c = random_Edge(root, &word[k], len);
-			word[len + k++] = c;
+			unsigned char c = random_Edge(root, &word[k-len], len);
+			word[k++] = c;
 			if (c == 0) return;
 		}
 	}
@@ -232,9 +233,9 @@ namespace WG
 
 int main()
 {
-	unsigned int nmer_size = 3;
+	unsigned int nmer_size = 5;
 	unsigned int n_gen = 200000;
-	char *filename_dictionary = (char*)"dict.txt";
+	char *filename_dictionary = (char*)"words_alpha.txt";
 	char *filename_gen_output = (char*)"generated_words.txt";
 
 	WG::Random::init(0);
