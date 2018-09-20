@@ -219,7 +219,7 @@ namespace WG
 int main()
 {
 	unsigned int nmer_size = 3;
-	unsigned int n_gen = 20000;
+	unsigned int n_gen = 200000;
 	char *filename_dictionary = (char*)"words_alpha.txt";
 	char *filename_gen_output = (char*)"generated_words.txt";
 
@@ -229,8 +229,6 @@ int main()
 	WG::load_Dictionary(words, n_words, filename_dictionary);
 
 	printf("loaded %u words\n", n_words);
-
-	
 
 	double *profiles = NULL;
 	double *sum = NULL;
