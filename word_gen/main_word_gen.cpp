@@ -9,7 +9,11 @@ using namespace std;
 
 namespace WG
 {
-	unsigned int n_alphabet = 256;
+	unsigned char alphabet[256];
+	int idx[256];
+	unsigned int n_alphabet = 0;
+
+	
 
 	namespace Random
 	{
@@ -25,7 +29,26 @@ namespace WG
 
 	inline unsigned int n_Nmers(unsigned int nmer_size)
 	{
-		return 1 << (nmer_size << 3);
+		return pow(n_alphabet,nmer_size);
+	}
+
+	void init()
+	{
+		Random::init(0);
+
+		alphabet[0] = 0;
+		n_alphabet = 1;
+		for (int i = 33; i <= 126; i++)
+		{
+			alphabet[n_alphabet++] = i;
+		}
+
+		idx[0] = 0;
+		int k = 1;
+		for (int c = 33; c <= 126; c++)
+		{
+			idx[c] = k++;
+		}
 	}
 
 	void tokenize(char **&words, unsigned int &n_words, char *buffer, const char *delim)
@@ -78,8 +101,8 @@ namespace WG
 		unsigned int m = 1;
 		for (unsigned int i = 0; i < nmer_size; i++)
 		{
-			s += nmer[i] * m;
-			m <<= 8;
+			s += idx[nmer[i]] * m;
+			m *= n_alphabet;
 		}
 		return s;
 	}
@@ -89,15 +112,15 @@ namespace WG
 		unsigned int s = nmer_uint;
 		for (unsigned int i = 0; i < nmer_size; i++)
 		{
-			nmer[i] = s % 256;
-			s >>= 8;
+			nmer[i] =  alphabet[s % n_alphabet];
+			s /= n_alphabet;
 		}
 		nmer[nmer_size] = 0;
 	}
 
 	unsigned int get_Nmer_Profile_Index_1D(const char *nmer, unsigned int nmer_size)
 	{
-		return nmer_to_uint(nmer,nmer_size) * n_alphabet;
+		return nmer_to_uint(nmer, nmer_size) * n_alphabet;
 	}
 
 	void extract_Counts(double *p2D, double *sum1D, const char **words, unsigned int n_words, unsigned int nmer_size)
@@ -112,15 +135,15 @@ namespace WG
 				for (unsigned int j = 0; j <= len - nmer_size - 1; j++)
 				{
 					unsigned int nmer_index = get_Nmer_Profile_Index_1D(&words[i][j], nmer_size);
-					unsigned int offset = words[i][j + nmer_size];
+					unsigned int offset = idx[words[i][j + nmer_size]];
 					p2D[nmer_index + offset] += 1.0;
-					sum1D[nmer_index >> 8] += 1.0;
+					sum1D[nmer_index / n_alphabet] += 1.0;
 				}
 			}
 			//zero terminator
 			unsigned int nmer_index = get_Nmer_Profile_Index_1D(&words[i][len - nmer_size], nmer_size);
 			p2D[nmer_index] += 1.0;
-			sum1D[nmer_index >> 8] += 1.0;
+			sum1D[nmer_index / n_alphabet] += 1.0;
 		}
 	}
 
@@ -135,12 +158,10 @@ namespace WG
 			if (normalized_sum[i] != 0)
 			{
 				for (unsigned int j = 0; j < n_alphabet; j++) normalized_profile[i*n_alphabet + j] /= normalized_sum[i];
+				total_sum += normalized_sum[i];
 			}
-
-			total_sum += normalized_sum[i];
 		}
 
-		
 		for (unsigned int i = 0; i < n_nmers; i++)
 		{
 			normalized_sum[i] /= total_sum;
@@ -178,16 +199,16 @@ namespace WG
 			double c = Random::rand_DOUBLE();
 			double s = 0.0;
 			int k = 0;
-			for (int i = 0; i < 256; i++)
+			for (int i = 0; i < n_alphabet; i++)
 			{
-				s += p2D[nmer_index+i];
+				s += p2D[nmer_index + i];
 				if (s >= c)
 				{
 					k = i;
 					break;
 				}
 			}
-			dest[pos+nmer_size] = k;
+			dest[pos + nmer_size] = alphabet[k];
 			pos++;
 			if (k == 0) break;
 		}
@@ -198,22 +219,24 @@ namespace WG
 int main()
 {
 	unsigned int nmer_size = 3;
-	unsigned int n_gen = 2000000;
+	unsigned int n_gen = 20000;
 	char *filename_dictionary = (char*)"words_alpha.txt";
 	char *filename_gen_output = (char*)"generated_words.txt";
 
 	char **words = NULL;
 	unsigned int n_words = 0;
+	WG::init();
 	WG::load_Dictionary(words, n_words, filename_dictionary);
 
 	printf("loaded %u words\n", n_words);
 
-	WG::Random::init(0);
+	
 
 	double *profiles = NULL;
 	double *sum = NULL;
 	unsigned int n_nmers = 0;
 	WG::alloc(profiles, sum, n_nmers, nmer_size);
+	//getchar();
 	WG::extract_Counts(profiles, sum, (const char**)words, n_words, nmer_size);
 	WG::normalize(profiles, sum, nmer_size);
 
