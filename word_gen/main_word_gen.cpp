@@ -233,10 +233,10 @@ namespace WG
 
 int main()
 {
-	unsigned int nmer_size = 4;
-	unsigned int n_gen = 1000000;
+	unsigned int nmer_size = 3;
+	unsigned int n_gen = 50000000;
 	char *filename_dictionary = (char*)"moby\\ALL_CONCATENATED.TXT";
-	char *filename_gen_output = (char*)"generated_words.txt";
+	char *filename_gen_output = (char*)"generated_words_3mer_50m.txt";
 
 	WG::Random::init(0);
 	char **words = NULL;
@@ -260,6 +260,6 @@ int main()
 		fprintf(f, "%s\n", word);
 	}
 	fclose(f);
-	getchar();
+	
 	return 0;
 }
