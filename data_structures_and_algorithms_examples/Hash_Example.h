@@ -94,5 +94,32 @@ namespace Key_Value_Pair
 		}
 		return 0.0;
 	}
+
+	void resize(Key_Value_Pair *h, int new_n_rows)
+	{
+		Key_Value_Pair tmp;
+		init(&tmp, new_n_rows);
+		for (int i = 0; i < h->n_rows; i++)
+		{
+			for (int j = 0; j < h->n_data[i]; j++)
+			{
+				set(&tmp, h->keys[i][j], h->data[i][j]);
+			}
+		}
+
+		for (int i = 0; i < h->n_rows; i++)
+		{
+			free(h->data[i]);
+			free(h->keys[i]);
+		}
+		free(h->data);
+		free(h->keys);
+
+		h->n_rows = new_n_rows;
+		h->data = tmp.data;
+		h->keys = tmp.keys;
+		
+	}
+
 }
 
