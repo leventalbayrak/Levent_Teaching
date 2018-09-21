@@ -234,8 +234,8 @@ namespace WG
 int main()
 {
 	unsigned int nmer_size = 4;
-	unsigned int n_gen = 200000;
-	char *filename_dictionary = (char*)"words_alpha.txt";
+	unsigned int n_gen = 1000000;
+	char *filename_dictionary = (char*)"moby\\ALL_CONCATENATED.TXT";
 	char *filename_gen_output = (char*)"generated_words.txt";
 
 	WG::Random::init(0);
