@@ -21,10 +21,12 @@ namespace WG
 	namespace Random
 	{
 		mt19937 engine;
+		unsigned int _max = 0;
 		static void init(unsigned int _seed)
 		{
 			if (_seed == 0) _seed = time(0);
 			engine.seed(_seed);
+			_max = engine.max();
 		}
 		inline unsigned int rand_UINT() { return engine(); }
 		inline double rand_DOUBLE() { return (double)engine() / engine.max(); }
@@ -109,10 +111,11 @@ namespace WG
 		Node *current = root;
 		for (unsigned int i = 0; i < len; i++)
 		{
+			char c = word[i];
 			int which_edge = -1;
 			for (int j = 0; j < current->n_children; j++)
 			{
-				if (current->edge[j] == word[i])
+				if (current->edge[j] == c)
 				{
 					which_edge = j;
 					break;
