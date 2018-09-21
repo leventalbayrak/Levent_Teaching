@@ -235,7 +235,7 @@ int main()
 {
 	unsigned int nmer_size = 5;
 	unsigned int n_gen = 200000;
-	char *filename_dictionary = (char*)"words_alpha.txt";
+	char *filename_dictionary = (char*)"dict.txt";
 	char *filename_gen_output = (char*)"generated_words.txt";
 
 	WG::Random::init(0);
