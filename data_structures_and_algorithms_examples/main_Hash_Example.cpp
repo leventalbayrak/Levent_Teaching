@@ -9,11 +9,14 @@ int main()
 	Key_Value_Pair::Key_Value_Pair h;
 	Key_Value_Pair::init(&h, 10007);
 
-	Key_Value_Pair::set(&h, 10007, 120);
-	Key_Value_Pair::set(&h, 10007 * 2, 130);
+	unsigned long long apple_key = Encryption::encrypt_djb2("apple_key", strlen("apple_key"));
+	unsigned long long orange_key = Encryption::encrypt_djb2("orange_key", strlen("orange_key"));
 
-	cout << Key_Value_Pair::get(&h, 10007) << endl;
-	cout << Key_Value_Pair::get(&h, 10007 * 2) << endl;
+	Key_Value_Pair::set(&h, apple_key, 2.62);
+	Key_Value_Pair::set(&h, orange_key, 3.14);
+
+	cout << Key_Value_Pair::get(&h, apple_key) << endl;
+	cout << Key_Value_Pair::get(&h, orange_key) << endl;
 	
 	getchar();
 	return 0;

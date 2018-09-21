@@ -44,7 +44,7 @@ namespace Key_Value_Pair
 {
 	struct Key_Value_Pair
 	{
-		long long int **keys;
+		unsigned long long **keys;
 		double **data;
 		int n_rows;
 		int *n_cols;
@@ -55,7 +55,7 @@ namespace Key_Value_Pair
 	{
 		h->n_rows = size;
 		h->data = (double**)malloc(sizeof(double*)*h->n_rows);
-		h->keys = (long long int**)malloc(sizeof(long long int*)*h->n_rows);
+		h->keys = (unsigned long long**)malloc(sizeof(unsigned long long*)*h->n_rows);
 		h->n_data = (int*)malloc(sizeof(int)*h->n_rows);
 		h->n_cols = (int*)malloc(sizeof(int)*h->n_rows);
 
@@ -64,26 +64,26 @@ namespace Key_Value_Pair
 			h->n_data[i] = 0;
 			h->n_cols[i] = 10;
 			h->data[i] = (double*)malloc(sizeof(double)*h->n_cols[i]);
-			h->keys[i] = (long long int*)malloc(sizeof(long long int)*h->n_cols[i]);
+			h->keys[i] = (unsigned long long*)malloc(sizeof(unsigned long long)*h->n_cols[i]);
 		}
 	}
 
-	void set(Key_Value_Pair *h, long long int key, int val)
+	void set(Key_Value_Pair *h, unsigned long long key, double val)
 	{
 		int which_row = key % h->n_rows;
 		double *data_row = h->data[which_row];
-		long long int *key_row = h->keys[which_row];
+		unsigned long long *key_row = h->keys[which_row];
 		int n_data = h->n_data[which_row];
 		data_row[n_data] = val;
 		key_row[n_data] = key;
 		h->n_data[which_row]++;
 	}
 
-	double get(Key_Value_Pair *h, long long int key)
+	double get(Key_Value_Pair *h, unsigned long long key)
 	{
 		int which_row = key % h->n_rows;
 		double *data_row = h->data[which_row];
-		long long int *key_row = h->keys[which_row];
+		unsigned long long *key_row = h->keys[which_row];
 		int n_data = h->n_data[which_row];
 		for (int i = 0; i < n_data; i++)
 		{
