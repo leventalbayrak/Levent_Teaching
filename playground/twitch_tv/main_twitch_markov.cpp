@@ -10,6 +10,10 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
+
+	FILE *f_chat = fopen("chat.txt", "w+");
+	FILE *f_gen = fopen("gen.txt", "w+");
+	
 	int nmer_size = 4;
 	
 	Generator::Generator g;
@@ -55,10 +59,15 @@ int main(int argc, char **argv)
 	Twitch::Message::init(&incoming);
 
 	unsigned int last_n_generated = 0;
+	unsigned int max_generated = 200000;
+	unsigned int n_generated = 0;
 
 	printf("chat log\n");
-	for(;;)
+	for (;;)
 	{
+		if (n_generated >= max_generated) break;
+
+		
 		unsigned int timestamp = clock();
 		
 		Twitch::Message::clear(&incoming);
@@ -72,22 +81,25 @@ int main(int argc, char **argv)
 		for (int i = 0; i < incoming.n_count; i++)
 		{
 			Generator::add_Str(&g, incoming.message[i], strlen(incoming.message[i]));
-			//Generator::add_Str(&g, incoming.username[i]);
-
+			fprintf(f_chat, "%s\t%s\n",incoming.channel[i], incoming.message[i]);
 			last_n_generated++;
 		}
 		
-		if (last_n_generated >= 1)
+		if (last_n_generated >= 5)
 		{
 			last_n_generated = 0;
 			static char tmp[1024];
 			tmp[0] = 0;
 			Generator::generate(tmp,1023, &g, g.nmer_size);
-			printf("%s\n", tmp);
+			
+			fprintf(f_gen, "%u\t%s\n",n_generated, tmp);
+			n_generated++;
+			printf("%u\n", n_generated);
 		}
 		
 		
 	}
-	
+	fclose(f_chat);
+	fclose(f_gen);
 	getchar();
 }
