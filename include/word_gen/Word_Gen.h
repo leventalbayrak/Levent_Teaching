@@ -116,11 +116,7 @@ namespace Generator
 						{
 							if (current->n_children >= current->size)
 							{
-<<<<<<< HEAD
-								current->size += current->size << 1;
-=======
 								current->size += current->size >> 1;
->>>>>>> development
 								current->children = (Node*)realloc(current->children, sizeof(Node)*current->size); assert(current->children);
 								current->edge = (unsigned char*)realloc(current->edge, sizeof(unsigned char)*current->size); assert(current->edge);
 							}
