@@ -144,13 +144,13 @@ namespace Generator
 				}
 			}
 
-			unsigned char random_Edge(const Node *root, const char *word, unsigned int len, unsigned int nmer_size)
+			unsigned char random_Edge(const Node *root, const char *word, unsigned int depth, unsigned int nmer_size)
 			{
 				//len cannot be more than nmer_size-1
-				if (len >= nmer_size) return 0;
+				if (depth >= nmer_size) return 0;
 
 				Node *current = (Node*)root;
-				for (unsigned int i = 0; i < len; i++)
+				for (unsigned int i = 0; i < depth; i++)
 				{
 					char c = word[i];
 					int which_edge = -1;
@@ -177,12 +177,12 @@ namespace Generator
 				double z = Random::rand_DOUBLE();
 				unsigned int s = z * current->sum;
 				unsigned int t = 0;
-				for (int j = 0; j < current->n_children; j++)
+				for (int i = 0; i < current->n_children; i++)
 				{
-					t += current->children[j].sum;
+					t += current->children[i].sum;
 					if (t > s)
 					{
-						next = j;
+						next = i;
 						break;
 					}
 				}
@@ -227,15 +227,23 @@ namespace Generator
 				leaf_path[k] = 0;
 			}
 
-			void random_Str(char *str, const Node *root, unsigned int nmer_size)
+			void random_Str(char *str, unsigned int max_length, const Node *root,unsigned int depth, unsigned int nmer_size)
 			{
+				//depth cannot be more than nmer_size
+				if (depth > nmer_size) return;
+
 				random_Nmer(str, nmer_size, root);
 				unsigned int k = nmer_size;
 				for (;;)
 				{
-					unsigned char c = random_Edge(root, &str[k - nmer_size + 1], nmer_size - 1, nmer_size);
+					unsigned char c = random_Edge(root, &str[k + 1 - nmer_size], nmer_size - 1, nmer_size);
 					str[k++] = c;
 					if (c == 0) return;
+					if (k == max_length)
+					{
+						str[max_length] = 0;
+						return;
+					}
 				}
 			}
 		}
@@ -247,6 +255,7 @@ namespace Generator
 		int nmer_size;
 	};
 
+	//trie will be built out of fixed nmer size strings
 	void init(Generator *g, int nmer_size)
 	{
 		g->nmer_size = nmer_size;
@@ -255,9 +264,9 @@ namespace Generator
 		internal::Random::init(0);
 	}
 
-	void add_Str(Generator *g, const char *str)
+	//string will be disassembled into nmer_size substrings and added to trie
+	void add_Str(Generator *g, const char *str, unsigned int len)
 	{
-		unsigned int len = strlen(str);
 		if (len < g->nmer_size) return;
 		//+1 makes NULL terminator be treated as a valid character
 		for (unsigned int i = 0; i <= len - g->nmer_size + 1; i++)
@@ -265,9 +274,10 @@ namespace Generator
 			internal::Node::add_Nmer(&g->root, &str[i], g->nmer_size);
 		}
 	}
-
-	void generate(char *str, const Generator *g)
+	
+	//can pick any depth between 1 and nmer_size-1
+	void generate(char *str, unsigned int max_length, const Generator *g, int depth)
 	{
-		internal::Node::random_Str(str, &g->root, g->nmer_size);
+		internal::Node::random_Str(str, max_length, &g->root, depth, g->nmer_size);
 	}
 }

@@ -15,6 +15,25 @@ int main(int argc, char **argv)
 	Generator::Generator g;
 	Generator::init(&g, nmer_size);
 
+	////static makes problem go away
+	////there is an overflow
+	//char t[1024];
+	//for (;;)
+	//{
+	//	int len = rand() % 1000;
+	//	for (int i = 0; i < len; i++)
+	//	{
+	//		t[i] = 'a' + rand() % 26;
+	//	}
+	//	t[len] = 0;
+
+	//	Generator::add_Str(&g, t, len);
+	//	
+	//	Generator::generate(t, 1023, &g, g.nmer_size);
+
+	//	printf("len %d %u\n",len, g.root.sum);
+	//}
+	//getchar();
 	Twitch::startup();
 
 	const char *username = "plogp";
@@ -48,8 +67,8 @@ int main(int argc, char **argv)
 
 		for (int i = 0; i < incoming.n_count; i++)
 		{
-			Generator::add_Str(&g, incoming.message[i]);
-			Generator::add_Str(&g, incoming.username[i]);
+			Generator::add_Str(&g, incoming.message[i], strlen(incoming.message[i]));
+			//Generator::add_Str(&g, incoming.username[i]);
 
 			last_n_generated++;
 		}
@@ -58,7 +77,8 @@ int main(int argc, char **argv)
 		{
 			last_n_generated = 0;
 			static char tmp[1024];
-			Generator::generate(tmp, &g);
+			tmp[0] = 0;
+			Generator::generate(tmp,1023, &g, g.nmer_size);
 			printf("%s\n", tmp);
 		}
 		
