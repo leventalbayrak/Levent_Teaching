@@ -1,8 +1,6 @@
 #pragma once
 
-#ifndef _WINSOCK_DEPRECATED_NO_WARNINGS
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-#endif
+#pragma warning(disable:4996)
 
 #include <time.h>
 #include <iostream>
@@ -53,7 +51,7 @@ namespace Simple_TCP
 		while (host == NULL)
 		{
 			host = gethostbyname(hostname);
-			if (++n_tries >= 10) return NULL;
+			if (++n_tries >= 10) assert(0);
 			Sleep(100);
 		}
 		return host;
@@ -65,14 +63,14 @@ namespace Simple_TCP
 		if (_socket == INVALID_SOCKET)
 		{
 			//printf("socket failure\n");
-			return INVALID_SOCKET;
+			assert(0);
 		}
 		unsigned long mode = 1;
 		int r = ioctlsocket(_socket, FIONBIO, &mode);
 		if (r != 0)
 		{
 			//printf("ioctlsocket failed: %d\n", r);
-			return INVALID_SOCKET;
+			assert(0);
 		}
 
 		SOCKADDR_IN sockaddr;
@@ -110,14 +108,14 @@ namespace Simple_TCP
 				{
 					//printf("error_code: %d\n", error_code);
 					terminate(_socket);
-					return INVALID_SOCKET;
+					assert(0);
 				}
 			}
 			else
 			{
 				//printf("could not connect to: %s\n", host->h_name);
 				terminate(_socket);
-				return INVALID_SOCKET;
+				assert(0);
 			}
 		}
 
