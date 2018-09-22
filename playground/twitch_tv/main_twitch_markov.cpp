@@ -40,20 +40,20 @@ int main(int argc, char **argv)
 	//getchar();
 	Twitch::startup();
 
-	const char *username = "plogp";
-	const char *token = "zi5igvfgn3914hg3hczbe497m8uzpp";
+	static const char *username = "plogp";
+	static const char *token = "zi5igvfgn3914hg3hczbe497m8uzpp";
 
 	Twitch::Connection connection;
 	Twitch::init(&connection, username, token);
 	
 	Twitch::connect(&connection);
 
-	Twitch::join_Channel(&connection, "aphromoo");
-	Twitch::join_Channel(&connection, "itshafu");
-	Twitch::join_Channel(&connection, "pikabooirl");
-	Twitch::join_Channel(&connection, "agony");
-	Twitch::join_Channel(&connection, "yelo"); 
-	Twitch::join_Channel(&connection, "voyboy");
+	Twitch::join_Channel(&connection, "ninja");
+	Twitch::join_Channel(&connection, "timthetatman");
+	Twitch::join_Channel(&connection, "highdistortion");
+	Twitch::join_Channel(&connection, "solaryfortnite");
+	Twitch::join_Channel(&connection, "chap");
+	Twitch::join_Channel(&connection, "robi");
 
 	Twitch::Message::Table incoming;
 	Twitch::Message::init(&incoming);
@@ -66,8 +66,7 @@ int main(int argc, char **argv)
 	for (;;)
 	{
 		if (n_generated >= max_generated) break;
-
-		
+	
 		unsigned int timestamp = clock();
 		
 		Twitch::Message::clear(&incoming);
@@ -80,19 +79,22 @@ int main(int argc, char **argv)
 
 		for (int i = 0; i < incoming.n_count; i++)
 		{
-			Generator::add_Str(&g, incoming.message[i], strlen(incoming.message[i]));
+			Generator::add_Str(&g, (unsigned char*)incoming.message[i], strlen(incoming.message[i]));
+			printf("add_Str: len %d\n", strlen(incoming.message[i]));
+
 			fprintf(f_chat, "%s\t%s\n",incoming.channel[i], incoming.message[i]);
+			
 			last_n_generated++;
 		}
 		
-		if (last_n_generated >= 5)
+		if (last_n_generated >= 1)
 		{
 			last_n_generated = 0;
 			static char tmp[1024];
 			tmp[0] = 0;
-			Generator::generate(tmp,1023, &g, g.nmer_size);
-			
-			fprintf(f_gen, "%u\t%s\n",n_generated, tmp);
+			Generator::generate((unsigned char*)tmp,1023, &g, g.nmer_size);
+			printf("generate: len %d\n", strlen(tmp));
+			fprintf(f_gen, "%u\t%u\t%u\t%s\n",n_generated,g.root.size,g.root.sum, tmp);
 			n_generated++;
 			printf("%u\n", n_generated);
 		}
