@@ -38,14 +38,26 @@ int main(int argc, char **argv)
 
 	const char *username = "plogp";
 	const char *token = "zi5igvfgn3914hg3hczbe497m8uzpp";
+<<<<<<< HEAD
 	const char *channel = "aphromoo";
+=======
+>>>>>>> development
 
 	Twitch::Connection connection;
 	Twitch::init(&connection, username, token);
 	
 	Twitch::connect(&connection);
 
+<<<<<<< HEAD
 	Twitch::join_Channel(&connection, channel);
+=======
+	Twitch::join_Channel(&connection, "aphromoo");
+	Twitch::join_Channel(&connection, "itshafu");
+	Twitch::join_Channel(&connection, "pikabooirl");
+	Twitch::join_Channel(&connection, "agony");
+	Twitch::join_Channel(&connection, "yelo"); 
+	Twitch::join_Channel(&connection, "voyboy");
+>>>>>>> development
 
 	Twitch::Message::Table incoming;
 	Twitch::Message::init(&incoming);
