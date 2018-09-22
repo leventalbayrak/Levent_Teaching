@@ -68,12 +68,35 @@ namespace Key_Value_Pair
 		}
 	}
 
+	//search collision array if key already exists
+	//if yes, overwrite the data
+	//else, insert
 	void set(Key_Value_Pair *h, unsigned long long key, double val)
 	{
 		int which_row = key % h->n_rows;
 		double *data_row = h->data[which_row];
 		unsigned long long *key_row = h->keys[which_row];
+
+		int size = h->n_cols[which_row];
 		int n_data = h->n_data[which_row];
+
+		for (int i = 0; i < n_data; i++)
+		{
+			if (key_row[i] == key)
+			{
+				data_row[i] = val;
+				return;
+			}
+		}
+
+		if (n_data >= size)
+		{
+			size += size >> 1;
+			h->n_cols[which_row] = size;
+
+			data_row = (double*)realloc(data_row, sizeof(double)*size);
+			key_row = (unsigned long long*)realloc(key_row, sizeof(unsigned long long)*size);	
+		}
 		data_row[n_data] = val;
 		key_row[n_data] = key;
 		h->n_data[which_row]++;
@@ -115,10 +138,11 @@ namespace Key_Value_Pair
 		free(h->data);
 		free(h->keys);
 
-		h->n_rows = new_n_rows;
+		h->n_rows = tmp.n_rows;
 		h->data = tmp.data;
 		h->keys = tmp.keys;
-		
+		h->n_cols = tmp.n_cols;
+		h->n_data = tmp.n_data;
 	}
 
 }

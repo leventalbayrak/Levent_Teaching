@@ -7,7 +7,7 @@ int main()
 {
 
 	Key_Value_Pair::Key_Value_Pair h;
-	Key_Value_Pair::init(&h, 10007);
+	Key_Value_Pair::init(&h, 5);
 
 	unsigned long long apple_key = Encryption::encrypt_djb2("apple_key", strlen("apple_key"));
 	unsigned long long orange_key = Encryption::encrypt_djb2("orange_key", strlen("orange_key"));
@@ -19,9 +19,16 @@ int main()
 	cout << Key_Value_Pair::get(&h, apple_key) << endl;
 	cout << Key_Value_Pair::get(&h, orange_key) << endl;
 
-	Key_Value_Pair::resize(&h, 23773);
-
+	//make hash table larger
+	Key_Value_Pair::resize(&h, 11);
 	cout << "re-hashed: " << endl;
+	cout << Key_Value_Pair::get(&h, apple_key) << endl;
+	cout << Key_Value_Pair::get(&h, orange_key) << endl;
+
+	cout << "overwrite: " << endl;
+	Key_Value_Pair::set(&h, apple_key, -1.2);
+	Key_Value_Pair::set(&h, orange_key, -9.0);
+
 	cout << Key_Value_Pair::get(&h, apple_key) << endl;
 	cout << Key_Value_Pair::get(&h, orange_key) << endl;
 	
