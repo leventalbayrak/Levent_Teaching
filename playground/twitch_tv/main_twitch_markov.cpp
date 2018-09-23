@@ -48,12 +48,11 @@ int main(int argc, char **argv)
 	
 	Twitch::connect(&connection);
 
-	Twitch::join_Channel(&connection, "ninja");
-	Twitch::join_Channel(&connection, "timthetatman");
-	Twitch::join_Channel(&connection, "highdistortion");
-	Twitch::join_Channel(&connection, "solaryfortnite");
-	Twitch::join_Channel(&connection, "chap");
-	Twitch::join_Channel(&connection, "robi");
+	Twitch::join_Channel(&connection, "sodapoppin");
+	Twitch::join_Channel(&connection, "warcraft");
+	Twitch::join_Channel(&connection, "yoda");
+	Twitch::join_Channel(&connection, "voyboy");
+	
 
 	Twitch::Message::Table incoming;
 	Twitch::Message::init(&incoming);
@@ -90,13 +89,15 @@ int main(int argc, char **argv)
 		if (last_n_generated >= 1)
 		{
 			last_n_generated = 0;
-			static char tmp[1024];
+			static char tmp[256];
 			tmp[0] = 0;
-			Generator::generate((unsigned char*)tmp,1023, &g, g.nmer_size);
+			Generator::generate((unsigned char*)tmp, 256, &g, g.nmer_size);
 			printf("generate: len %d\n", strlen(tmp));
-			fprintf(f_gen, "%u\t%u\t%u\t%s\n",n_generated,g.root.size,g.root.sum, tmp);
+			fprintf(f_gen, "%u\t%u\t%u\t%d\t%s\n",n_generated,g.root.size,g.root.sum, strlen(tmp), tmp);
 			n_generated++;
 			printf("%u\n", n_generated);
+
+			fflush(f_gen);
 		}
 		
 		

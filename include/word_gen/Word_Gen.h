@@ -139,22 +139,19 @@ namespace Generator
 				}
 			}
 
-			void add_Str(Node *root, const unsigned char *str, int len, int nmer_size)
+			void add_Str(Node *root, const unsigned char *str, int str_length, int nmer_size)
 			{
-				if (len < nmer_size) return;
-				//+1 makes NULL terminator be treated as a valid character
-				for (int i = 0; i <= len - nmer_size; i++)
+				if (str_length < nmer_size) return;
+				for (int i = 0; i <= str_length - nmer_size; i++)
 				{
 					add_Nmer(root, &str[i], nmer_size);
 				}
-				//add last nmer_size-1 plus 0 terminator
-				add_Nmer(root, &str[len - nmer_size + 1], nmer_size);
 			}
 
 			unsigned char random_Edge(const Node *root, const unsigned char *nmer_prefix, int depth, int nmer_size)
 			{
-				//len cannot be more than nmer_size-1
-				if (depth >= nmer_size) return 0;
+				//depth cannot be more than nmer_size-1
+				if (depth + 1 > nmer_size) return 0;
 
 				Node *current = (Node*)root;
 				for (int i = 0; i < depth; i++)
@@ -201,11 +198,12 @@ namespace Generator
 				return current->edge[next];
 			}
 
-			void random_Nmer(unsigned char *leaf_path, int nmer_size, const Node *root)
+			void random_Nmer(unsigned char *leaf_path,int depth, int nmer_size, const Node *root)
 			{
+				if (depth > nmer_size) return;
 				unsigned int k = 0;
 				Node *current = (Node*)root;
-				for (int i = 0; i < nmer_size; i++)
+				for (int i = 0; i < depth; i++)
 				{
 					int next = -1;
 					unsigned int s = Random::rand_DOUBLE()*current->sum;
@@ -234,24 +232,25 @@ namespace Generator
 				leaf_path[k] = 0;
 			}
 
-			void random_Str(unsigned char *str, int max_length, const Node *root,int depth, int nmer_size)
+			void random_Str(unsigned char *str, int str_length, const Node *root,int depth, int nmer_size)
 			{
 				//depth cannot be more than nmer_size
+				if (depth > str_length) return;
 				if (depth > nmer_size) return;
 
-				random_Nmer(str, nmer_size, root);
-				int k = nmer_size;
-				for (;;)
+				random_Nmer(str, depth, nmer_size, root);
+				for (int i = 1; i < str_length - depth; i++)
 				{
-					unsigned char c = random_Edge(root, &str[k + 1 - nmer_size], nmer_size - 1, nmer_size);
-					str[k++] = c;
-					if (c == 0) return;
-					if (k == max_length)
+					unsigned char c = random_Edge(root, &str[i], depth - 1, nmer_size);
+					str[i + depth - 1] = c;
+
+					//no path
+					if (c == 0)
 					{
-						str[max_length] = 0;
 						return;
 					}
 				}
+				str[str_length] = 0;
 			}
 		}
 	}
@@ -284,8 +283,8 @@ namespace Generator
 	}
 	
 	//can pick any depth between 1 and nmer_size-1
-	void generate(unsigned char *str, int max_length, const Generator *g, int depth)
+	void generate(unsigned char *str, int str_length, const Generator *g, int depth)
 	{
-		internal::Node::random_Str(str, max_length, &g->root, depth, g->nmer_size);
+		internal::Node::random_Str(str, str_length, &g->root, depth, g->nmer_size);
 	}
 }
