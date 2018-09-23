@@ -23,28 +23,35 @@ namespace Random
 
 namespace WG
 {
-	int **table;//index by n_alphabet*n_span
+	int **table;//index by n_alphabet*n_span, when indexing distance cannot be 0, dist -> 1..n_span
 	int n_alphabet = 256;
-	int n_span = 10;
+	int n_span;
 	int *tmp_sum;
 
-	void init(char *str, char *filename)
+	void load(unsigned char *&buffer, unsigned int &size, char *filename)
 	{
 		printf("read file\n");
 		FILE *f = fopen(filename, "rb");
 		fseek(f, 0, SEEK_END);
-		unsigned int size = ftell(f);
+		size = ftell(f);
 		fseek(f, 0, SEEK_SET);
-		unsigned char *buffer = (unsigned char*)malloc(size + 1); assert(buffer);
+		buffer = (unsigned char*)malloc(size + 1); assert(buffer);
 		fread(buffer, 1, size + 1, f);//strtok wont work without a NULL terminator
 		buffer[size] = 0;
 		fclose(f);
 		printf("file size: %u\n", size);
+	}
+
+	void init(unsigned char *src, unsigned int size, int _n_span)
+	{
+		n_span = _n_span;
 
 		printf("alloc\n");
 		tmp_sum = new int[n_alphabet];
-		table = new int*[n_alphabet*n_span];
-		for (int i = 0; i < n_alphabet*n_span; i++)
+
+		//cant index 0
+		table = new int*[n_alphabet*(n_span+1)];
+		for (int i = 0; i < n_alphabet*(n_span+1); i++)
 		{
 			table[i] = new int[n_alphabet];
 			memset(table[i], 0, sizeof(int)*n_alphabet);
@@ -53,43 +60,41 @@ namespace WG
 		printf("parse\n");
 		for (int i = 0; i <= size - n_span - 1; i++)
 		{
-			//printf("%d\n", i);
 			for (int j = 0; j < n_span; j++)
 			{
-				int dist = n_span-j-1;
-				unsigned char c = buffer[i + j];
-				int outcome = buffer[i + n_span];
+				int dist = n_span-j;
+				unsigned char c = src[i + j];
+				int outcome = src[i + n_span];
 				table[dist*c][outcome]++;
 			}
 		}
-
-		unsigned int pos = Random::rand_UINT() % (size - n_span);
-		for (int i = 0; i < n_span; i++)
-		{
-			str[i] = buffer[pos + i];
-		}
-
 	}
 
-	unsigned char predict_Next(char *str)
+	unsigned char predict_Next(unsigned char *str)
 	{
 		memset(tmp_sum, 0, sizeof(int)*n_alphabet);
 		int total_sum = 0;
 		for (int i = 0; i < n_span; i++)
 		{
-			int dist = n_span - i - 1;
+			int dist = n_span - i;
 			unsigned char c = str[i];
+			int index = dist*c;
 			for (int j = 0; j < n_alphabet; j++)
 			{
-				tmp_sum[j] += table[dist*c][j];
-				total_sum += table[dist*c][j];
+				tmp_sum[j] += table[index][j];
+				total_sum += table[index][j];
 			}
 		}
 
-		double z = Random::rand_DOUBLE();
-		int s = z * total_sum;
+		//cant predict anything at all
+		if (total_sum == 0)
+		{
+			return 0;
+		}
+
+		int s = Random::rand_UINT() % total_sum;
 		int t = 0;
-		for (int i = 0; i < n_alphabet; i++)
+		for (unsigned char i = 0; i < n_alphabet; i++)
 		{
 			t += tmp_sum[i];
 			if (t > s)
@@ -100,27 +105,153 @@ namespace WG
 		return 0;
 	}
 
+	void print_Next_Freq(unsigned char *str)
+	{
+		memset(tmp_sum, 0, sizeof(int)*n_alphabet);
+		int total_sum = 0;
+		for (int i = 0; i < n_span; i++)
+		{
+			int dist = n_span - i;
+			unsigned char c = str[i];
+			int index = dist*c;
+			for (int j = 0; j < n_alphabet; j++)
+			{
+				tmp_sum[j] += table[index][j];
+				total_sum += table[index][j];
+			}
+		}
+
+		for (unsigned char c = 'a'; c <= 'z'; c++)
+		{
+			printf("%c -> %u\n", c, tmp_sum[c]);
+		}
+		printf("total sum %u\n", total_sum);
+	}
+}
+
+int t1(char *filename, int n_span)
+{
+	printf("init\n");
+	Random::init(0);
+
+	unsigned int size = 0;
+	unsigned char *src = new unsigned char[1000000];
+	WG::load(src, size, filename);
+	WG::init(src, size, n_span);
+	
+	static unsigned char str[10000];
+
+	printf("%s\n",src);
+	
+	printf("predict n_span = %d\n",n_span);
+
+	for (int i = 0; i < n_span; i++)
+	{
+		str[i] = src[i];
+		//printf("%c -> %c\n", str[i], src[i]);
+		printf("%c", src[i]);
+	}
+
+	int k = WG::n_span;
+	for (int i = 0; i < 100; i++)
+	{
+		str[k] = WG::predict_Next(&str[k - WG::n_span]);
+		if (str[k] != 0)
+		{
+			if (str[k] < 'a' || str[k] > 'z')
+			{
+				int v = str[k];
+				printf("\nERROR: %c -> %d\n", str[k], v);
+			}
+		}
+		printf("%c", str[k]);
+		k++;
+	}
+	getchar();
+
+	return 0;
+}
+
+int t2()
+{
+	printf("init\n");
+	Random::init(0);
+
+	unsigned int size = 0;
+	unsigned char *str = (unsigned char*)"levent";
+	WG::init(str, strlen((char*)str), 3);
+	
+	WG::print_Next_Freq((unsigned char*)"lev");
+	
+	int e_count = 0;
+	int t_count = 0;
+	for (int i = 0; i < 5000; i++)
+	{
+		unsigned char c = WG::predict_Next((unsigned char*)"lev");
+		//printf("%c", c);
+		if (c == 'e')
+		{
+			e_count++;
+		}
+		if (c == 't')
+		{
+			t_count++;
+		}
+	}
+	
+	printf("t to e ratio %f\n", (double)t_count / e_count);
+
+	getchar();
+
+	return 0;
+}
+
+int t1_2(char *filename, int n_span, int length)
+{
+	printf("init\n");
+	Random::init(0);
+
+	unsigned int size = 0;
+	unsigned char *src = NULL;
+	WG::load(src, size, filename);
+	WG::init(src, size, n_span);
+
+	unsigned char *tmp = new unsigned char[length * 2];
+
+	printf("predict n_span = %d\n", n_span);
+
+	FILE *f = fopen("log.txt", "w+");
+
+	for (int i = 0; i < n_span; i++)
+	{
+		tmp[i] = src[i];
+		fprintf(f, "%c", tmp[i]);
+	}
+
+	int k = WG::n_span;
+	for (int i = 0; i < length-n_span; i++)
+	{
+		tmp[k] = WG::predict_Next(&tmp[k - WG::n_span]);
+		if (tmp[k] == 8 || tmp[k]==127)
+		{
+			int v = tmp[k];
+			printf("\nERROR: %c -> %d\n", tmp[k], v);
+		}
+		fprintf(f, "%c", tmp[k]);
+		k++;
+	}
+	fclose(f);
+	fflush(f);
+
+	system("gvim log.txt");
+
+	return 0;
 }
 
 
 int main()
 {
-	printf("init\n");
-	Random::init(0);
-
-	char *str = new char[1000000];
-	WG::init(str, (char*)"ALL_CONCATENATED.txt");
-	str[WG::n_span] = 0;
-	
-	int k = WG::n_span;
-	printf("predict\n");
-	for (int i = 0; i < 1000; i++)
-	{
-		str[k + 1] = WG::predict_Next(&str[k-WG::n_span]);
-		printf("%c",str[k+1]);
-		k++;
-	}
-	getchar();
+	t1_2("enwik8.txt", 200, 10000);
 
 	return 0;
 }
