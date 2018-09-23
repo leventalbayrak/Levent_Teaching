@@ -100,21 +100,19 @@ namespace WG
 			unsigned char c = str[i];
 			if (table_row_sum[c][dist] == 0) continue;
 
+			for (int j = 0; j < n_alphabet; j++) tmp_prob[j] = 1.0;
 
 			for (int j = 0; j < n_alphabet; j++)
 			{
-				tmp_prob[j] += (double)table[c][dist][j] / n_total_terminal;
+				tmp_prob[j] *= (1.0-(double)table[c][dist][j] / table_row_sum[c][dist]);
 			}
 
-			double sum = 0.0;
+			
 			for (int j = 0; j < n_alphabet; j++)
 			{
-				sum += tmp_prob[j];
+				tmp_prob[j] = 1.0 - tmp_prob[j];
 			}
-			for (int j = 0; j < n_alphabet; j++)
-			{
-				tmp_prob[j] /= sum;
-			}
+			
 		}
 
 		double s = Random::rand_DOUBLE();
@@ -141,20 +139,17 @@ namespace WG
 			unsigned char c = str[i];
 			if (table_row_sum[c][dist] == 0) continue;
 
-			
+			for (int j = 0; j < n_alphabet; j++) tmp_prob[j] = 1.0;
+
 			for (int j = 0; j < n_alphabet; j++)
 			{
-				tmp_prob[j] += (double)table[c][dist][j] / n_total_terminal;
+				tmp_prob[j] *= (1.0 - (double)table[c][dist][j] / table_row_sum[c][dist]);
 			}
 
-			double sum = 0.0;
+
 			for (int j = 0; j < n_alphabet; j++)
 			{
-				sum += tmp_prob[j];
-			}
-			for (int j = 0; j < n_alphabet; j++)
-			{
-				tmp_prob[j] /= sum;
+				tmp_prob[j] = 1.0 - tmp_prob[j];
 			}
 		}
 
@@ -284,7 +279,7 @@ int main()
 {
 	printf("BEGIN");
 	//t2();
-	t1_2((char*)"main_scratch.txt", 20, 10000);
+	t1_2((char*)"input.txt", 5, 10000);
 
 	return 0;
 }
