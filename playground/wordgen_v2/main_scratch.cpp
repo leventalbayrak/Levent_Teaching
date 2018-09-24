@@ -110,18 +110,46 @@ namespace WG
 			}
 		}
 
+#define STEP 0
+#if STEP
 		printf("%s\n", str);
+#endif
+
 		//probability that one or more c's caused this terminal at their positions
 		for (int i = 0; i < n_alphabet; i++)
 		{
 			tmp_prob[i] = 1.0 - tmp_prob[i];
-
-			if (tmp_prob[i] != 0.0 && i>= 'a' && i <= 'z')
+#if STEP
+			if (tmp_prob[i] != 0.0)
 			{
-				printf("%c -> %f\n", i, tmp_prob[i]);
+				printf("%c(%d) -> %f\n", i, i, tmp_prob[i]);
 			}
+#endif
 		}
+		
+#if STEP
 		getchar();
+#endif
+
+#define KILL_MOST_PROBABLE 0
+#if KILL_MOST_PROBABLE 1
+		for (int k=0;k<1;k++)
+		{
+			int _max_i = 0;
+			double _max = tmp_prob[0];
+			for (int i = 1; i < n_alphabet; i++)
+			{
+				if (_max < tmp_prob[i])
+				{
+					_max = tmp_prob[i];
+					_max_i = i;
+				}
+			}
+
+			tmp_prob[_max_i] = 0;
+		}
+#endif
+
 		double sum = 0.0;
 		for (int i = 0; i < n_alphabet; i++)
 		{
@@ -143,62 +171,18 @@ namespace WG
 			tmp_prob[i] /= sum;
 		}
 
-		double s = Random::rand_DOUBLE();
-		assert(s <= 1.0);
-		double t = 0;
+	/*	unsigned char _max_index = 0;
+		double _max = 0;
 		for (unsigned char i = 0; i < n_alphabet; i++)
 		{
-			t += tmp_prob[i];
-			if (t >= s)
+			if (tmp_prob[i] >= _max)
 			{
-				return i;
-			}
-		}
-		return 0;
-	}
-
-	unsigned char predict_Next_1(unsigned char *str)
-	{
-		double fuzz = 0;// 0.000001;
-		memset(tmp_prob, 0, sizeof(double)*n_alphabet);
-
-		for (int i = 0; i < n_span; i++)
-		{
-			int dist = n_span - i - 1;
-			unsigned char c = str[i];
-
-			if (table_row_sum[c][dist] == 0) continue;
-
-			//double alpha = (1.0 / (1.0 + exp(dist)));
-			//double alpha = 1.0 / (dist*dist + 1.0);
-			double alpha = 1.0;
-			
-			for (int j = 0; j < n_alphabet; j++)
-			{
-				double p = (double)table[c][dist][j] / table_row_sum[c][dist];
-				if (p != 0)
-				{
-					p = 1.0 / -log(p);
-					tmp_prob[j] += alpha*p;
-				}
+				_max = tmp_prob[i];
+				_max_index = i;
 			}
 		}
 
-		double sum = 0.0;
-		for (int i = 0; i < n_alphabet; i++)
-		{
-			sum += tmp_prob[i];
-		}
-
-		if (sum == 0.0)
-		{
-			return 0.0;
-		}
-
-		for (int i = 0; i < n_alphabet; i++)
-		{
-			tmp_prob[i] /= sum;
-		}
+		return _max_index;*/
 
 		double s = Random::rand_DOUBLE();
 		assert(s <= 1.0);
@@ -213,82 +197,6 @@ namespace WG
 		}
 		return 0;
 	}
-
-	void print_Next_Prob(unsigned char *str)
-	{
-		double fuzz = 0.0;
-		memset(tmp_prob, 0, sizeof(double)*n_alphabet);
-
-		for (int i = 0; i < n_span; i++)
-		{
-			int dist = n_span - i - 1;
-			unsigned char c = str[i];
-
-			for (int j = 0; j < n_alphabet; j++) tmp_prob[j] = 1.0;
-
-			if (table_row_sum[c][dist] == 0) continue;
-
-			for (int j = 0; j < n_alphabet; j++)
-			{
-				tmp_prob[j] *= (1.0 - (fuzz + (double)table[c][dist][j] / table_row_sum[c][dist]));
-			}
-
-		}
-
-		for (int i = 0; i < n_alphabet; i++)
-		{
-			tmp_prob[i] = 1.0 - tmp_prob[i];
-		}
-
-		double sum = 0.0;
-		for (int i = 0; i < n_alphabet; i++)
-		{
-			sum += tmp_prob[i];
-		}
-		for (int i = 0; i < n_alphabet; i++)
-		{
-			tmp_prob[i] /= sum;
-		}
-
-		for (unsigned char c = 'a'; c <= 'z'; c++)
-		{
-			printf("%c -> %f\n", c, tmp_prob[c]);
-		}
-	}
-}
-
-int t2()
-{
-	printf("init\n");
-	Random::init(0);
-
-	unsigned int size = 0;
-	unsigned char *str = (unsigned char*)"levent";
-	WG::init(str, strlen((char*)str), 3);
-	
-	WG::print_Next_Prob((unsigned char*)"lev");
-	
-	int e_count = 0;
-	int t_count = 0;
-	for (int i = 0; i < 5000; i++)
-	{
-		unsigned char c = WG::predict_Next_0((unsigned char*)"lev");
-		printf("%c", c);
-		if (c == 'e')
-		{
-			e_count++;
-		}
-		if (c == 't')
-		{
-			t_count++;
-		}
-	}
-	
-	printf("t to e ratio %f\n", (double)t_count / e_count);
-
-	getchar();
-
-	return 0;
 }
 
 int t1_2(char *filename, int n_span, int length)
@@ -312,6 +220,7 @@ int t1_2(char *filename, int n_span, int length)
 		tmp[i] = src[i];
 		fprintf(f, "%c", tmp[i]);
 	}
+	tmp[n_span] = 0;
 
 	int k = WG::n_span;
 	for (int i = 0; i < length-n_span-1; i++)
@@ -334,7 +243,7 @@ int main()
 
 	printf("BEGIN\n");
 	//t2();
-	t1_2((char*)"test.txt", 4, 1000);
+	t1_2((char*)"input.txt", 40, 1000);
 
 
 	return 0;
