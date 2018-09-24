@@ -92,6 +92,7 @@ namespace WG
 
 	unsigned char predict_Next(unsigned char *str)
 	{
+		double fuzz = 0;// 0.000001;
 		memset(tmp_prob, 0, sizeof(double)*n_alphabet);
 
 		for (int i = 0; i < n_span; i++)
@@ -104,15 +105,23 @@ namespace WG
 
 			for (int j = 0; j < n_alphabet; j++)
 			{
-				tmp_prob[j] *= (1.0-(double)table[c][dist][j] / table_row_sum[c][dist]);
+				tmp_prob[j] *= (1.0 - (fuzz + (double)table[c][dist][j] / table_row_sum[c][dist]));
 			}
+		}
 
-			
-			for (int j = 0; j < n_alphabet; j++)
-			{
-				tmp_prob[j] = 1.0 - tmp_prob[j];
-			}
-			
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			tmp_prob[i] = 1.0 - tmp_prob[i];
+		}
+
+		double sum = 0.0;
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			sum += tmp_prob[i];
+		}
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			tmp_prob[i] /= sum;
 		}
 
 		double s = Random::rand_DOUBLE();
@@ -143,14 +152,29 @@ namespace WG
 
 			for (int j = 0; j < n_alphabet; j++)
 			{
-				tmp_prob[j] *= (1.0 - (double)table[c][dist][j] / table_row_sum[c][dist]);
+				tmp_prob[j] *= (1.0 - (0.000000001 + (double)table[c][dist][j] / table_row_sum[c][dist]));
+
+				//if (j >= 'a' && j <= 'z')
+				//{
+				//	printf("%c %f\n", j, (double)table[c][dist][j] / table_row_sum[c][dist]);
+				//}
 			}
 
+		}
 
-			for (int j = 0; j < n_alphabet; j++)
-			{
-				tmp_prob[j] = 1.0 - tmp_prob[j];
-			}
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			tmp_prob[i] = 1.0 - tmp_prob[i];
+		}
+
+		double sum = 0.0;
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			sum += tmp_prob[i];
+		}
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			tmp_prob[i] /= sum;
 		}
 
 		for (unsigned char c = 'a'; c <= 'z'; c++)
@@ -219,7 +243,7 @@ int t2()
 	for (int i = 0; i < 5000; i++)
 	{
 		unsigned char c = WG::predict_Next((unsigned char*)"lev");
-		//printf("%c", c);
+		printf("%c", c);
 		if (c == 'e')
 		{
 			e_count++;
@@ -277,9 +301,9 @@ int t1_2(char *filename, int n_span, int length)
 
 int main()
 {
-	printf("BEGIN");
+	printf("BEGIN\n");
 	//t2();
-	t1_2((char*)"input.txt", 5, 10000);
+	t1_2((char*)"main_scratch.txt", 4, 100000);
 
 	return 0;
 }
