@@ -251,7 +251,7 @@ int t1_2(char *filename, int n_span, int length)
 
 int main()
 {
-	t1_2("enwik8.txt", 200, 10000);
+	t1_2("enwik8.txt", 5, 10000);
 
 	return 0;
 }
