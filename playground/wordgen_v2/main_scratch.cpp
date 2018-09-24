@@ -23,10 +23,14 @@ namespace Random
 
 namespace WG
 {
-	int **table;//index by n_alphabet*n_span, when indexing distance cannot be 0, dist -> 1..n_span
+	int ***table;//index by src char, distance, target char
+	int **table_row_sum;//index by src char, distance
+	int *n_terminal;//alphabet char was terminal
+	int n_total_terminal;
 	int n_alphabet = 256;
 	int n_span;
 	int *tmp_sum;
+	double *tmp_prob;
 
 	void load(unsigned char *&buffer, unsigned int &size, char *filename)
 	{
@@ -47,57 +51,86 @@ namespace WG
 		n_span = _n_span;
 
 		printf("alloc\n");
-		tmp_sum = new int[n_alphabet];
+		
+		tmp_prob = new double[n_alphabet];
 
 		//cant index 0
-		table = new int*[n_alphabet*(n_span+1)];
-		for (int i = 0; i < n_alphabet*(n_span+1); i++)
+		n_terminal = new int[n_alphabet];
+		memset(n_terminal, 0, sizeof(int)*n_alphabet);
+
+		table_row_sum = new int*[n_alphabet];
+		table = new int**[n_alphabet];
+		for (int i = 0; i < n_alphabet; i++)
 		{
-			table[i] = new int[n_alphabet];
-			memset(table[i], 0, sizeof(int)*n_alphabet);
+			table[i] = new int*[n_span];
+			for (int j = 0; j < n_span; j++)
+			{
+				table[i][j] = new int[n_alphabet];
+				memset(table[i][j], 0, sizeof(int)*n_alphabet);
+			}	
+
+			table_row_sum[i] = new int[n_span];
+			memset(table_row_sum[i], 0, sizeof(int)*n_span);
 		}
+		n_total_terminal = 0;
 		
 		printf("parse\n");
 		for (int i = 0; i <= size - n_span - 1; i++)
 		{
 			for (int j = 0; j < n_span; j++)
 			{
-				int dist = n_span-j;
+				int dist = n_span - j - 1;
 				unsigned char c = src[i + j];
 				int outcome = src[i + n_span];
-				table[dist*c][outcome]++;
+				table[c][dist][outcome]++;
+				table_row_sum[c][dist]++;
+				n_terminal[outcome]++;
 			}
+			n_total_terminal++;
 		}
 	}
 
 	unsigned char predict_Next(unsigned char *str)
 	{
-		memset(tmp_sum, 0, sizeof(int)*n_alphabet);
-		int total_sum = 0;
+		double fuzz = 0;// 0.000001;
+		memset(tmp_prob, 0, sizeof(double)*n_alphabet);
+
 		for (int i = 0; i < n_span; i++)
 		{
-			int dist = n_span - i;
+			int dist = n_span - i - 1;
 			unsigned char c = str[i];
-			int index = dist*c;
+			if (table_row_sum[c][dist] == 0) continue;
+
+			for (int j = 0; j < n_alphabet; j++) tmp_prob[j] = 1.0;
+
 			for (int j = 0; j < n_alphabet; j++)
 			{
-				tmp_sum[j] += table[index][j];
-				total_sum += table[index][j];
+				tmp_prob[j] *= (1.0 - (fuzz + (double)table[c][dist][j] / table_row_sum[c][dist]));
 			}
 		}
 
-		//cant predict anything at all
-		if (total_sum == 0)
+		for (int i = 0; i < n_alphabet; i++)
 		{
-			return 0;
+			tmp_prob[i] = 1.0 - tmp_prob[i];
 		}
 
-		int s = Random::rand_UINT() % total_sum;
-		int t = 0;
+		double sum = 0.0;
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			sum += tmp_prob[i];
+		}
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			tmp_prob[i] /= sum;
+		}
+
+		double s = Random::rand_DOUBLE();
+		assert(s <= 1.0);
+		double t = 0;
 		for (unsigned char i = 0; i < n_alphabet; i++)
 		{
-			t += tmp_sum[i];
-			if (t > s)
+			t += tmp_prob[i];
+			if (t >= s)
 			{
 				return i;
 			}
@@ -105,27 +138,49 @@ namespace WG
 		return 0;
 	}
 
-	void print_Next_Freq(unsigned char *str)
+	void print_Next_Prob(unsigned char *str)
 	{
-		memset(tmp_sum, 0, sizeof(int)*n_alphabet);
-		int total_sum = 0;
+		memset(tmp_prob, 0, sizeof(double)*n_alphabet);
+
 		for (int i = 0; i < n_span; i++)
 		{
-			int dist = n_span - i;
+			int dist = n_span - i - 1;
 			unsigned char c = str[i];
-			int index = dist*c;
+			if (table_row_sum[c][dist] == 0) continue;
+
+			for (int j = 0; j < n_alphabet; j++) tmp_prob[j] = 1.0;
+
 			for (int j = 0; j < n_alphabet; j++)
 			{
-				tmp_sum[j] += table[index][j];
-				total_sum += table[index][j];
+				tmp_prob[j] *= (1.0 - (0.000000001 + (double)table[c][dist][j] / table_row_sum[c][dist]));
+
+				//if (j >= 'a' && j <= 'z')
+				//{
+				//	printf("%c %f\n", j, (double)table[c][dist][j] / table_row_sum[c][dist]);
+				//}
 			}
+
+		}
+
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			tmp_prob[i] = 1.0 - tmp_prob[i];
+		}
+
+		double sum = 0.0;
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			sum += tmp_prob[i];
+		}
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			tmp_prob[i] /= sum;
 		}
 
 		for (unsigned char c = 'a'; c <= 'z'; c++)
 		{
-			printf("%c -> %u\n", c, tmp_sum[c]);
+			printf("%c -> %f\n", c, tmp_prob[c]);
 		}
-		printf("total sum %u\n", total_sum);
 	}
 }
 
@@ -181,14 +236,14 @@ int t2()
 	unsigned char *str = (unsigned char*)"levent";
 	WG::init(str, strlen((char*)str), 3);
 	
-	WG::print_Next_Freq((unsigned char*)"lev");
+	WG::print_Next_Prob((unsigned char*)"lev");
 	
 	int e_count = 0;
 	int t_count = 0;
 	for (int i = 0; i < 5000; i++)
 	{
 		unsigned char c = WG::predict_Next((unsigned char*)"lev");
-		//printf("%c", c);
+		printf("%c", c);
 		if (c == 'e')
 		{
 			e_count++;
@@ -229,14 +284,9 @@ int t1_2(char *filename, int n_span, int length)
 	}
 
 	int k = WG::n_span;
-	for (int i = 0; i < length-n_span; i++)
+	for (int i = 0; i < length-n_span-1; i++)
 	{
 		tmp[k] = WG::predict_Next(&tmp[k - WG::n_span]);
-		if (tmp[k] == 8 || tmp[k]==127)
-		{
-			int v = tmp[k];
-			printf("\nERROR: %c -> %d\n", tmp[k], v);
-		}
 		fprintf(f, "%c", tmp[k]);
 		k++;
 	}
@@ -251,7 +301,13 @@ int t1_2(char *filename, int n_span, int length)
 
 int main()
 {
+<<<<<<< HEAD
 	t1_2("enwik8.txt", 5, 10000);
+=======
+	printf("BEGIN\n");
+	//t2();
+	t1_2((char*)"main_scratch.txt", 4, 100000);
+>>>>>>> d5ea2b94fc028fe4ba7e167d982a28854f6c5505
 
 	return 0;
 }
