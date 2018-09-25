@@ -245,6 +245,5 @@ int main()
 	//t2();
 	t1_2((char*)"input.txt", 40, 1000);
 
-
 	return 0;
 }
