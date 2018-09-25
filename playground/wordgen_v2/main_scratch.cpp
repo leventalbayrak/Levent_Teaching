@@ -187,7 +187,7 @@ namespace WG
 		double s = Random::rand_DOUBLE();
 		assert(s <= 1.0);
 		double t = 0;
-		for (unsigned char i = 0; i < n_alphabet; i++)
+		for (int i = 0; i < n_alphabet; i++)
 		{
 			t += tmp_prob[i];
 			if (t >= s)
@@ -196,6 +196,84 @@ namespace WG
 			}
 		}
 		return 0;
+	}
+
+#define DEBUG 0
+	unsigned char str_Likelihood(unsigned char *str)
+	{
+		memset(tmp_prob, 0, sizeof(double)*n_alphabet);
+
+		double *sum = new double[n_alphabet];
+		
+		for (int k = 0; k < n_alphabet; k++)
+		{
+			sum[k] = 0.0;
+			for (int i = 0; i < n_span; i++)
+			{
+				sum[k] += table_row_sum[k][i];
+			}
+#if DEBUG==1
+			if (k >= 'a' && k <= 'z')
+			{
+				//printf("sum %c -> %f\n", k, sum[k]);
+			}
+#endif
+		}
+
+#if DEBUG==1
+	//	getchar();
+#endif
+		//skip first char
+		double p = 1.0;
+		for (int i = 0; i < n_span - 1; i++)
+		{
+			int dist = n_span - i - 1;
+			unsigned char c = str[i];
+
+			if (sum[c] == 0.0) continue;
+
+			p *= 1.0 - table_row_sum[c][dist] / sum[c];
+		}
+
+		for (int k = 0; k < n_alphabet; k++)
+		{
+			if (sum[k] == 0.0)
+			{
+				tmp_prob[k] = 0.0;
+				continue;
+			}
+			tmp_prob[k] = 1.0 - p*(1.0-table_row_sum[k][0] / sum[k]);
+#if DEBUG==1
+			if (k >= 'a' && k <= 'z')
+			{
+				printf("likelihood %c -> %f\n", k, tmp_prob[k]);
+			}
+			if (k >= 'A' && k <= 'Z')
+			{
+				printf("likelihood %c -> %f\n", k, tmp_prob[k]);
+			}
+#endif
+		}
+#if DEBUG==1
+		getchar();
+#endif
+		delete[] sum;
+
+		double _max = tmp_prob[0];
+		int _max_i = 0;
+		for (int i = 0; i < n_alphabet; i++)
+		{
+			if (tmp_prob[i] > _max)
+			{
+				_max = tmp_prob[i];
+				_max_i = i;
+			}
+		}
+#if DEBUG==2
+		printf("chose %d\n", _max_i);
+		getchar();
+#endif
+		return _max_i;
 	}
 }
 
@@ -225,7 +303,8 @@ int t1_2(char *filename, int n_span, int length)
 	int k = WG::n_span;
 	for (int i = 0; i < length-n_span-1; i++)
 	{
-		tmp[k] = WG::predict_Next_0(&tmp[k - WG::n_span]);
+		//tmp[k] = WG::predict_Next_0(&tmp[k - WG::n_span]);
+		tmp[k] = WG::str_Likelihood(&tmp[k - WG::n_span]);
 		fprintf(f, "%c", tmp[k]);
 		k++;
 		tmp[k] = 0;
@@ -243,7 +322,7 @@ int main()
 
 	printf("BEGIN\n");
 	//t2();
-	t1_2((char*)"input.txt", 40, 1000);
+	t1_2((char*)"ALL_CONCATENATED.txt", 100, 1000);
 
 	return 0;
 }
