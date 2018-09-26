@@ -225,9 +225,9 @@ namespace WG
 #endif
 		//skip first char
 		double p = 1.0;
-		for (int i = 0; i < n_span - 1; i++)
+		for (int i = 1; i < n_span; i++)
 		{
-			int dist = n_span - i - 1;
+			int dist = n_span - i;
 			unsigned char c = str[i];
 
 			if (sum[c] == 0.0) continue;
@@ -240,9 +240,17 @@ namespace WG
 			if (sum[k] == 0.0)
 			{
 				tmp_prob[k] = 0.0;
-				continue;
 			}
-			tmp_prob[k] = 1.0 - p*(1.0-table_row_sum[k][0] / sum[k]);
+			else
+			{
+			//	tmp_prob[k] = 1.0 - p*(1.0 - table_row_sum[k][0] / sum[k]);
+				//prob one or more in right place AND last one is in right place
+				tmp_prob[k] = (1.0 - p)*table_row_sum[k][0] / sum[k];
+				if (k == '.')
+				{
+					printf("stop\n");
+				}
+			}
 #if DEBUG==1
 			if (k >= 'a' && k <= 'z')
 			{
@@ -254,25 +262,25 @@ namespace WG
 			}
 #endif
 		}
-#if DEBUG==1
-		getchar();
-#endif
+
 		delete[] sum;
 
 		double _max = tmp_prob[0];
 		int _max_i = 0;
 		for (int i = 0; i < n_alphabet; i++)
 		{
-			if (tmp_prob[i] > _max)
+			if (tmp_prob[i] >= _max)
 			{
 				_max = tmp_prob[i];
 				_max_i = i;
 			}
 		}
 #if DEBUG==2
-		printf("chose %d\n", _max_i);
+		printf("chose %s -> %c (%d) %f\n",str, _max_i, _max_i, _max);
 		getchar();
 #endif
+		//printf("%d %f\n", _max_i, _max);
+		//getchar();
 		return _max_i;
 	}
 }
@@ -322,7 +330,7 @@ int main()
 
 	printf("BEGIN\n");
 	//t2();
-	t1_2((char*)"ALL_CONCATENATED.txt", 100, 1000);
+	t1_2((char*)"input.txt", 5, 1000);
 
 	return 0;
 }
