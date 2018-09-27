@@ -245,6 +245,7 @@ namespace WG
 			{
 			//	tmp_prob[k] = 1.0 - p*(1.0 - table_row_sum[k][0] / sum[k]);
 				//prob one or more in right place AND last one is in right place
+				//probably also need to divide by with factorial
 				tmp_prob[k] = (1.0 - p)*table_row_sum[k][0] / sum[k];
 				if (k == '.')
 				{
