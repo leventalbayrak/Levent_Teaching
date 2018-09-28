@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "Twitch_core.h"
+#include "../../include/twitch_tv/Twitch_core.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -12,10 +12,10 @@ int main(int argc, char **argv)
 	//initialize network
 	Twitch::startup();
 
-	char *username = "your_twitch_username";
+	const char *username = "your_twitch_username";
 	//get this token from https://twitchapps.com/tmi/ and keep it safe
 	//remove the oauth: part when you copy paste
-	char *token = "nh1j5iqhldef284o6nn80sj1ij3ixi";
+	const char *token = "nh1j5iqhldef284o6nn80sj1ij3ixi";
 
 	//init connection data
 	Twitch::Connection connection;
