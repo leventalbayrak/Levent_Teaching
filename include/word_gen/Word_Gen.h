@@ -1,3 +1,8 @@
+/*
+what is terminal?
+are generated words independent or is there 1 piece of text?
+*/
+
 #pragma once
 #pragma warning(disable:4996)
 
@@ -68,37 +73,38 @@ namespace Generator
 			{
 				unsigned int sum;
 				unsigned char *edge;
-				unsigned char n_children;
-				Node *children;
+				unsigned char n_nodes;
 				unsigned char size;
+				Node *nodes;
 			};
 
-			void add_Nmer(Node *root, const char *nmer, unsigned int nmer_size)
+			void add_Nmer(Node *root, const unsigned char *nmer, int nmer_size)
 			{
-				Node *current = root;
-				current->sum++;
-				for (unsigned int i = 0; i < nmer_size; i++)
+				Node *current = root;	
+				for (int i = 0; i < nmer_size; i++)
 				{
-					if (current->edge == NULL)
+					
+					if (current->size == 0)
 					{
-						current->n_children = 0;
-						current->size = 4;
-						current->children = (Node*)malloc(sizeof(Node)*current->size); assert(current->children);
+						assert(current->nodes == NULL);
+						assert(current->n_nodes == 0);
+						assert(current->edge == NULL);
+
+						current->n_nodes = 0;
+						current->size = 64;
+						current->nodes = (Node*)malloc(sizeof(Node)*current->size); assert(current->nodes);
 						current->edge = (unsigned char*)malloc(sizeof(unsigned char)*current->size); assert(current->edge);
 
-						memset(current->children, 0, sizeof(Node)*current->size);
-						memset(current->edge, 0, sizeof(unsigned char)*current->size);
-
-						current->children[current->n_children] = {};
-						current->children[current->n_children].sum++;
-						current->edge[current->n_children] = nmer[i];
-						current->n_children++;
-						current = &current->children[current->n_children - 1];
+						current->nodes[current->n_nodes] = {};
+						current->edge[current->n_nodes] = nmer[i];
+						current->n_nodes++;
+						current = &current->nodes[current->n_nodes - 1];
+						current->sum++;
 					}
 					else
 					{
 						int which_edge = -1;
-						for (int j = 0; j < current->n_children; j++)
+						for (int j = 0; j < current->n_nodes; j++)
 						{
 							if (current->edge[j] == nmer[i])
 							{
@@ -109,52 +115,50 @@ namespace Generator
 
 						if (which_edge >= 0)
 						{
-							current->children[which_edge].sum++;
-							current = &current->children[which_edge];
+							current = &current->nodes[which_edge];
+							current->sum++;
 						}
 						else
 						{
-							if (current->n_children >= current->size)
+							if (current->n_nodes >= current->size)
 							{
+								assert(current->size != 0);
 								current->size += current->size >> 1;
-								current->children = (Node*)realloc(current->children, sizeof(Node)*current->size); assert(current->children);
+								current->nodes = (Node*)realloc(current->nodes, sizeof(Node)*current->size); assert(current->nodes);
 								current->edge = (unsigned char*)realloc(current->edge, sizeof(unsigned char)*current->size); assert(current->edge);
 							}
 
-							current->children[current->n_children] = {};
-							current->children[current->n_children].sum++;
-							current->edge[current->n_children] = nmer[i];
-
-							current->n_children++;
-							current = &current->children[current->n_children - 1];
+							current->nodes[current->n_nodes] = {};
+							current->edge[current->n_nodes] = nmer[i];
+							current->n_nodes++;
+							current = &current->nodes[current->n_nodes - 1];
+							current->sum++;
 						}
 
 					}
 				}
 			}
 
-			void add_Str(Node *root, const char *str, unsigned int nmer_size)
+			void add_Str(Node *root, const unsigned char *str, int str_length, int nmer_size)
 			{
-				unsigned int len = strlen(str);
-				if (len < nmer_size) return;
-				//+1 makes NULL terminator be treated as a valid character
-				for (unsigned int i = 0; i <= len - nmer_size + 1; i++)
+				if (str_length < nmer_size) return;
+				for (int i = 0; i <= str_length - nmer_size; i++)
 				{
 					add_Nmer(root, &str[i], nmer_size);
 				}
 			}
 
-			unsigned char random_Edge(const Node *root, const char *word, unsigned int depth, unsigned int nmer_size)
+			unsigned char random_Edge(const Node *root, const unsigned char *nmer_prefix, int depth, int nmer_size)
 			{
-				//len cannot be more than nmer_size-1
-				if (depth >= nmer_size) return 0;
+				//depth cannot be more than nmer_size-1
+				if (depth + 1 > nmer_size) return 0;
 
 				Node *current = (Node*)root;
-				for (unsigned int i = 0; i < depth; i++)
+				for (int i = 0; i < depth; i++)
 				{
-					char c = word[i];
+					char c = nmer_prefix[i];
 					int which_edge = -1;
-					for (int j = 0; j < current->n_children; j++)
+					for (int j = 0; j < current->n_nodes; j++)
 					{
 						if (current->edge[j] == c)
 						{
@@ -165,7 +169,7 @@ namespace Generator
 
 					if (which_edge >= 0)
 					{
-						current = &current->children[which_edge];
+						current = &current->nodes[which_edge];
 					}
 					else
 					{
@@ -175,11 +179,11 @@ namespace Generator
 
 				int next = -1;
 				double z = Random::rand_DOUBLE();
-				unsigned int s = z * current->sum;
-				unsigned int t = 0;
-				for (int i = 0; i < current->n_children; i++)
+				int s = z * current->sum;
+				int t = 0;
+				for (int i = 0; i < current->n_nodes; i++)
 				{
-					t += current->children[i].sum;
+					t += current->nodes[i].sum;
 					if (t > s)
 					{
 						next = i;
@@ -194,18 +198,19 @@ namespace Generator
 				return current->edge[next];
 			}
 
-			void random_Nmer(char *leaf_path, unsigned int nmer_size, const Node *root)
+			void random_Nmer(unsigned char *leaf_path,int depth, int nmer_size, const Node *root)
 			{
+				if (depth > nmer_size) return;
 				unsigned int k = 0;
 				Node *current = (Node*)root;
-				for (unsigned int i = 0; i < nmer_size; i++)
+				for (int i = 0; i < depth; i++)
 				{
 					int next = -1;
 					unsigned int s = Random::rand_DOUBLE()*current->sum;
 					unsigned int t = 0;
-					for (int j = 0; j < current->n_children; j++)
+					for (int j = 0; j < current->n_nodes; j++)
 					{
-						t += current->children[j].sum;
+						t += current->nodes[j].sum;
 						if (t > s)
 						{
 							next = j;
@@ -220,31 +225,32 @@ namespace Generator
 					else
 					{
 						leaf_path[k++] = current->edge[next];
-						current = &current->children[next];
+						current = &current->nodes[next];
 					}
 				}
 
 				leaf_path[k] = 0;
 			}
 
-			void random_Str(char *str, unsigned int max_length, const Node *root,unsigned int depth, unsigned int nmer_size)
+			void random_Str(unsigned char *str, int str_length, const Node *root,int depth, int nmer_size)
 			{
 				//depth cannot be more than nmer_size
+				if (depth > str_length) return;
 				if (depth > nmer_size) return;
 
-				random_Nmer(str, nmer_size, root);
-				unsigned int k = nmer_size;
-				for (;;)
+				random_Nmer(str, depth, nmer_size, root);
+				for (int i = 1; i < str_length - depth; i++)
 				{
-					unsigned char c = random_Edge(root, &str[k + 1 - nmer_size], nmer_size - 1, nmer_size);
-					str[k++] = c;
-					if (c == 0) return;
-					if (k == max_length)
+					unsigned char c = random_Edge(root, &str[i], depth - 1, nmer_size);
+					str[i + depth - 1] = c;
+
+					//no path
+					if (c == 0)
 					{
-						str[max_length] = 0;
 						return;
 					}
 				}
+				str[str_length] = 0;
 			}
 		}
 	}
@@ -265,19 +271,20 @@ namespace Generator
 	}
 
 	//string will be disassembled into nmer_size substrings and added to trie
-	void add_Str(Generator *g, const char *str, unsigned int len)
+	void add_Str(Generator *g, const unsigned char *str, int len)
 	{
 		if (len < g->nmer_size) return;
 		//+1 makes NULL terminator be treated as a valid character
 		for (unsigned int i = 0; i <= len - g->nmer_size + 1; i++)
 		{
+			g->root.sum++;
 			internal::Node::add_Nmer(&g->root, &str[i], g->nmer_size);
 		}
 	}
 	
 	//can pick any depth between 1 and nmer_size-1
-	void generate(char *str, unsigned int max_length, const Generator *g, int depth)
+	void generate(unsigned char *str, int str_length, const Generator *g, int depth)
 	{
-		internal::Node::random_Str(str, max_length, &g->root, depth, g->nmer_size);
+		internal::Node::random_Str(str, str_length, &g->root, depth, g->nmer_size);
 	}
 }

@@ -10,6 +10,10 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
+
+	FILE *f_chat = fopen("chat.txt", "w+");
+	FILE *f_gen = fopen("gen.txt", "w+");
+	
 	int nmer_size = 4;
 	
 	Generator::Generator g;
@@ -36,8 +40,8 @@ int main(int argc, char **argv)
 	//getchar();
 	Twitch::startup();
 
-	const char *username = "plogp";
-	const char *token = "zi5igvfgn3914hg3hczbe497m8uzpp";
+	static const char *username = "plogp";
+	static const char *token = "zi5igvfgn3914hg3hczbe497m8uzpp";
 
 
 	Twitch::Connection connection;
@@ -45,21 +49,24 @@ int main(int argc, char **argv)
 	
 	Twitch::connect(&connection);
 
-	Twitch::join_Channel(&connection, "aphromoo");
-	Twitch::join_Channel(&connection, "itshafu");
-	Twitch::join_Channel(&connection, "pikabooirl");
-	Twitch::join_Channel(&connection, "agony");
-	Twitch::join_Channel(&connection, "yelo"); 
+	Twitch::join_Channel(&connection, "sodapoppin");
+	Twitch::join_Channel(&connection, "warcraft");
+	Twitch::join_Channel(&connection, "yoda");
 	Twitch::join_Channel(&connection, "voyboy");
+	
 
 	Twitch::Message::Table incoming;
 	Twitch::Message::init(&incoming);
 
 	unsigned int last_n_generated = 0;
+	unsigned int max_generated = 200000;
+	unsigned int n_generated = 0;
 
 	printf("chat log\n");
-	for(;;)
+	for (;;)
 	{
+		if (n_generated >= max_generated) break;
+	
 		unsigned int timestamp = clock();
 		
 		Twitch::Message::clear(&incoming);
@@ -72,23 +79,31 @@ int main(int argc, char **argv)
 
 		for (int i = 0; i < incoming.n_count; i++)
 		{
-			Generator::add_Str(&g, incoming.message[i], strlen(incoming.message[i]));
-			//Generator::add_Str(&g, incoming.username[i]);
+			Generator::add_Str(&g, (unsigned char*)incoming.message[i], strlen(incoming.message[i]));
+			printf("add_Str: len %d\n", strlen(incoming.message[i]));
 
+			fprintf(f_chat, "%s\t%s\n",incoming.channel[i], incoming.message[i]);
+			
 			last_n_generated++;
 		}
 		
 		if (last_n_generated >= 1)
 		{
 			last_n_generated = 0;
-			static char tmp[1024];
+			static char tmp[256];
 			tmp[0] = 0;
-			Generator::generate(tmp,1023, &g, g.nmer_size);
-			printf("%s\n", tmp);
+			Generator::generate((unsigned char*)tmp, 256, &g, g.nmer_size);
+			printf("generate: len %d\n", strlen(tmp));
+			fprintf(f_gen, "%u\t%u\t%u\t%d\t%s\n",n_generated,g.root.size,g.root.sum, strlen(tmp), tmp);
+			n_generated++;
+			printf("%u\n", n_generated);
+
+			fflush(f_gen);
 		}
 		
 		
 	}
-	
+	fclose(f_chat);
+	fclose(f_gen);
 	getchar();
 }
