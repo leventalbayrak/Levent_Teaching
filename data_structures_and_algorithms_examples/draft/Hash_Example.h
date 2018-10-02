@@ -1,9 +1,17 @@
+/*
+Data structures and algorithms
+Levent Albayrak 2018
+*/
 #pragma once
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 #pragma warning(disable:4996)
 
+/*
+hash functions adapted from http://www.cse.yorku.ca/~oz/hash.html
+pick any except LOSE_LOSE :)
+*/
 namespace Encryption
 {
 	unsigned long long encrypt_djb2(char *data, int n_bytes)
@@ -28,6 +36,7 @@ namespace Encryption
 		return h;
 	}
 
+	//not very good, just for demonstration
 	unsigned long long encrypt_LOSE_LOSE(char *data, int n_bytes)
 	{
 		unsigned long long h = 0;
@@ -40,9 +49,113 @@ namespace Encryption
 	}
 }
 
-namespace Key_Value_Pair
+
+/*
+Closed hash table implementation with multiplicative indexing
+stores void pointers
+size of the data array is 2^size_bits
+*/
+namespace Closed_Hash_Multiplicative_Indexing
 {
-	struct Key_Value_Pair
+	struct Table
+	{
+		void **data;
+		unsigned long long *keys;
+		int size_bits;
+	};
+
+	void init(Table *h, int size_bits)
+	{
+		h->size_bits = size_bits;
+		int n_elements = 1 << size_bits;//same as "n_elements = 2^size_bits"
+		h->data = (void**)malloc(sizeof(void*)*n_elements);
+		h->keys = (unsigned long long*)malloc(sizeof(unsigned long long)*n_elements);
+
+		memset(h->data, 0, sizeof(void*)*n_elements);
+		memset(h->keys, 0, sizeof(unsigned long long)*n_elements);
+	}
+
+	void resize(Table *h)
+	{
+		Table tmp;
+		init(&tmp, h->size_bits + 1);//if previous size was 2^size_bits, now it is 2^(size_bits+1) ==> 2*2^size_bits. simply doubled the size.
+
+		int n_elements = 1 << h->size_bits;
+		for (int i = 0; i < n_elements; i++)
+		{
+			if (h->keys[i] != 0)//rehash entries, can skip zeros because there is no data there
+			{
+				set(&tmp, h->keys[i], h->data[i]);
+			}
+		}
+
+		free(h->keys);
+		free(h->data);
+
+		*h = tmp;
+	}
+
+	int set(Table *h, unsigned long long key, void *val)
+	{
+		//knuth's golden ratio multiplicative hashing for 64-bit keys
+		int index = (key * 2654435761) >> (64 - h->size_bits);
+		int n_elements = 1 << h->size_bits;
+		for (int i = 0; i < n_elements; i++)
+		{
+			if (h->keys[index] == key) //if key exists, overwrite data
+			{
+				h->data[index] = val;
+				return index;
+			}
+
+			if (h->keys[index] == 0) //empty spot
+			{
+				h->data[index] = val;
+				h->keys[index] = key;
+				return index;
+			}
+
+			index++;
+			index &= n_elements - 1;//replaces index %=n_elements;
+									/*
+									explanation:
+									since n_elements is 2^size_bits, n_elements is a power of 2.
+									assume 'b' is a power of 2.
+									then the following property holds:
+									"a % b" is equal to "a & (b-1)"
+									*/
+		}
+
+		return 0;
+	}
+
+	void *get(Table *h, unsigned long long key)
+	{
+		int index = (key * 2654435761) >> (64 - h->size_bits);
+		int n_elements = 1 << h->size_bits;
+		for (int i = 0; i < n_elements; i++)
+		{
+			if (h->keys[index] == key)//found original key
+			{
+				return h->data[index];
+			}
+
+			if (h->keys[index] == 0) return NULL;//if you see a zero,key was never there
+
+			index++;
+			index &= n_elements - 1;
+		}
+		return NULL;
+	}
+}
+
+/*
+open hash table implementation with modular indexing
+stores doubles in dynamic arrays
+*/
+namespace Open_Hash_Modular_Indexing
+{
+	struct Table
 	{
 		unsigned long long **keys;
 		double **data;
@@ -51,7 +164,7 @@ namespace Key_Value_Pair
 		int *n_data;
 	};
 
-	void init(Key_Value_Pair *h, unsigned int size)
+	void init(Table *h, unsigned int size)
 	{
 		h->n_rows = size;
 		h->data = (double**)malloc(sizeof(double*)*h->n_rows);
@@ -68,10 +181,7 @@ namespace Key_Value_Pair
 		}
 	}
 
-	//search collision array if key already exists
-	//if yes, overwrite the data
-	//else, insert
-	void set(Key_Value_Pair *h, unsigned long long key, double val)
+	void set(Table *h, unsigned long long key, double val)
 	{
 		int which_row = key % h->n_rows;
 		double *data_row = h->data[which_row];
@@ -102,7 +212,7 @@ namespace Key_Value_Pair
 		h->n_data[which_row]++;
 	}
 
-	double get(Key_Value_Pair *h, unsigned long long key)
+	double get(Table *h, unsigned long long key)
 	{
 		int which_row = key % h->n_rows;
 		double *data_row = h->data[which_row];
@@ -118,9 +228,9 @@ namespace Key_Value_Pair
 		return 0.0;
 	}
 
-	void resize(Key_Value_Pair *h, int new_n_rows)
+	void resize(Table *h, int new_n_rows)
 	{
-		Key_Value_Pair tmp;
+		Table tmp;
 		init(&tmp, new_n_rows);
 		for (int i = 0; i < h->n_rows; i++)
 		{
@@ -146,4 +256,3 @@ namespace Key_Value_Pair
 	}
 
 }
-
