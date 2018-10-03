@@ -161,26 +161,6 @@ namespace Closed_Hash_Linear_Probe_Multiplicative_Indexing
 		memset(h->keys, 0, sizeof(unsigned long long)*n_elements);
 	}
 
-	void resize(Table *h)
-	{
-		Table tmp;
-		init(&tmp, h->size_bits + 1);//if previous size was 2^size_bits, now it is 2^(size_bits+1) ==> 2*2^size_bits. simply doubled the size.
-
-		int n_elements = 1 << h->size_bits;
-		for (int i = 0; i < n_elements; i++)
-		{
-			if (h->keys[i] != 0)//rehash entries, can skip zeros because there is no data there
-			{
-				set(&tmp, h->keys[i], h->data[i]);
-			}
-		}
-
-		free(h->keys);
-		free(h->data);
-
-		*h = tmp;
-	}
-
 	int set(Table *h, unsigned long long key, void *val)
 	{
 		//knuth's golden ratio multiplicative hashing for 64-bit keys
@@ -233,6 +213,26 @@ namespace Closed_Hash_Linear_Probe_Multiplicative_Indexing
 			index &= n_elements - 1;
 		}
 		return NULL;
+	}
+
+	void resize(Table *h)
+	{
+		Table tmp;
+		init(&tmp, h->size_bits + 1);//if previous size was 2^size_bits, now it is 2^(size_bits+1) ==> 2*2^size_bits. simply doubled the size.
+
+		int n_elements = 1 << h->size_bits;
+		for (int i = 0; i < n_elements; i++)
+		{
+			if (h->keys[i] != 0)//rehash entries, can skip zeros because there is no data there
+			{
+				set(&tmp, h->keys[i], h->data[i]);
+			}
+		}
+
+		free(h->keys);
+		free(h->data);
+
+		*h = tmp;
 	}
 }
 

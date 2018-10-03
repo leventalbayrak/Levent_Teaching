@@ -1,10 +1,18 @@
+/*
+Data structures and algorithms
+Levent Albayrak 2018
+*/
+
+#pragma warning(disable:4996)
 #include <iostream>
 using namespace std;
-
+#include <time.h>
+#include <Windows.h>
 #include "Hash_Example.h"
 
 int main()
 {
+	srand(time(0));
 	//Assume we want to associate game titles with a rating and a description
 	
 	//we will pass the game titles to our hash functions to generate keys
@@ -64,17 +72,17 @@ int main()
 	Open_Hash_Modular_Indexing::set(
 		&rating_table,
 		Encryption::encrypt_djb2("League of Legends", strlen("League of Legends")),//convert game title to a key
-		91.8//give it a rating
+		91.05//give it a rating
 	);
 	Open_Hash_Modular_Indexing::set(
 		&rating_table,
 		Encryption::encrypt_djb2("Rocket League", strlen("Rocket League")),//convert game title to a key
-		92.4//give it a rating
+		93.6//give it a rating
 	);
 	Open_Hash_Modular_Indexing::set(
 		&rating_table,
 		Encryption::encrypt_djb2("Overwatch", strlen("Overwatch")),//convert game title to a key
-		91.6//give it a rating
+		92.7//give it a rating
 	);
 	
 	//there are 4 descriptions
@@ -130,15 +138,41 @@ int main()
 
 	for (;;)
 	{
+
+		cout << endl;
+		cout << "press any key to look-up a game" << endl;
+		getchar();
+
 		char *game_title[4] = { "World of Warcraft", "League of Legends", "Rocket League", "Overwatch" };
 		int k = rand() % 4;//pick a random title
 
+		//convert it into a key
+		unsigned long long title_key = Encryption::encrypt_djb2(game_title[k], strlen(game_title[k]));
+		//get its rating, developer name and description using the key
+		double rating = Open_Hash_Modular_Indexing::get(&rating_table, title_key);
+		char *description = (char*)Closed_Hash_Linear_Probe_Modular_Indexing::get(&description_table, title_key);//you must explicitly cast void* into char*
+		char *developer = (char*)Closed_Hash_Linear_Probe_Multiplicative_Indexing::get(&developer_table, title_key);//you must explicitly cast void* into char*
 		
+		//developer names are associated to websites
+		//generate the developer key from the developer name that you obtained from the previous look-up
+		unsigned long long dev_key = Encryption::encrypt_djb2(developer, strlen(developer));
+		//use the key to look up the website
+		char *website = (char*)Closed_Hash_Linear_Probe_Multiplicative_Indexing::get(&developer_website_table, dev_key);
+
+		//print out the results
+		cout << "Game title: " << game_title[k] << endl;
+		//pretend that it takes time
+		Sleep(500);
+
+		cout << "Developer: " << developer << endl;
+		cout << "Rating: " << rating << endl;
+		cout << "Website: " << website << endl;
+		cout << "Description: " << description << endl;
 	}
 
 
 
-	getchar();
+	
 	return 0;
 }
 
