@@ -92,16 +92,12 @@ int main(int argc, char **argv)
 		*/
 		if (cmd_ZOOMIN)
 		{
-			camera.x += camera_zoom_speed * Game::screen_width;
-			camera.w += -camera_zoom_speed * Game::screen_width;
-			camera.y += camera_zoom_speed * Game::screen_height;
-			camera.h += -camera_zoom_speed * Game::screen_height;
+			camera.w -= camera_zoom_speed * Game::screen_width;
+			camera.h -= camera_zoom_speed * Game::screen_height;
 		}
 		if (cmd_ZOOMOUT)
 		{
-			camera.x += -camera_zoom_speed * Game::screen_width;
 			camera.w += camera_zoom_speed * Game::screen_width;
-			camera.y += -camera_zoom_speed * Game::screen_height;
 			camera.h += camera_zoom_speed * Game::screen_height;
 		}
 
@@ -134,14 +130,19 @@ int main(int argc, char **argv)
 		Grid::Active_Range active_range;
 		Grid_Camera::translate(&active_range, &camera);
 
-		int tw = Game::screen_width / (active_range.x1 - active_range.x0 + 1);
-		int th = Game::screen_height / (active_range.y1 - active_range.y0 + 1);
+		int tw = ceil((float)Game::screen_width / (active_range.x1 - active_range.x0 + 1));
+		int th = ceil((float)Game::screen_height / (active_range.y1 - active_range.y0 + 1));
 
-		int ty = ((float)active_range.y0 - camera.y) * th;
+		int ty = (((float)active_range.y0 - camera.y) * th);
 		for (int i = active_range.y0; i <= active_range.y1; i++)
 		{
-			int tx = ((float)active_range.x0 - camera.x) * tw;
+			int tx = (((float)active_range.x0 - camera.x) * tw);
+			if (tx < 0)
+			{
+				//printf("tx=%f ar0=%d camx=%f tw=%d\n",tx, active_range.x0,camera.x, tw);
 
+				//assert(0);
+			}
 			int *tmp_level_data = &level.data[i*level.n_cols];
 			for (int j = active_range.x0; j <= active_range.x1; j++)
 			{
