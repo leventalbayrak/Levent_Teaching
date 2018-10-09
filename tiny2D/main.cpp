@@ -155,6 +155,7 @@ int main(int argc, char **argv)
 			ty += th;
 		}
 
+
 		//printf("%f %f %f %f\n", (float)active_range.x1, (float)active_range.x1, camera.x, camera.y);
 
 		float w = (float)Game::screen_width / (1 + active_range.x1 - active_range.x0);
