@@ -151,7 +151,7 @@ int main(int argc, char **argv)
 
 				tx += tw;
 			}
-			printf("tx=%d tw=%d ax1=%d ax0=%d\n", tx, tw,active_range.x1,active_range.x0);
+		//	printf("tx=%d tw=%d ax1=%d ax0=%d\n", tx, tw,active_range.x1,active_range.x0);
 			ty += th;
 		}
 
