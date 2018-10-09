@@ -130,19 +130,18 @@ int main(int argc, char **argv)
 		Grid::Active_Range active_range;
 		Grid_Camera::translate(&active_range, &camera);
 
-		int tw = ceil((float)Game::screen_width / (active_range.x1 - active_range.x0 + 1));
-		int th = ceil((float)Game::screen_height / (active_range.y1 - active_range.y0 + 1));
-
-		int ty = (((float)active_range.y0 - camera.y) * th);
+		int nrow = (active_range.x1 - active_range.x0 + 1);
+		int ncol = (active_range.y1 - active_range.y0 + 1);
+		int tw = ceil(0.5+(float)Game::screen_width / nrow);
+		int th = ceil(0.5+(float)Game::screen_height / ncol);
+		int begin_tx = ceil(0.5+((float)active_range.x0 - camera.x) * tw);
+		int begin_ty = ceil(0.5+((float)active_range.y0 - camera.y) * th);
+	
+		int ty = begin_ty;
 		for (int i = active_range.y0; i <= active_range.y1; i++)
 		{
-			int tx = (((float)active_range.x0 - camera.x) * tw);
-			if (tx < 0)
-			{
-				//printf("tx=%f ar0=%d camx=%f tw=%d\n",tx, active_range.x0,camera.x, tw);
+			int tx = begin_tx;
 
-				//assert(0);
-			}
 			int *tmp_level_data = &level.data[i*level.n_cols];
 			for (int j = active_range.x0; j <= active_range.x1; j++)
 			{
