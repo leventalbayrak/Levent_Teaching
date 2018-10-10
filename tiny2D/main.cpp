@@ -157,6 +157,8 @@ int main(int argc, char **argv)
 			camera.h += 2.0*camera_zoom_speed * Game::screen_height;
 			camera.x += camera_zoom_speed * Game::screen_width;
 			camera.y += camera_zoom_speed * Game::screen_height;
+
+			camera_zoom_speed *= 1.1;
 		}
 
 		if (cmd_LEFT)
