@@ -12,4 +12,12 @@ namespace Tileset
 		int n_rows;
 		int n_cols;
 	};
+
+	struct Tile_Info
+	{
+		int tile_w;
+		int tile_h;
+		int tile_x;
+		int tile_y;
+	};
 }

@@ -20,7 +20,7 @@ namespace Tileset
 		t->tex = sprite_texture;
 	}
 
-	void draw(int dest_x, int dest_y, int dest_w, int dest_h, float alpha, int tileset_row, int tileset_col, Tileset *t, SDL_Renderer *renderer)
+	void draw_with_Alpha(int dest_x, int dest_y, int dest_w, int dest_h, float alpha, int tileset_row, int tileset_col, Tileset *t, SDL_Renderer *renderer)
 	{
 		SDL_Rect src;
 		src.x = tileset_col * t->tile_w;
@@ -35,6 +35,23 @@ namespace Tileset
 		dest.h = dest_h;
 
 		SDL_SetTextureAlphaMod(t->tex, alpha*255.0);
+		SDL_RenderCopyEx(renderer, t->tex, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+	}
+
+	void draw(int dest_x, int dest_y, int dest_w, int dest_h, int tileset_row, int tileset_col, Tileset *t, SDL_Renderer *renderer)
+	{
+		SDL_Rect src;
+		src.x = tileset_col * t->tile_w;
+		src.y = tileset_row * t->tile_h;
+		src.w = t->tile_w;
+		src.h = t->tile_h;
+
+		SDL_Rect dest;
+		dest.x = dest_x;
+		dest.y = dest_y;
+		dest.w = dest_w;
+		dest.h = dest_h;
+
 		SDL_RenderCopyEx(renderer, t->tex, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 	}
 }

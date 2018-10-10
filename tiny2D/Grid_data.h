@@ -9,7 +9,7 @@ namespace Grid
 		int *data;
 	};
 
-	struct Active_Range
+	struct Active_Index_Range_Out
 	{
 		int x0, y0, x1, y1;//top left and bottom right cells
 	};

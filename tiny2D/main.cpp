@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 		level.data[i] = rand() % 3;
 	}
 
-	Grid_Camera::Grid_Camera camera = { 64,48,32,24 };
+	Grid_Camera::Grid_Camera camera = { 64,48,16,12, Game::screen_width,Game::screen_height };
 	float camera_move_speed = 0.00001;
 	float camera_zoom_speed = 0.0001;
 
@@ -127,40 +127,34 @@ int main(int argc, char **argv)
 		//clear screen with white
 		SDL_RenderClear(Game::renderer);
 
-		Grid::Active_Range active_range;
-		Grid_Camera::translate(&active_range, &camera);
+		Grid::Active_Index_Range_Out active_grid_range;
+		Tileset::Tile_Info tile_info_out;
+		
+		Grid_Camera::camera_to_Screen(&active_grid_range, &tile_info_out, &camera);
 
-		int nrow = (active_range.x1 - active_range.x0 + 1);
-		int ncol = (active_range.y1 - active_range.y0 + 1);
-		int tw = ceil(0.5+(float)Game::screen_width / nrow);
-		int th = ceil(0.5+(float)Game::screen_height / ncol);
-		int begin_tx = ceil(0.5+((float)active_range.x0 - camera.x) * tw);
-		int begin_ty = ceil(0.5+((float)active_range.y0 - camera.y) * th);
-	
-		int ty = begin_ty;
-		for (int i = active_range.y0; i <= active_range.y1; i++)
+		int ty = tile_info_out.tile_y;
+		for (int i = active_grid_range.y0; i <= active_grid_range.y1; i++)
 		{
-			int tx = begin_tx;
+			int tx = tile_info_out.tile_x;
 
 			int *tmp_level_data = &level.data[i*level.n_cols];
-			for (int j = active_range.x0; j <= active_range.x1; j++)
+			for (int j = active_grid_range.x0; j <= active_grid_range.x1; j++)
 			{
 				int grid_data = tmp_level_data[j];
 
-				Tileset::draw(tx, ty, tw, th, 1.0, grid_data, 0, &tileset, Game::renderer);
+				Tileset::draw(tx, ty, tile_info_out.tile_w, tile_info_out.tile_h, grid_data, 0, &tileset, Game::renderer);
 
-				tx += tw;
+				tx += tile_info_out.tile_w;
 			}
-		//	printf("tx=%d tw=%d ax1=%d ax0=%d\n", tx, tw,active_range.x1,active_range.x0);
-			ty += th;
+			ty += tile_info_out.tile_h;
 		}
 
 
 		//printf("%f %f %f %f\n", (float)active_range.x1, (float)active_range.x1, camera.x, camera.y);
 
-		float w = (float)Game::screen_width / (1 + active_range.x1 - active_range.x0);
-		float h = (float)Game::screen_height / (1 + active_range.y1 - active_range.y0);
-		Tileset::draw(Game::screen_width / 2, Game::screen_height / 2, w, h, 1.0, 12, 0, &tileset, Game::renderer);
+	//	float w = (float)Game::screen_width / (1 + active_range.x1 - active_range.x0);
+	//	float h = (float)Game::screen_height / (1 + active_range.y1 - active_range.y0);
+	//	Tileset::draw(Game::screen_width / 2, Game::screen_height / 2, w, h, 1.0, 12, 0, &tileset, Game::renderer);
 
 		//flip buffers
 		SDL_RenderPresent(Game::renderer);
