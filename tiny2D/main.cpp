@@ -11,6 +11,7 @@ using namespace std;
 #include "Tilemap_core.h"
 #include "Grid_core.h"
 #include "Grid_Camera_core.h"
+#include "Sprite_core.h"
 
 //load libraries
 #pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2.lib")
@@ -49,18 +50,71 @@ int main(int argc, char **argv)
 	Grid::Grid level;
 	Grid::init(&level, 512, 512);
 
+	Grid::Grid objects;
+	Grid::init(&objects, 512, 512);
+
 	for (int i = 0; i < level.n_cols*level.n_rows; i++)
 	{
-		level.data[i] = rand() % 3;
+		level.data[i] = rand() % 20;
+		objects.data[i] = -1;
 	}
 
-	Grid_Camera::Grid_Camera camera = { 64,48,16,12, Game::screen_width,Game::screen_height };
+	SDL_Surface *sprite_surface = IMG_Load("saitama.png");
+	assert(sprite_surface);
+	SDL_Texture *sprite_texture = SDL_CreateTextureFromSurface(Game::renderer, sprite_surface);
+	SDL_FreeSurface(sprite_surface);
+
+	Sprite::Data sprite_database;
+	Sprite::init(&sprite_database, 1000);
+
+	Sprite::Data_Args entry;
+	entry.frame_w = 32;
+	entry.frame_h = 32;
+
+	entry.frame_pos_x = 0;
+	entry.frame_pos_y = 0;
+	entry.n_frames = 3;
+	Sprite::add(&sprite_database, &entry, sprite_texture);
+
+	entry.frame_pos_x = 0;
+	entry.frame_pos_y = 32;
+	entry.n_frames = 3;
+	Sprite::add(&sprite_database, &entry, sprite_texture);
+
+	entry.frame_pos_x = 0;
+	entry.frame_pos_y = 64;
+	entry.n_frames = 2;
+	Sprite::add(&sprite_database, &entry, sprite_texture);
+	
+	
+	Sprite::Animation sprites;
+	Sprite::init(&sprites, 20000);
+	
+	for (int i = 0; i < 20000; i++)
+	{
+		int n = (rand() % 512)*objects.n_cols + (rand() % 512);
+		if (objects.data[n] < 0)
+		{
+			objects.data[n] = sprites.n_animations;
+			int sprite_db_index = rand() % 3;
+			Sprite::add(&sprites, &sprite_database, sprite_db_index, 60 + rand() % 60);
+		}
+	}
+
+	printf("%d\n", sprites.n_animations);
+
+	Grid_Camera::Grid_Camera camera;
+	Grid_Camera::init(&camera, Game::screen_width, Game::screen_height);
+	Grid_Camera::set_Viewport(&camera, 256, 256, Game::screen_width / 64, Game::screen_height / 64);
+
 	float camera_move_speed = 0.00001;
 	float camera_zoom_speed = 0.0001;
-
+	
 	bool done = false;
 	while (!done)
 	{
+		unsigned int current_time = SDL_GetTicks();
+
 		memcpy(prev_key_state, keys, 256);
 
 		//consume all window events first
@@ -92,13 +146,17 @@ int main(int argc, char **argv)
 		*/
 		if (cmd_ZOOMIN)
 		{
-			camera.w -= camera_zoom_speed * Game::screen_width;
-			camera.h -= camera_zoom_speed * Game::screen_height;
+			camera.w += -2.0*camera_zoom_speed * Game::screen_width;
+			camera.h += -2.0*camera_zoom_speed * Game::screen_height;
+			camera.x += camera_zoom_speed * Game::screen_width;
+			camera.y += camera_zoom_speed * Game::screen_height;
 		}
 		if (cmd_ZOOMOUT)
 		{
-			camera.w += camera_zoom_speed * Game::screen_width;
-			camera.h += camera_zoom_speed * Game::screen_height;
+			camera.w += 2.0*camera_zoom_speed * Game::screen_width;
+			camera.h += 2.0*camera_zoom_speed * Game::screen_height;
+			camera.x += camera_zoom_speed * Game::screen_width;
+			camera.y += camera_zoom_speed * Game::screen_height;
 		}
 
 		if (cmd_LEFT)
@@ -128,25 +186,30 @@ int main(int argc, char **argv)
 		SDL_RenderClear(Game::renderer);
 
 		Grid::Active_Index_Range_Out active_grid_range;
-		Tileset::Tile_Info tile_info_out;
-		
-		Grid_Camera::camera_to_Screen(&active_grid_range, &tile_info_out, &camera);
+		Grid_Camera::recalculate_Tile_Position_and_Size(&active_grid_range, &camera);
 
-		int ty = tile_info_out.tile_y;
+		int ty = camera.read_only.tile_y;
 		for (int i = active_grid_range.y0; i <= active_grid_range.y1; i++)
 		{
-			int tx = tile_info_out.tile_x;
+			int tx = camera.read_only.tile_x;
 
 			int *tmp_level_data = &level.data[i*level.n_cols];
+			int *tmp_object_data = &objects.data[i*objects.n_cols];
 			for (int j = active_grid_range.x0; j <= active_grid_range.x1; j++)
 			{
 				int grid_data = tmp_level_data[j];
 
-				Tileset::draw(tx, ty, tile_info_out.tile_w, tile_info_out.tile_h, grid_data, 0, &tileset, Game::renderer);
+				Tileset::draw(tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, grid_data, 0, &tileset, Game::renderer);
 
-				tx += tile_info_out.tile_w;
+				int object_data = tmp_object_data[j];
+				if (object_data >= 0)
+				{
+					Sprite::update(&sprites, object_data, &sprite_database, current_time);
+					Sprite::draw(tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, object_data, &sprites, &sprite_database, Game::renderer);
+				}
+				tx += camera.read_only.tile_w;
 			}
-			ty += tile_info_out.tile_h;
+			ty += camera.read_only.tile_h;
 		}
 
 

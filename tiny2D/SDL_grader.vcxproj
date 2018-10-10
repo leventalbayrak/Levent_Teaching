@@ -117,6 +117,8 @@
     <ClInclude Include="Grid_Camera_core.h" />
     <ClInclude Include="Grid_Camera_data.h" />
     <ClInclude Include="Grid_core.h" />
+    <ClInclude Include="Sprite_core.h" />
+    <ClInclude Include="Sprite_data.h" />
     <ClInclude Include="Tilemap_core.h" />
     <ClInclude Include="Tilemap_data.h" />
     <ClInclude Include="Grid_data.h" />

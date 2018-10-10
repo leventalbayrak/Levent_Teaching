@@ -38,5 +38,11 @@
     <ClInclude Include="Grid_Camera_core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sprite_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
