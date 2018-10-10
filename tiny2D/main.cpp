@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 
 	for (int i = 0; i < level.n_cols*level.n_rows; i++)
 	{
-		level.data[i] = rand() % 20;
+		level.data[i] = rand() % 3;
 		objects.data[i] = -1;
 	}
 
@@ -88,16 +88,16 @@ int main(int argc, char **argv)
 	
 	
 	Sprite::Animation sprites;
-	Sprite::init(&sprites, 20000);
+	Sprite::init(&sprites, 100000);
 	
-	for (int i = 0; i < 20000; i++)
+	for (int i = 0; i < 100000; i++)
 	{
 		int n = (rand() % 512)*objects.n_cols + (rand() % 512);
 		if (objects.data[n] < 0)
 		{
 			objects.data[n] = sprites.n_animations;
 			int sprite_db_index = rand() % 3;
-			Sprite::add(&sprites, &sprite_database, sprite_db_index, 60 + rand() % 60);
+			Sprite::add(&sprites, &sprite_database, sprite_db_index, 60 + rand() % 600);
 		}
 	}
 
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
 			camera.x += camera_zoom_speed * Game::screen_width;
 			camera.y += camera_zoom_speed * Game::screen_height;
 
-			camera_zoom_speed *= 1.1;
+			//camera_zoom_speed *= 1.1;
 		}
 
 		if (cmd_LEFT)
