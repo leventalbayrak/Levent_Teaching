@@ -86,6 +86,7 @@ int main(int argc, char **argv)
 	entry.n_frames = 2;
 	Sprite::add(&sprite_database, &entry, sprite_texture);
 	
+
 	
 	Sprite::Animation sprites;
 	Sprite::init(&sprites, 100000);
