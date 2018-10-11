@@ -2,6 +2,8 @@
 
 namespace Grid
 {
+	//grid data, 1D array representation
+	//index by data[y*n_cols+x]
 	struct Grid
 	{
 		int n_rows;
@@ -9,8 +11,9 @@ namespace Grid
 		int *data;
 	};
 
-	struct Active_Index_Range_Out
+	//top left and bottom right cells in a grid
+	struct Region
 	{
-		int x0, y0, x1, y1;//top left and bottom right cells
+		int x0, y0, x1, y1;
 	};
 }

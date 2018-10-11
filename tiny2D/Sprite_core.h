@@ -79,18 +79,22 @@ namespace Sprite
 		s->n_sprites++;
 	}
 
-	void add(Animation *a, const Data *d, int sprite_data_index, int frame_duration)
+	int make(Animation *a)
 	{
 		if (a->n_animations >= a->array_size)
 		{
 			resize(a);
 		}
+		++a->n_animations;
+		return a->n_animations - 1;
+	}
 
-		a->sprite_data_index[a->n_animations] = sprite_data_index;
-		a->current_frame[a->n_animations] = 0;
-		a->last_frame_change_time[a->n_animations] = SDL_MAX_UINT32;
-		a->frame_duration[a->n_animations] = frame_duration;
-		a->n_animations++;
+	void modify(int index, Animation *a, const Data *d, int sprite_data_index, int frame_duration)
+	{
+		a->sprite_data_index[index] = sprite_data_index;
+		a->current_frame[index] = 0;
+		a->last_frame_change_time[index] = SDL_MAX_UINT32;
+		a->frame_duration[index] = frame_duration;
 	}
 
 	void update(Animation *s, int animation_index,const Data *d, unsigned int current_time)

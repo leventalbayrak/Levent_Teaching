@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Shape_data.h"
+
 namespace Grid_Camera
 {
 	struct Grid_Camera
 	{
-		float x, y;//which grid cell
-		float w, h;//width and height in grid cells
+		Shape::Rect canvas;
 
 		//initialize
 		struct
@@ -14,7 +15,7 @@ namespace Grid_Camera
 			int screen_height;
 		} init;
 
-		//read only
+		//read only first tile screen position and single tile dimensions
 		struct {
 			int tile_w;
 			int tile_h;
