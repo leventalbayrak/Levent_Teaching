@@ -124,8 +124,9 @@
     <ClInclude Include="Shape_data.h" />
     <ClInclude Include="Sprite_core.h" />
     <ClInclude Include="Sprite_data.h" />
-    <ClInclude Include="Tilemap_core.h" />
-    <ClInclude Include="Tilemap_data.h" />
+    <ClInclude Include="Texture_core.h" />
+    <ClInclude Include="Tileset_core.h" />
+    <ClInclude Include="Tileset_data.h" />
     <ClInclude Include="Grid_data.h" />
     <ClInclude Include="Vec2D_core.h" />
     <ClInclude Include="Vec2D_data.h" />

@@ -16,12 +16,12 @@ using namespace std;
 #include "SDL2-2.0.8\include\SDL_mixer.h"
 
 #include "Engine_core.h"
-#include "Texture_core.h"
+
 
 int main(int argc, char **argv)
 {
 	//initialize all systems and open game window
-	Engine::init("hello ToxicToddler2D", 960, 768);
+	Engine::init("hello tiny2D", 960, 768);
 
 	Tileset::Tileset tileset;
 	Tileset::init(&tileset, 10);
@@ -33,15 +33,31 @@ int main(int argc, char **argv)
 	Grid::Grid level;
 	Grid::init(&level, 512, 512);
 
+	Grid::Grid objects;
+	Grid::init(&objects, 512, 512);
+
 	for (int i = 0; i < level.n_cols*level.n_rows; i++)
 	{
-		level.data[i] = rand() % 3;
+		level.data[i] = rand() % 5;
+		objects.data[i] = 0;
 	}
 
-	SDL_Texture *sprite_texture = Texture::load("saitama.png", Engine::renderer);
+	for (int i = 0; i < 100000; i++)
+	{
+		int n = (rand() % 512)*objects.n_cols + (rand() % 512);
+		if (objects.data[n] < 0)
+		{
+			objects.data[n] = 5 + rand() % 3;
+		}
+	}
+
+	SDL_Surface *sprite_surface = IMG_Load("saitama.png");
+	assert(sprite_surface);
+	SDL_Texture *sprite_texture = SDL_CreateTextureFromSurface(Engine::renderer, sprite_surface);
+	SDL_FreeSurface(sprite_surface);
 
 	Sprite::Data sprite_database;
-	Sprite::init(&sprite_database, 10);
+	Sprite::init(&sprite_database, 1000);
 
 	Sprite::Data_Args entry;
 	entry.frame_w = 32;
@@ -62,28 +78,29 @@ int main(int argc, char **argv)
 	entry.n_frames = 2;
 	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
 	
+	Sprite::Animation sprites;
+	Sprite::init(&sprites, 100000);
+
 	Body::Body bodies;
-	Body::init(&bodies, 100);
+	Body::init(&bodies, 100000);
 	
-	/*for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 100000; i++)
 	{
 		int sprite_db_index = rand() % 3;
-		int sprite_idx = Sprite::make_Instance(sprite_db_index, &sprite_database);
-		Sprite::modify(sprite_db_index,sprite_idx, &sprite_database, 60 + rand() % 600);
+		int sprite_idx = Sprite::make(&sprites);
+		Sprite::modify(sprite_idx, &sprites, &sprite_database, sprite_db_index, 60 + rand() % 600);
 		int body_idx = Body::make(&bodies);
-	}*/
-
-	Sprite::make_Instance(0, &sprite_database);
-	Sprite::modify(0, 0, &sprite_database, 100);
+	}
 
 	Grid_Camera::Grid_Camera camera;
 	Grid_Camera::init(&camera, Engine::screen_width, Engine::screen_height);
 	camera.canvas.x = 256;
 	camera.canvas.y = 256;
-	camera.canvas.w = Engine::screen_width / 32;
-	camera.canvas.h = Engine::screen_height / 32;
+	camera.canvas.w = Engine::screen_width / 64;
+	camera.canvas.h = Engine::screen_height / 64;
 
-	float camera_move_speed = 0.0001;
+	float camera_move_speed = 0.00001;
+	float camera_zoom_speed = 0.0001;
 	
 	bool done = false;
 	while (!done)
@@ -134,8 +151,8 @@ int main(int argc, char **argv)
 		}
 
 
-		//Body::clear_Forces(&bodies);
-		//Body::update(&bodies);
+		Body::clear_Forces(&bodies);
+		Body::update(&bodies);
 
 		//RENDER
 
@@ -156,19 +173,28 @@ int main(int argc, char **argv)
 			int tx = camera.read_only.tile_x;
 
 			int *tmp_level_data = &level.data[i*level.n_cols];
+			int *tmp_object_data = &objects.data[i*objects.n_cols];
 			for (int j = grid_region.x0; j <= grid_region.x1; j++)
 			{
 				int grid_data = tmp_level_data[j];
-				int tileset_idx = 0;
-				Tileset::draw(tileset_idx, grid_data, 0, &tileset, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
+				Tileset::draw(0, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, grid_data, 0, &tileset, Engine::renderer);
 				
+				int object_data = tmp_object_data[j];
+				if (object_data != 0)
+				{
+					Tileset::draw(0, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, 0, object_data, &tileset, Engine::renderer);
+				}
 				tx += camera.read_only.tile_w;
 			}
 			ty += camera.read_only.tile_h;
 		}
 
-		Sprite::update(0, 0, &sprite_database, current_time);
-		Sprite::draw(0, 0, &sprite_database, (camera.canvas.x+camera.canvas.w)*0.5, (camera.canvas.y + camera.canvas.h)*0.5, 2*camera.read_only.tile_w, 2*camera.read_only.tile_h, Engine::renderer);
+		for (int i = 0; i < bodies.n_bodies; i++)
+		{
+			Sprite::update(i, &sprites, current_time);
+			Sprite::draw(i, &sprites, bodies.pos[i].x, bodies.pos[i].y, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
+		}
+
 
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);

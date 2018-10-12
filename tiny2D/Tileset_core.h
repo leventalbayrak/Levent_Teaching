@@ -49,7 +49,7 @@ namespace Tileset
 		t->tex[index] = sprite_texture;
 	}
 
-	void draw(int index, int dest_x, int dest_y, int dest_w, int dest_h, int tileset_row, int tileset_col, Tileset *t, SDL_Renderer *renderer)
+	void draw(int index, int tileset_row, int tileset_col, Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer)
 	{
 		SDL_Rect src;
 		src.x = tileset_col * t->tile_w[index];
