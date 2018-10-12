@@ -94,10 +94,10 @@ int main(int argc, char **argv)
 
 	Grid_Camera::Grid_Camera camera;
 	Grid_Camera::init(&camera, Engine::screen_width, Engine::screen_height);
-	camera.canvas.x = 256;
-	camera.canvas.y = 256;
-	camera.canvas.w = Engine::screen_width / 64;
-	camera.canvas.h = Engine::screen_height / 64;
+	camera.grid_coord.x = 256;
+	camera.grid_coord.y = 256;
+	camera.grid_coord.w = Engine::screen_width / 64;
+	camera.grid_coord.h = Engine::screen_height / 64;
 
 	float camera_move_speed = 0.00001;
 	float camera_zoom_speed = 0.0001;
@@ -135,19 +135,19 @@ int main(int argc, char **argv)
 	
 		if (cmd_LEFT)
 		{
-			camera.canvas.x += -camera_move_speed * Engine::screen_width;
+			camera.grid_coord.x += -camera_move_speed * Engine::screen_width;
 		}
 		if (cmd_RIGHT)
 		{
-			camera.canvas.x += camera_move_speed * Engine::screen_width;
+			camera.grid_coord.x += camera_move_speed * Engine::screen_width;
 		}
 		if (cmd_UP)
 		{
-			camera.canvas.y += -camera_move_speed * Engine::screen_height;
+			camera.grid_coord.y += -camera_move_speed * Engine::screen_height;
 		}
 		if (cmd_DOWN)
 		{
-			camera.canvas.y += camera_move_speed * Engine::screen_height;
+			camera.grid_coord.y += camera_move_speed * Engine::screen_height;
 		}
 
 
@@ -162,8 +162,8 @@ int main(int argc, char **argv)
 		SDL_RenderClear(Engine::renderer);
 
 		Grid::Region grid_region;
-		//if the camera was on top of a grid, which cells would its canvas be covering
-		Grid_Camera::get_Grid_Region_Covered_by_Canvas(&grid_region, &camera);
+		//if the camera was on top of a grid, which cells would its grid_coord be covering
+		Grid_Camera::get_Grid_Region_Covered_by_grid_coord(&grid_region, &camera);
 		//based on the area covered, recalculate tile size and position
 		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 

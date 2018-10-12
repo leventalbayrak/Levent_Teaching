@@ -31,6 +31,20 @@ namespace Body
 		return a->n_bodies - 1;
 	}
 
+	void modify(int index,Body *a, Vec2D::Vec2D *pos, float mass)
+	{
+		a->dir[index] = {};
+		a->force[index] = {};
+		a->speed[index] = 0;
+		a->pos[index] = *pos;
+		a->mass[index] = mass;
+	}
+
+	void add_Force(int index, Body *a, Vec2D::Vec2D *f)
+	{
+		Vec2D::add(&a->force[index], f);
+	}
+
 	void update(Body *a)
 	{
 		for (int i = 0; i < a->n_bodies; i++)

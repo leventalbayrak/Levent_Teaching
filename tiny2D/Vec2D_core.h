@@ -11,12 +11,20 @@ namespace Vec2D
 
 	inline float mag(Vec2D *a)
 	{
-		return sqrt(a->x*a->x + a->y * a->y);
+		float m = a->x*a->x + a->y * a->y;
+		if (m == 0.0) return 0.0;
+		return sqrt(m);
 	}
 
 	inline float unit(Vec2D *a)
 	{
 		float m = mag(a);
+		if (m == 0)
+		{
+			a->x = 0.0;
+			a->y = 0.0;
+			return 0.0;
+		}
 		a->x /= m;
 		a->y /= m;
 		return m;

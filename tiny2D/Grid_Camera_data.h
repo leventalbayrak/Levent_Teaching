@@ -6,7 +6,7 @@ namespace Grid_Camera
 {
 	struct Grid_Camera
 	{
-		Shape::Rect canvas;
+		Shape::Rect grid_coord;
 
 		//initialize
 		struct

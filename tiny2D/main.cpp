@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
 	Grid::Grid level;
-	Grid::init(&level, 512, 512);
+	Grid::init(&level, 4096, 4096);
 
 	for (int i = 0; i < level.n_cols*level.n_rows; i++)
 	{
@@ -42,6 +42,8 @@ int main(int argc, char **argv)
 
 	Sprite::Data sprite_database;
 	Sprite::init(&sprite_database, 10);
+	Body::Body bodies;
+	Body::init(&bodies, 100);
 
 	Sprite::Data_Args entry;
 	entry.frame_w = 32;
@@ -61,29 +63,21 @@ int main(int argc, char **argv)
 	entry.frame_pos_y = 64;
 	entry.n_frames = 2;
 	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
-	
-	Body::Body bodies;
-	Body::init(&bodies, 100);
-	
-	/*for (int i = 0; i < 10000; i++)
-	{
-		int sprite_db_index = rand() % 3;
-		int sprite_idx = Sprite::make_Instance(sprite_db_index, &sprite_database);
-		Sprite::modify(sprite_db_index,sprite_idx, &sprite_database, 60 + rand() % 600);
-		int body_idx = Body::make(&bodies);
-	}*/
-
-	Sprite::make_Instance(0, &sprite_database);
-	Sprite::modify(0, 0, &sprite_database, 100);
 
 	Grid_Camera::Grid_Camera camera;
 	Grid_Camera::init(&camera, Engine::screen_width, Engine::screen_height);
-	camera.canvas.x = 256;
-	camera.canvas.y = 256;
-	camera.canvas.w = Engine::screen_width / 32;
-	camera.canvas.h = Engine::screen_height / 32;
+	camera.grid_coord.w = Engine::screen_width / 64;
+	camera.grid_coord.h = Engine::screen_height / 64;
 
-	float camera_move_speed = 0.0001;
+	int player_sprite = Sprite::make_Instance(0, &sprite_database);
+	Sprite::modify(0, player_sprite, &sprite_database, 100);
+	Shape::Rect player_grid_rect = { level.n_cols/2,level.n_rows/2,1,1 };//grid coords x,y,w,h
+	
+	int player_physics_body = Body::make(&bodies);
+	Vec2D::Vec2D tmp_pos = { player_grid_rect.x,player_grid_rect.y };
+	Body::modify(player_physics_body, &bodies, &tmp_pos, 1.0);
+
+	float player_move_force_magnitude = 0.00001;
 	
 	bool done = false;
 	while (!done)
@@ -115,27 +109,48 @@ int main(int argc, char **argv)
 		/*
 		GAME CODE
 		*/
+
+		Body::clear_Forces(&bodies);
 	
 		if (cmd_LEFT)
 		{
-			camera.canvas.x += -camera_move_speed * Engine::screen_width;
+			Vec2D::Vec2D f = { -player_move_force_magnitude,0 };
+			Body::add_Force(player_physics_body, &bodies, &f);
 		}
 		if (cmd_RIGHT)
 		{
-			camera.canvas.x += camera_move_speed * Engine::screen_width;
+			Vec2D::Vec2D f = { player_move_force_magnitude,0 };
+			Body::add_Force(player_physics_body, &bodies, &f);
 		}
 		if (cmd_UP)
 		{
-			camera.canvas.y += -camera_move_speed * Engine::screen_height;
+			Vec2D::Vec2D f = { 0, -player_move_force_magnitude };
+			Body::add_Force(player_physics_body, &bodies, &f);
 		}
 		if (cmd_DOWN)
 		{
-			camera.canvas.y += camera_move_speed * Engine::screen_height;
+			Vec2D::Vec2D f = { 0, player_move_force_magnitude };
+			Body::add_Force(player_physics_body, &bodies, &f);
 		}
 
+		Body::update(&bodies);
+		player_grid_rect.x = bodies.pos[player_physics_body].x;
+		player_grid_rect.y = bodies.pos[player_physics_body].y;
 
-		//Body::clear_Forces(&bodies);
-		//Body::update(&bodies);
+		printf("player grid coord %f %f\n", player_grid_rect.x, player_grid_rect.y);
+
+		camera.grid_coord.x = player_grid_rect.x - camera.grid_coord.w / 2;
+		camera.grid_coord.y = player_grid_rect.y - camera.grid_coord.h / 2;
+
+		Grid::Region grid_under_player_rect;
+		Grid::get_Region_Under_Shape(&grid_under_player_rect, &player_grid_rect);
+		for (int i = grid_under_player_rect.y0; i < grid_under_player_rect.y1; i++)
+		{
+			for (int j = grid_under_player_rect.x0; j < grid_under_player_rect.x1; j++)
+			{
+				level.data[i*level.n_cols + j] = 6;
+			}
+		}
 
 		//RENDER
 
@@ -145,8 +160,8 @@ int main(int argc, char **argv)
 		SDL_RenderClear(Engine::renderer);
 
 		Grid::Region grid_region;
-		//if the camera was on top of a grid, which cells would its canvas be covering
-		Grid_Camera::get_Grid_Region_Covered_by_Canvas(&grid_region, &camera);
+		//if the camera was on top of a grid, which cells would its grid_coord be covering
+		Grid_Camera::get_Grid_Region_Covered_by_grid_coord(&grid_region, &camera);
 		//based on the area covered, recalculate tile size and position
 		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
@@ -167,8 +182,10 @@ int main(int argc, char **argv)
 			ty += camera.read_only.tile_h;
 		}
 
-		Sprite::update(0, 0, &sprite_database, current_time);
-		Sprite::draw(0, 0, &sprite_database, (camera.canvas.x+camera.canvas.w)*0.5, (camera.canvas.y + camera.canvas.h)*0.5, 2*camera.read_only.tile_w, 2*camera.read_only.tile_h, Engine::renderer);
+		Shape::Rect player_screen_rect;
+		Grid_Camera::grid_Coord_to_Screen_Coord(&player_screen_rect, &player_grid_rect, &camera);
+		Sprite::update(0, player_sprite, &sprite_database, current_time);
+		Sprite::draw(0, player_sprite, &sprite_database, player_screen_rect.x,player_screen_rect.y,player_screen_rect.w,player_screen_rect.h , Engine::renderer);
 
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
