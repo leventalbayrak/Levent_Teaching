@@ -5,6 +5,12 @@
 #include <time.h>
 using namespace std;
 
+#include "Tileset_core.h"
+#include "Grid_core.h"
+#include "Grid_Camera_core.h"
+#include "Sprite_core.h"
+#include "Body_core.h"
+
 namespace Engine
 {
 	void init(const char*window_title, int _screen_width, int _screen_height)

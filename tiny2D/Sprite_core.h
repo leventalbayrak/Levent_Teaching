@@ -62,21 +62,24 @@ namespace Sprite
 		int n_frames;
 	};
 
-	void add(Data *s, const Data_Args *p, const SDL_Texture *texture)
+	int make(Data *s)
 	{
 		if (s->n_sprites >= s->array_size)
 		{
 			resize(s);
 		}
+		++s->n_sprites;
+		return s->n_sprites - 1;
+	}
 
-		s->frame_w[s->n_sprites] = p->frame_w;
-		s->frame_h[s->n_sprites] = p->frame_h;
-		s->n_frames[s->n_sprites] = p->n_frames;
-		s->frame_pos_x[s->n_sprites] = p->frame_pos_x;
-		s->frame_pos_y[s->n_sprites] = p->frame_pos_y;
-		s->texture[s->n_sprites] = (SDL_Texture *)texture;
-
-		s->n_sprites++;
+	void modify(int index,Data *s, const Data_Args *p, const SDL_Texture *texture)
+	{
+		s->frame_w[index] = p->frame_w;
+		s->frame_h[index] = p->frame_h;
+		s->n_frames[index] = p->n_frames;
+		s->frame_pos_x[index] = p->frame_pos_x;
+		s->frame_pos_y[index] = p->frame_pos_y;
+		s->texture[index] = (SDL_Texture *)texture;
 	}
 
 	int make(Animation *a)
@@ -89,31 +92,32 @@ namespace Sprite
 		return a->n_animations - 1;
 	}
 
-	void modify(int index, Animation *a, const Data *d, int sprite_data_index, int frame_duration)
+	void modify(int index, Animation *a, int db_index, int sprite_index, int frame_duration)
 	{
-		a->sprite_data_index[index] = sprite_data_index;
+		a->sprite_database_index[index] = db_index;
+		a->sprite_data_index[index] = sprite_index;
 		a->current_frame[index] = 0;
 		a->last_frame_change_time[index] = SDL_MAX_UINT32;
 		a->frame_duration[index] = frame_duration;
 	}
 
-	void update(Animation *s, int animation_index,const Data *d, unsigned int current_time)
+	void update(int index, Animation *s, const Data *d, unsigned int current_time)
 	{
-		unsigned int elapsed = current_time - s->last_frame_change_time[animation_index];
-		if (elapsed >= s->frame_duration[animation_index])
+		unsigned int elapsed = current_time - s->last_frame_change_time[index];
+		if (elapsed >= s->frame_duration[index])
 		{
-			s->current_frame[animation_index] = (s->current_frame[animation_index] + elapsed/s->frame_duration[animation_index]) % d->n_frames[s->sprite_data_index[animation_index]];
-			s->last_frame_change_time[animation_index] = current_time;
+			s->current_frame[index] = (s->current_frame[index] + elapsed/s->frame_duration[index]) % d->n_frames[s->sprite_data_index[index]];
+			s->last_frame_change_time[index] = current_time;
 		}	
 	}
 
-	void draw(int dest_x, int dest_y, int dest_w, int dest_h, int animation_index, Animation *a, Data *d, SDL_Renderer *renderer)
+	void draw(int index, Animation *a, Data *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer)
 	{
 		SDL_Rect src;
-		src.x = d->frame_pos_x[a->sprite_data_index[animation_index]] + d->frame_w[a->sprite_data_index[animation_index]] * a->current_frame[animation_index];
-		src.y = d->frame_pos_y[a->sprite_data_index[animation_index]];
-		src.w = d->frame_w[a->sprite_data_index[animation_index]];
-		src.h = d->frame_h[a->sprite_data_index[animation_index]];
+		src.x = d->frame_pos_x[a->sprite_data_index[index]] + d->frame_w[a->sprite_data_index[index]] * a->current_frame[index];
+		src.y = d->frame_pos_y[a->sprite_data_index[index]];
+		src.w = d->frame_w[a->sprite_data_index[index]];
+		src.h = d->frame_h[a->sprite_data_index[index]];
 
 		SDL_Rect dest;
 		dest.x = dest_x;
@@ -121,6 +125,6 @@ namespace Sprite
 		dest.w = dest_w;
 		dest.h = dest_h;
 
-		SDL_RenderCopyEx(renderer, d->texture[a->sprite_data_index[animation_index]], &src, &dest, 0, NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(renderer, d->texture[a->sprite_data_index[index]], &src, &dest, 0, NULL, SDL_FLIP_NONE);
 	}
 }

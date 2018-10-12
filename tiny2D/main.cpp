@@ -16,11 +16,7 @@ using namespace std;
 #include "SDL2-2.0.8\include\SDL_mixer.h"
 
 #include "Engine_core.h"
-#include "Tilemap_core.h"
-#include "Grid_core.h"
-#include "Grid_Camera_core.h"
-#include "Sprite_core.h"
-#include "Body_core.h"
+
 
 int main(int argc, char **argv)
 {
@@ -28,7 +24,8 @@ int main(int argc, char **argv)
 	Engine::init("hello tiny2D", 960, 768);
 
 	Tileset::Tileset tileset;
-	Tileset::load(&tileset, "tileset.png", 32, 32, Engine::renderer);
+	Tileset::init(&tileset, 10);
+	Tileset::modify(Tileset::make(&tileset), &tileset, "tileset.png", 32, 32, Engine::renderer);
 
 	unsigned char prev_key_state[256];
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
@@ -69,17 +66,17 @@ int main(int argc, char **argv)
 	entry.frame_pos_x = 0;
 	entry.frame_pos_y = 0;
 	entry.n_frames = 3;
-	Sprite::add(&sprite_database, &entry, sprite_texture);
+	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
 
 	entry.frame_pos_x = 0;
 	entry.frame_pos_y = 32;
 	entry.n_frames = 3;
-	Sprite::add(&sprite_database, &entry, sprite_texture);
+	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
 
 	entry.frame_pos_x = 0;
 	entry.frame_pos_y = 64;
 	entry.n_frames = 2;
-	Sprite::add(&sprite_database, &entry, sprite_texture);
+	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
 	
 	Sprite::Animation sprites;
 	Sprite::init(&sprites, 100000);
@@ -91,7 +88,7 @@ int main(int argc, char **argv)
 	{
 		int sprite_db_index = rand() % 3;
 		int sprite_idx = Sprite::make(&sprites);
-		Sprite::modify(sprite_idx, &sprites, &sprite_database, sprite_db_index, 60 + rand() % 600);
+		Sprite::modify(sprite_idx, &sprites, sprite_db_index, 60 + rand() % 600);
 		int body_idx = Body::make(&bodies);
 	}
 
@@ -180,12 +177,12 @@ int main(int argc, char **argv)
 			for (int j = grid_region.x0; j <= grid_region.x1; j++)
 			{
 				int grid_data = tmp_level_data[j];
-				Tileset::draw(tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, grid_data, 0, &tileset, Engine::renderer);
+				Tileset::draw(0, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, grid_data, 0, &tileset, Engine::renderer);
 				
 				int object_data = tmp_object_data[j];
 				if (object_data != 0)
 				{
-					Tileset::draw(tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, 0, object_data, &tileset, Engine::renderer);
+					Tileset::draw(0, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, 0, object_data, &tileset, Engine::renderer);
 				}
 				tx += camera.read_only.tile_w;
 			}
@@ -194,8 +191,8 @@ int main(int argc, char **argv)
 
 		for (int i = 0; i < bodies.n_bodies; i++)
 		{
-			Sprite::update(&sprites, i, &sprite_database, current_time);
-			Sprite::draw(bodies.pos[i].x, bodies.pos[i].y, camera.read_only.tile_w, camera.read_only.tile_h, i, &sprites, &sprite_database, Engine::renderer);
+			Sprite::update(i, &sprites, current_time);
+			Sprite::draw(i, &sprites,&sprite_database, bodies.pos[i].x, bodies.pos[i].y, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
 		}
 
 
