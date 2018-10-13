@@ -73,6 +73,8 @@ int main(int argc, char **argv)
 	Body::modify(player_physics_body, &bodies, &tmp_pos, 1.0);
 
 	float player_move_force_magnitude = 0.00001;
+
+	Vec2D::Vec2D gravity = { 0,0.00001 };
 	
 	bool done = false;
 	while (!done)
@@ -128,7 +130,9 @@ int main(int argc, char **argv)
 			Body::add_Force(player_physics_body, &bodies, &f);
 		}
 
-		Body::update(&bodies);
+		Body::add_Force(player_physics_body, &bodies, &gravity);
+
+		Body::update(player_physics_body, &bodies);
 		player_grid_rect.x = bodies.pos[player_physics_body].x;
 		player_grid_rect.y = bodies.pos[player_physics_body].y;
 

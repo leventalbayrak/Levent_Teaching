@@ -45,21 +45,19 @@ namespace Body
 		Vec2D::add(&a->force[index], f);
 	}
 
-	void update(Body *a)
+	void update(int index, Body *a)
 	{
-		for (int i = 0; i < a->n_bodies; i++)
-		{
-			//implicit euler
-			Vec2D::Vec2D accel = { a->force[i].x / a->mass[i],a->force[i].y / a->mass[i] };
-			Vec2D::Vec2D vel = { a->dir[i].x*a->speed[i], a->dir[i].y*a->speed[i] };
-			
-			Vec2D::add(&vel, &accel);
-			Vec2D::add(&a->pos[i], &vel);
+		//implicit euler
+		Vec2D::Vec2D accel = { a->force[i].x / a->mass[i],a->force[i].y / a->mass[i] };
+		Vec2D::Vec2D vel = { a->dir[i].x*a->speed[i], a->dir[i].y*a->speed[i] };
 
-			//recalculate direction and magnitude
-			float mag = Vec2D::unit(&vel);
-			a->speed[i] = mag;
-			a->dir[i] = vel;
-		}
+		Vec2D::add(&vel, &accel);
+		Vec2D::add(&a->pos[i], &vel);
+
+		//recalculate direction and magnitude
+		float mag = Vec2D::unit(&vel);
+		a->speed[i] = mag;
+		a->dir[i] = vel;
+
 	}
 }
