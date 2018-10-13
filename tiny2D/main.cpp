@@ -141,6 +141,11 @@ int main(int argc, char **argv)
 
 		camera.grid_coord.x = player_grid_rect.x - camera.grid_coord.w / 2;
 		camera.grid_coord.y = player_grid_rect.y - camera.grid_coord.h / 2;
+		Grid::Region grid_region;
+		//if the camera was on top of a grid, which cells would its grid_coord be covering
+		Grid_Camera::get_Grid_Region_Covered_by_grid_coord(&grid_region, &camera);
+		//based on the area covered, recalculate tile size and position
+		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
 		Grid::Region grid_under_player_rect;
 		Grid::get_Region_Under_Shape(&grid_under_player_rect, &player_grid_rect);
@@ -159,11 +164,7 @@ int main(int argc, char **argv)
 		//clear screen with white
 		SDL_RenderClear(Engine::renderer);
 
-		Grid::Region grid_region;
-		//if the camera was on top of a grid, which cells would its grid_coord be covering
-		Grid_Camera::get_Grid_Region_Covered_by_grid_coord(&grid_region, &camera);
-		//based on the area covered, recalculate tile size and position
-		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
+		
 
 		int ty = camera.read_only.tile_y;
 		for (int i = grid_region.y0; i <= grid_region.y1; i++)
