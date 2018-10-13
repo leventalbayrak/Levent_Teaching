@@ -31,7 +31,13 @@ int main(int argc, char **argv)
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
 	Grid::Grid level;
-	Grid::load(&level,"map.txt");
+	Grid::init(&level, 4096, 4096);
+	//Grid::load(&level,"map.txt");
+
+	for (int i = 0; i < level.n_cols*level.n_rows; i++)
+	{
+		level.data[i] = rand() % 3;
+	}
 
 	SDL_Texture *sprite_texture = Texture::load("saitama.png", Engine::renderer);
 
@@ -138,8 +144,7 @@ int main(int argc, char **argv)
 		camera.grid_coord.y = player_grid_rect.y - camera.grid_coord.h / 2;
 		Grid::Region grid_region;
 		//if the camera was on top of a grid, which cells would its grid_coord be covering
-		Grid_Camera::get_Grid_Region_Covered(&grid_region, &camera);
-		Grid::clip_Grid_Region(&grid_region, &level);
+		Grid_Camera::get_Grid_Region_Covered_by_grid_coord(&grid_region, &camera);
 		//based on the area covered, recalculate tile size and position
 		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
@@ -149,7 +154,7 @@ int main(int argc, char **argv)
 		{
 			for (int j = grid_under_player_rect.x0; j < grid_under_player_rect.x1; j++)
 			{
-				
+				level.data[i*level.n_cols + j] = 6;
 			}
 		}
 

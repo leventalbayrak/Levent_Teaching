@@ -68,5 +68,14 @@
     <ClInclude Include="Texture_core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shape_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid_File_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid_File_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

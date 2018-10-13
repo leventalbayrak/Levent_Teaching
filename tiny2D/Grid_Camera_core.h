@@ -13,7 +13,7 @@ namespace Grid_Camera
 	}
 
 	//if this camera was placed on a grid, which cells of the grid would be under its grid_coord?
-	void get_Grid_Region_Covered_by_grid_coord(Grid::Region *a, const Grid_Camera *c)
+	void get_Grid_Region_Covered(Grid::Region *a, const Grid_Camera *c)
 	{
 		Grid::get_Region_Under_Shape(a, &c->grid_coord);
 	}
