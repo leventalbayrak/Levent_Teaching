@@ -14,14 +14,15 @@ namespace Shape
 
 	//minkowski sum
 	//if collision direction is important, use this
-	int collision_with_Dir(const Rect *pa, const Rect *sa, const Rect *pb, const Rect *sb)
+	int collision_with_Dir(const Rect *a, const Rect *b)
 	{
+		//                           1        2           3             4
 		enum { NO_COLLISION = 0, TOP_OF_B, RIGHT_OF_B, BOTTOM_OF_B, LEFT_OF_B };
 
-		float w = 0.5 * (sa->w + sb->w);
-		float h = 0.5 * (sa->h + sb->h);
-		float dx = pa->x - pb->x + 0.5*(sa->w - sb->w);
-		float dy = pa->y - pb->y + 0.5*(sa->h - sb->h);
+		float w = 0.5 * (a->w + b->w);
+		float h = 0.5 * (a->h + b->h);
+		float dx = a->x - b->x + 0.5*(a->w - b->w);
+		float dy = a->y - b->y + 0.5*(a->h - b->h);
 
 		if (dx*dx <= w * w && dy*dy <= h * h)
 		{

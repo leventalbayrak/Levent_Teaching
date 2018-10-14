@@ -10,8 +10,15 @@ namespace Body
 
 		Vec2D::Vec2D *force;
 		Vec2D::Vec2D *pos;
-		Vec2D::Vec2D *dir;
+		Vec2D::Vec2D *vel;
 		float *mass;
-		float *speed;
+	};
+
+	struct Snapshot
+	{
+		Vec2D::Vec2D force;
+		Vec2D::Vec2D pos;
+		Vec2D::Vec2D vel;
+		float mass;
 	};
 }

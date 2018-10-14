@@ -115,7 +115,7 @@ namespace Sprite
 		}	
 	}
 
-	void draw(int index, int instance_index, Data *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer)
+	void draw(int index, int instance_index, Data *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer, int flip)
 	{
 		SDL_Rect src;
 		src.x = d->frame_pos_x[index] + d->frame_w[index] * d->instances[index].current_frame[instance_index];
@@ -129,6 +129,14 @@ namespace Sprite
 		dest.w = dest_w;
 		dest.h = dest_h;
 
-		SDL_RenderCopyEx(renderer, d->texture[index], &src, &dest, 0, NULL, SDL_FLIP_NONE);
+		if (flip == 0)
+		{
+			SDL_RenderCopyEx(renderer, d->texture[index], &src, &dest, 0, NULL, SDL_FLIP_NONE);
+		}
+		else
+		{
+			SDL_RenderCopyEx(renderer, d->texture[index], &src, &dest, 0, NULL, SDL_FLIP_HORIZONTAL);
+		}
+		
 	}
 }

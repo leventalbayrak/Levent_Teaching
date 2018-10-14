@@ -17,6 +17,7 @@ using namespace std;
 
 #include "Engine_core.h"
 #include "Texture_core.h"
+#include "Shape_core.h"
 
 int main(int argc, char **argv)
 {
@@ -49,16 +50,6 @@ int main(int argc, char **argv)
 	entry.n_frames = 3;
 	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
 
-	entry.frame_pos_x = 0;
-	entry.frame_pos_y = 32;
-	entry.n_frames = 3;
-	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
-
-	entry.frame_pos_x = 0;
-	entry.frame_pos_y = 64;
-	entry.n_frames = 2;
-	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
-
 	Grid_Camera::Grid_Camera camera;
 	Grid_Camera::init(&camera, Engine::screen_width, Engine::screen_height);
 	camera.grid_coord.w = Engine::screen_width / 64;
@@ -74,7 +65,9 @@ int main(int argc, char **argv)
 
 	float player_move_force_magnitude = 0.00001;
 
-	Vec2D::Vec2D gravity = { 0,0.00001 };
+	Vec2D::Vec2D gravity = { 0,0.00005 };
+
+	int flip = 0;
 	
 	bool done = false;
 	while (!done)
@@ -93,10 +86,15 @@ int main(int argc, char **argv)
 			}
 		}
 
+		
 		int cmd_UP = 0;
 		int cmd_LEFT = 0;
 		int cmd_RIGHT = 0;
 		int cmd_DOWN = 0;
+		int player_collision_top = 0;
+		int player_collision_bottom = 0;
+		int player_collision_left = 0;
+		int player_collision_right = 0;
 
 		if (keys[SDL_SCANCODE_W]) cmd_UP = 1;
 		if (keys[SDL_SCANCODE_S]) cmd_DOWN = 1;
@@ -107,36 +105,114 @@ int main(int argc, char **argv)
 		GAME CODE
 		*/
 
-		Body::clear_Forces(&bodies);
-	
-		if (cmd_LEFT)
-		{
-			Vec2D::Vec2D f = { -player_move_force_magnitude,0 };
-			Body::add_Force(player_physics_body, &bodies, &f);
-		}
-		if (cmd_RIGHT)
-		{
-			Vec2D::Vec2D f = { player_move_force_magnitude,0 };
-			Body::add_Force(player_physics_body, &bodies, &f);
-		}
-		if (cmd_UP)
-		{
-			Vec2D::Vec2D f = { 0, -player_move_force_magnitude };
-			Body::add_Force(player_physics_body, &bodies, &f);
-		}
-		if (cmd_DOWN)
-		{
-			Vec2D::Vec2D f = { 0, player_move_force_magnitude };
-			Body::add_Force(player_physics_body, &bodies, &f);
-		}
+		if (cmd_LEFT) flip = 1;
+		if (cmd_RIGHT) flip = 0;
 
-		Body::add_Force(player_physics_body, &bodies, &gravity);
-
-		Body::update(player_physics_body, &bodies);
 		player_grid_rect.x = bodies.pos[player_physics_body].x;
 		player_grid_rect.y = bodies.pos[player_physics_body].y;
-
 		printf("player grid coord %f %f\n", player_grid_rect.x, player_grid_rect.y);
+
+		Grid::Region grid_under_player_rect;
+		Grid::get_Region_Under_Shape(&grid_under_player_rect, &player_grid_rect);
+		Grid::clip_Grid_Region(&grid_under_player_rect, &level);
+		for (int i = grid_under_player_rect.y0; i <= grid_under_player_rect.y1; i++)
+		{
+			for (int j = grid_under_player_rect.x0; j <= grid_under_player_rect.x1; j++)
+			{
+				if (level.data[i*level.n_cols + j] == 2)
+				{
+					Shape::Rect w = { j,i,1,1 };
+					int c = Shape::collision_with_Dir(&player_grid_rect, &w);
+					if (c == 2)
+					{
+						player_collision_left = 1;
+						bodies.pos[player_physics_body].x = j + 1;
+						bodies.vel[player_physics_body].x = 0;
+						
+					}
+					else if (c == 4)
+					{
+						player_collision_right = 1;
+						bodies.pos[player_physics_body].x = j - player_grid_rect.w;
+						bodies.vel[player_physics_body].x = 0;
+					
+					}
+
+					if (c == 1)
+					{
+						player_collision_bottom = 1;
+						bodies.pos[player_physics_body].y = i - player_grid_rect.h;
+						bodies.vel[player_physics_body].y = 0;
+						
+					}
+					else if (c == 3)
+					{
+						player_collision_top = 1;
+						bodies.pos[player_physics_body].y = i + 1;
+						bodies.vel[player_physics_body].y = 0;
+					}
+				}
+			}
+		}
+
+		Body::clear_Forces(&bodies);
+
+		if (cmd_RIGHT == 1 && player_collision_right == 0)
+		{
+			if (player_collision_bottom == 1)
+			{
+				Vec2D::Vec2D f = { player_move_force_magnitude * 15, 0 };
+				Body::add_Force(player_physics_body, &bodies, &f);
+			}
+			else
+			{
+				Vec2D::Vec2D f = { player_move_force_magnitude * 1, 0 };
+				Body::add_Force(player_physics_body, &bodies, &f);
+			}
+
+		}
+		if (cmd_LEFT == 1 && player_collision_left == 0)
+		{
+			if (player_collision_bottom == 1)
+			{
+				Vec2D::Vec2D f = { -player_move_force_magnitude * 15, 0 };
+				Body::add_Force(player_physics_body, &bodies, &f);
+			}
+			else
+			{
+				Vec2D::Vec2D f = { -player_move_force_magnitude * 1, 0 };
+				Body::add_Force(player_physics_body, &bodies, &f);
+			}
+		}
+
+		if (cmd_UP == 1 && player_collision_top == 0 && player_collision_bottom == 1)
+		{
+			Vec2D::Vec2D f = { 0, -player_move_force_magnitude * 1200 };
+			Body::add_Force(player_physics_body, &bodies, &f);
+
+		}
+
+		if (player_collision_bottom == 0)
+		{
+			Body::add_Force(player_physics_body, &bodies, &gravity);
+		}
+
+		if (player_collision_bottom == 1)
+		{
+			bodies.vel[player_physics_body].x *= 0.99;
+			if (abs(bodies.vel[player_physics_body].x) < 0.0001) bodies.vel[player_physics_body].x = 0.0;
+		}
+
+		if (bodies.vel[player_physics_body].x > 0.004)
+		{
+			bodies.vel[player_physics_body].x = 0.004;
+		}
+		if (bodies.vel[player_physics_body].x < -0.004)
+		{
+			bodies.vel[player_physics_body].x = -0.004;
+		}
+		
+		Body::update(player_physics_body, &bodies);
 
 		camera.grid_coord.x = player_grid_rect.x - camera.grid_coord.w / 2;
 		camera.grid_coord.y = player_grid_rect.y - camera.grid_coord.h / 2;
@@ -147,15 +223,7 @@ int main(int argc, char **argv)
 		//based on the area covered, recalculate tile size and position
 		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
-		Grid::Region grid_under_player_rect;
-		Grid::get_Region_Under_Shape(&grid_under_player_rect, &player_grid_rect);
-		for (int i = grid_under_player_rect.y0; i < grid_under_player_rect.y1; i++)
-		{
-			for (int j = grid_under_player_rect.x0; j < grid_under_player_rect.x1; j++)
-			{
-				
-			}
-		}
+		
 
 		//RENDER
 
@@ -186,7 +254,7 @@ int main(int argc, char **argv)
 		Shape::Rect player_screen_rect;
 		Grid_Camera::grid_Coord_to_Screen_Coord(&player_screen_rect, &player_grid_rect, &camera);
 		Sprite::update(0, player_sprite, &sprite_database, current_time);
-		Sprite::draw(0, player_sprite, &sprite_database, player_screen_rect.x,player_screen_rect.y,player_screen_rect.w,player_screen_rect.h , Engine::renderer);
+		Sprite::draw(0, player_sprite, &sprite_database, player_screen_rect.x,player_screen_rect.y,player_screen_rect.w,player_screen_rect.h , Engine::renderer, flip);
 
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
