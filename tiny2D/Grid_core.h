@@ -17,10 +17,15 @@ namespace Grid
 
 	void get_Region_Under_Shape(Region *g, const Shape::Rect *r)
 	{
-		g->x0 = floor(r->x);
+		/*g->x0 = floor(r->x);
 		g->y0 = floor(r->y);
-		g->x1 = ceil(r->x + r->w);
-		g->y1 = ceil(r->y + r->h);
+		g->x1 = floor(r->x + r->w + 0.5);
+		g->y1 = floor(r->y + r->h + 0.5);
+*/
+		g->x0 = (r->x);
+		g->y0 = (r->y);
+		g->x1 = (r->x + r->w + 0.5);
+		g->y1 = (r->y + r->h + 0.5);
 	}
 
 	void clip_Grid_Region(Region *r, const Grid *g)
