@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
 	Grid::Grid level;
-	Grid::load(&level, "map2.txt");
+	Grid::load(&level, "test.tsv");
 	//Grid::load(&level,"test.csv");
 
 	SDL_Texture *sprite_texture = Texture::load("saitama.png", Engine::renderer);
@@ -70,6 +70,8 @@ int main(int argc, char **argv)
 	Shape::Rect player_grid_rect = { level.n_cols/2,level.n_rows/2,1.00,1.00 };//grid coords x,y,w,h
 	//Shape::Rect player_grid_rect = { 1,1,1.0,1.0 };//grid coords x,y,w,h
 
+	printf("map nrows %d ncols %d\n", level.n_rows, level.n_cols);
+	//getchar();
 
 	int player_physics_body = Body::make(&bodies);
 	Vec2D::Vec2D tmp_pos = { player_grid_rect.x,player_grid_rect.y };
@@ -292,10 +294,10 @@ int main(int argc, char **argv)
 			for (int j = grid_region.x0; j <= grid_region.x1; j++)
 			{
 				int grid_data = tmp_level_data[j];
-				int tileset_idx = grid_data/level.n_cols;
-				int tileset_offset = grid_data % level.n_cols;
-				Tileset::draw(tileset_idx, tileset_offset, 0, &tileset, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
-				
+				int tileset_idx = grid_data / 23;
+				int tileset_offset = grid_data % 23;
+				Tileset::draw(0, tileset_idx, tileset_offset, &tileset, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
+
 				tx += camera.read_only.tile_w;
 			}
 			ty += camera.read_only.tile_h;
