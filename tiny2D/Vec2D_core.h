@@ -29,4 +29,12 @@ namespace Vec2D
 		a->y /= m;
 		return m;
 	}
+
+	void clip(Vec2D *a, float min_x, float max_x, float min_y, float max_y)
+	{
+		if (a->x < min_x) a->x = min_x;
+		if (a->x > max_x) a->x = max_x;
+		if (a->y < min_y) a->y = min_y;
+		if (a->y > max_y) a->y = max_y;
+	}
 }

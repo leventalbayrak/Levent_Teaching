@@ -43,13 +43,16 @@ namespace Body
 		Vec2D::add(&a->force[index], f);
 	}
 
-	void update(int index, Body *a)
+	void update_Vel(int index, Body *a)
 	{
 		//implicit euler
 		Vec2D::Vec2D accel = { a->force[index].x / a->mass[index],a->force[index].y / a->mass[index] };
 		Vec2D::add(&a->vel[index], &accel);
-		Vec2D::add(&a->pos[index], &a->vel[index]);
+	}
 
+	void update_Pos(int index, Body *a)
+	{
+		Vec2D::add(&a->pos[index], &a->vel[index]);
 	}
 
 	void copy(Snapshot *s, int index, const Body *bodies)

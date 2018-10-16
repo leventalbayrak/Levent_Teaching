@@ -17,11 +17,6 @@ namespace Grid
 
 	void get_Region_Under_Shape(Region *g, const Shape::Rect *r)
 	{
-		/*g->x0 = floor(r->x);
-		g->y0 = floor(r->y);
-		g->x1 = floor(r->x + r->w + 0.5);
-		g->y1 = floor(r->y + r->h + 0.5);
-*/
 		g->x0 = (r->x);
 		g->y0 = (r->y);
 		g->x1 = (r->x + r->w);
@@ -35,6 +30,54 @@ namespace Grid
 		if (r->x1 >= g->n_cols) r->x1 = g->n_cols - 1;
 		if (r->y1 >= g->n_rows) r->y1 = g->n_rows - 1;
 	}
+
+	//returns rightmost or bottommost collision tile coords
+//0 bottom 1 top
+//0 left 1 right
+	void handle_Collision_Ugly(int &vert_col, int &vert_row, int &vert_dir, int &hor_col, int &hor_row, int &hor_dir, Shape::Rect *p, Grid *g)
+	{
+		vert_dir = -1;
+		hor_dir = -1;
+
+		Region grid_under_collision_rect;
+		get_Region_Under_Shape(&grid_under_collision_rect, p);
+		clip_Grid_Region(&grid_under_collision_rect, g);
+		for (int i = grid_under_collision_rect.y0; i <= grid_under_collision_rect.y1; i++)
+		{
+			for (int j = grid_under_collision_rect.x0; j <= grid_under_collision_rect.x1; j++)
+			{
+				if (g->data[i*g->n_cols + j] == 0) continue;
+
+				if (p->y + p->h > i && p->y < i)
+				{
+					vert_col = j;
+					vert_row = i;
+					vert_dir = 0;
+				}
+				else
+				{
+					vert_col = j;
+					vert_row = i;
+					vert_dir = 1;
+				}
+
+				if (p->x + p->w > j && p->x < j)
+				{
+					hor_col = j;
+					hor_row = i;
+					hor_dir = 1;
+				}
+				else
+				{
+					hor_col = j;
+					hor_row = i;
+					hor_dir = 0;
+				}
+
+			}
+		}
+	}
+
 
 	void load(Grid *g, const char *filename)
 	{

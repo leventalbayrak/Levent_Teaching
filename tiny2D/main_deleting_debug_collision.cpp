@@ -373,6 +373,63 @@ int main(int argc, char **argv)
 
 		}
 
+#if DEBUG 1
+		int red = 0;
+		int green = 0;
+		for (int i = grid_under_collision_rect_vertical.y0; i <= grid_under_collision_rect_vertical.y1; i++)
+		{
+			for (int j = grid_under_collision_rect_vertical.x0; j <= grid_under_collision_rect_vertical.x1; j++)
+			{
+				if (collision_map.data[i*collision_map.n_cols + j] == 0) continue;
+				Shape::Rect tile_affected_rect = { j, i, 1, 1 };
+				Shape::Rect tile_collision_screen_rect;
+				Grid_Camera::grid_Coord_to_Screen_Coord(&tile_collision_screen_rect, &tile_affected_rect, &camera);
+
+				SDL_SetRenderDrawColor(Engine::renderer, red, green, 255, 255);
+				SDL_Rect r2 = { tile_collision_screen_rect.x,tile_collision_screen_rect.y,tile_collision_screen_rect.w,tile_collision_screen_rect.h };
+				SDL_RenderFillRect(Engine::renderer, &r2);
+
+				red += j * 5;
+				red %= 256;
+				green += i * 7;
+				green %= 256;
+			}
+		}
+
+		for (int i = grid_under_collision_rect_horizontal.y0; i <= grid_under_collision_rect_horizontal.y1; i++)
+		{
+			for (int j = grid_under_collision_rect_horizontal.x0; j <= grid_under_collision_rect_horizontal.x1; j++)
+			{
+				if (collision_map.data[i*collision_map.n_cols + j] == 0) continue;
+				Shape::Rect tile_affected_rect = { j, i, 1, 1 };
+				Shape::Rect tile_collision_screen_rect;
+				Grid_Camera::grid_Coord_to_Screen_Coord(&tile_collision_screen_rect, &tile_affected_rect, &camera);
+
+				SDL_SetRenderDrawColor(Engine::renderer, red, green, 255, 255);
+				SDL_Rect r2 = { tile_collision_screen_rect.x,tile_collision_screen_rect.y,tile_collision_screen_rect.w,tile_collision_screen_rect.h };
+				SDL_RenderFillRect(Engine::renderer, &r2);
+
+				red += j * 5;
+				red %= 256;
+				green += i * 7;
+				green %= 256;
+			}
+		}
+
+
+		SDL_SetRenderDrawColor(Engine::renderer, 255, 0, 0, 255);
+		Shape::Rect player_collision_screen_rect_vertical;
+		Grid_Camera::grid_Coord_to_Screen_Coord(&player_collision_screen_rect_vertical, &player_collision_rect_vertical, &camera);
+
+		SDL_Rect r = { player_collision_screen_rect_vertical.x,player_collision_screen_rect_vertical.y,player_collision_screen_rect_vertical.w,player_collision_screen_rect_vertical.h };
+		SDL_RenderDrawRect(Engine::renderer, &r);
+
+		Shape::Rect player_collision_screen_rect_horizontal;
+		Grid_Camera::grid_Coord_to_Screen_Coord(&player_collision_screen_rect_horizontal, &player_collision_rect_horizontal, &camera);
+
+		SDL_Rect r2 = { player_collision_screen_rect_horizontal.x,player_collision_screen_rect_horizontal.y,player_collision_screen_rect_horizontal.w,player_collision_screen_rect_horizontal.h };
+		SDL_RenderDrawRect(Engine::renderer, &r2);
+#endif
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
 
