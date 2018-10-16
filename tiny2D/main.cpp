@@ -24,24 +24,33 @@ int main(int argc, char **argv)
 	//initialize all systems and open game window
 	Engine::init("hello ToxicToddler2D", 960, 768);
 
+	//load tileset image
 	Tileset::Tileset tileset;
 	Tileset::init(&tileset, 10);
-	Tileset::modify(Tileset::make(&tileset), &tileset, "tileset.png", 32, 32, Engine::renderer);
+	Tileset::modify(Tileset::make(&tileset), &tileset, "tileset.png", 32, 32, 23, 21, Engine::renderer);
 
 	unsigned char prev_key_state[256];
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
-	Grid::Grid level;
-	Grid::load(&level, "test.csv");
-	//Grid::load(&level,"test.csv");
-
+	//load collision map (level collisions), "tiled" export csv
+	Grid::Grid collision_map;
+	Grid::load(&collision_map, "test_collision.csv");
+	//load tile map (visuals), "tiled" export csv
+	Grid::Grid tile_map;
+	Grid::load(&tile_map, "test_terrain.csv");
+	
+	//load sprite sheet into a texture
 	SDL_Texture *sprite_texture = Texture::load("saitama.png", Engine::renderer);
 
+	//create sprite database that can store many animated sprites
 	Sprite::Data sprite_database;
 	Sprite::init(&sprite_database, 10);
+
+	//create physics bodies
 	Body::Body bodies;
 	Body::init(&bodies, 100);
 
+	//extract animations from the loaded texture
 	Sprite::Data_Args entry;
 	entry.frame_w = 32;
 	entry.frame_h = 32;
@@ -57,26 +66,30 @@ int main(int argc, char **argv)
 	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
 
 	int player_state = 0;
-
-	Grid_Camera::Grid_Camera camera;
-	Grid_Camera::init(&camera, Engine::screen_width, Engine::screen_height);
-	camera.grid_coord.w = Engine::screen_width / 32;
-	camera.grid_coord.h = Engine::screen_height / 32;
-
+	//create animation instances for player
+	//run
 	Sprite::make_Instance(0, &sprite_database);
 	Sprite::modify(0, 0, &sprite_database, 100);
+	//idle
 	Sprite::make_Instance(1, &sprite_database);
 	Sprite::modify(1, 0, &sprite_database, 100);
-	Shape::Rect player_grid_rect = { 2,8,1.00,1.00 };//grid coords x,y,w,h
-	//Shape::Rect player_grid_rect = { 1,1,1.0,1.0 };//grid coords x,y,w,h
+	//player position in the map and its size (size in tile cells)
+	Shape::Rect player_grid_rect = { 2,8,1.00,1.00 };
 
-	printf("map nrows %d ncols %d\n", level.n_rows, level.n_cols);
-	//getchar();
-
+	//make a physics body instance for the player
 	int player_physics_body = Body::make(&bodies);
 	Vec2D::Vec2D tmp_pos = { player_grid_rect.x,player_grid_rect.y };
 	Body::modify(player_physics_body, &bodies, &tmp_pos, 1.0);
 
+	//create a grid camera and adjust its canvas size
+	Grid_Camera::Grid_Camera camera;
+	Grid_Camera::init(&camera, Engine::screen_width, Engine::screen_height);
+	camera.grid_coord.w = Engine::screen_width / 64;
+	camera.grid_coord.h = Engine::screen_height / 64;
+
+	printf("map nrows %d ncols %d\n", collision_map.n_rows, collision_map.n_cols);
+
+	//some parameters for the map
 	float current_friction = 0.0;
 	float friction_gravel = 0.98;
 	float friction_ice = 0.9998;
@@ -93,19 +106,16 @@ int main(int argc, char **argv)
 	float player_jump_force_magnitude_ice = 0.01;
 	float player_jump_force_magnitude_swamp = 0.008;
 
+	//gravity applied to player body
 	Vec2D::Vec2D gravity = { 0,0.00005 };
 
+	//type of tile which the player collision box collides at the bottom
 	int bottom_tile_type = 0;
 
 	int flip = 0;
 
 	float max_vel_x = 1.0/32.0;
 	float max_vel_y = 1.0/32.0;
-
-	int player_collision_top = 0;
-	int player_collision_bottom = 0;
-	int player_collision_left = 0;
-	int player_collision_right = 0;
 	
 	bool done = false;
 	while (!done)
@@ -143,6 +153,7 @@ int main(int argc, char **argv)
 		if (cmd_LEFT) flip = 1;
 		if (cmd_RIGHT) flip = 0;
 
+		//player state 1 = running, 0 = idle
 		if (cmd_LEFT || cmd_RIGHT)
 		{
 			player_state = 1;
@@ -152,14 +163,16 @@ int main(int argc, char **argv)
 			player_state = 0;
 		}
 
+		//get the body position and assign to player grid position
 		player_grid_rect.x = bodies.pos[player_physics_body].x;
 		player_grid_rect.y = bodies.pos[player_physics_body].y;
 		
-		player_collision_left = 0;
-		player_collision_right = 0;
-		player_collision_top = 0;
-		player_collision_bottom = 0;
+		int player_collision_top = 0;
+		int player_collision_bottom = 0;
+		int player_collision_left = 0;
+		int player_collision_right = 0;
 
+		//vertical collision check
 		Shape::Rect player_collision_rect_vertical;
 		player_collision_rect_vertical.x = player_grid_rect.x + 0.4;
 		player_collision_rect_vertical.y = player_grid_rect.y + 0.2;
@@ -169,18 +182,18 @@ int main(int argc, char **argv)
 		bottom_tile_type = 0;
 		Grid::Region grid_under_collision_rect_vertical;
 		Grid::get_Region_Under_Shape(&grid_under_collision_rect_vertical, &player_collision_rect_vertical);
-		Grid::clip_Grid_Region(&grid_under_collision_rect_vertical, &level);
+		Grid::clip_Grid_Region(&grid_under_collision_rect_vertical, &collision_map);
 		for (int i = grid_under_collision_rect_vertical.y0; i <= grid_under_collision_rect_vertical.y1; i++)
 		{
 			for (int j = grid_under_collision_rect_vertical.x0; j <= grid_under_collision_rect_vertical.x1; j++)
 			{
-				if (level.data[i*level.n_cols + j] == 0) continue;
+				if (collision_map.data[i*collision_map.n_cols + j] == 0) continue;
 
 				if (player_collision_rect_vertical.y < i)
 				{
 					player_collision_bottom = 1;
 
-					bottom_tile_type = level.data[i*level.n_cols + j];
+					bottom_tile_type = tile_map.data[i*collision_map.n_cols + j];
 					
 				}
 				else
@@ -191,6 +204,9 @@ int main(int argc, char **argv)
 			}
 		}
 
+
+		//vertical collision
+
 		Shape::Rect player_collision_rect_horizontal;
 		player_collision_rect_horizontal.x = player_grid_rect.x + 0.2;
 		player_collision_rect_horizontal.y = player_grid_rect.y + 0.4;
@@ -199,12 +215,12 @@ int main(int argc, char **argv)
 
 		Grid::Region grid_under_collision_rect_horizontal;
 		Grid::get_Region_Under_Shape(&grid_under_collision_rect_horizontal, &player_collision_rect_horizontal);
-		Grid::clip_Grid_Region(&grid_under_collision_rect_horizontal, &level);
+		Grid::clip_Grid_Region(&grid_under_collision_rect_horizontal, &collision_map);
 		for (int i = grid_under_collision_rect_horizontal.y0; i <= grid_under_collision_rect_horizontal.y1; i++)
 		{
 			for (int j = grid_under_collision_rect_horizontal.x0; j <= grid_under_collision_rect_horizontal.x1; j++)
 			{
-				if (level.data[i*level.n_cols + j] == 0) continue;
+				if (collision_map.data[i*collision_map.n_cols + j] == 0) continue;
 
 				if (player_collision_rect_horizontal.x < j)
 				{
@@ -218,9 +234,8 @@ int main(int argc, char **argv)
 			}
 		}
 
-		//printf("left %d right %d top %d bottom %d\n", player_collision_left, player_collision_right, player_collision_top, player_collision_bottom);
 
-		//START FORCES
+		//START ADDING FORCES
 		Body::clear_Forces(&bodies);
 
 		if (cmd_RIGHT == 1 && player_collision_right == 0)
@@ -242,7 +257,22 @@ int main(int argc, char **argv)
 
 		Body::add_Force(player_physics_body, &bodies, &gravity);
 
-		//DONE FORCES
+		if (bottom_tile_type == 247)
+		{
+			Vec2D::Vec2D f = { 0, -player_jump_force_magnitude_current*20 };
+			Body::add_Force(player_physics_body, &bodies, &f);
+			//bodies.vel[player_physics_body].y = 0.0;
+		}
+		else if (bottom_tile_type == 96)
+		{
+			Vec2D::Vec2D f = { 0, -player_jump_force_magnitude_current * 40 };
+			Body::add_Force(player_physics_body, &bodies, &f);
+			//bodies.vel[player_physics_body].y = 0.0;
+		}
+
+		//DONE ADDING FORCES
+
+		//integrate body physics
 
 		//integrate acceleration
 		bodies.vel[player_physics_body].x += bodies.force[player_physics_body].x / bodies.mass[player_physics_body];
@@ -254,13 +284,7 @@ int main(int argc, char **argv)
 		if (bodies.vel[player_physics_body].y < -max_vel_y)bodies.vel[player_physics_body].y = -max_vel_y;
 		
 
-		if (bottom_tile_type == 2 || bottom_tile_type == 1)
-		{
-			current_friction = friction_gravel;
-			player_jump_force_magnitude_current = player_jump_force_magnitude_gravel;
-			player_move_force_magnitude_current = player_move_force_magnitude_gravel;
-		}
-		else if (bottom_tile_type == 235)
+		if (bottom_tile_type == 235)
 		{
 			current_friction = friction_ice;
 			player_jump_force_magnitude_current = player_jump_force_magnitude_ice;
@@ -276,6 +300,12 @@ int main(int argc, char **argv)
 		{
 			current_friction = 0.0;
 			player_move_force_magnitude_current = player_move_force_magnitude_air;
+		}
+		else
+		{
+			current_friction = friction_gravel;
+			player_jump_force_magnitude_current = player_jump_force_magnitude_gravel;
+			player_move_force_magnitude_current = player_move_force_magnitude_gravel;
 		}
 
 		if (player_collision_bottom == 1)
@@ -310,7 +340,7 @@ int main(int argc, char **argv)
 		Grid::Region grid_region;
 		//if the camera was on top of a grid, which cells would its grid_coord be covering
 		Grid_Camera::get_Grid_Region_Covered(&grid_region, &camera);
-		Grid::clip_Grid_Region(&grid_region, &level);
+		Grid::clip_Grid_Region(&grid_region, &collision_map);
 		//based on the area covered, recalculate tile size and position
 		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
@@ -328,12 +358,12 @@ int main(int argc, char **argv)
 		{
 			int tx = camera.read_only.tile_x;
 
-			int *tmp_level_data = &level.data[i*level.n_cols];
+			int *tmp_level_data = &tile_map.data[i*tile_map.n_cols];
 			for (int j = grid_region.x0; j <= grid_region.x1; j++)
 			{
 				int grid_data = tmp_level_data[j];
-				int tileset_idx = grid_data / 23;
-				int tileset_offset = grid_data % 23;
+				int tileset_idx = grid_data / tileset.n_cols[0];
+				int tileset_offset = grid_data % tileset.n_cols[0];
 				Tileset::draw(0, tileset_idx, tileset_offset, &tileset, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
 
 				tx += camera.read_only.tile_w;
@@ -356,13 +386,14 @@ int main(int argc, char **argv)
 
 		}
 
+#if DEBUG 1
 		int red = 0;
 		int green = 0;
 		for (int i = grid_under_collision_rect_vertical.y0; i <= grid_under_collision_rect_vertical.y1; i++)
 		{
 			for (int j = grid_under_collision_rect_vertical.x0; j <= grid_under_collision_rect_vertical.x1; j++)
 			{
-				if (level.data[i*level.n_cols + j] == 0) continue;
+				if (collision_map.data[i*collision_map.n_cols + j] == 0) continue;
 				Shape::Rect tile_affected_rect = { j, i, 1, 1 };
 				Shape::Rect tile_collision_screen_rect;
 				Grid_Camera::grid_Coord_to_Screen_Coord(&tile_collision_screen_rect, &tile_affected_rect, &camera);
@@ -382,7 +413,7 @@ int main(int argc, char **argv)
 		{
 			for (int j = grid_under_collision_rect_horizontal.x0; j <= grid_under_collision_rect_horizontal.x1; j++)
 			{
-				if (level.data[i*level.n_cols + j] == 0) continue;
+				if (collision_map.data[i*collision_map.n_cols + j] == 0) continue;
 				Shape::Rect tile_affected_rect = { j, i, 1, 1 };
 				Shape::Rect tile_collision_screen_rect;
 				Grid_Camera::grid_Coord_to_Screen_Coord(&tile_collision_screen_rect, &tile_affected_rect, &camera);
@@ -398,6 +429,7 @@ int main(int argc, char **argv)
 			}
 		}
 
+
 		SDL_SetRenderDrawColor(Engine::renderer, 255, 0, 0, 255);
 		Shape::Rect player_collision_screen_rect_vertical;
 		Grid_Camera::grid_Coord_to_Screen_Coord(&player_collision_screen_rect_vertical, &player_collision_rect_vertical, &camera);
@@ -410,7 +442,7 @@ int main(int argc, char **argv)
 
 		SDL_Rect r2 = { player_collision_screen_rect_horizontal.x,player_collision_screen_rect_horizontal.y,player_collision_screen_rect_horizontal.w,player_collision_screen_rect_horizontal.h };
 		SDL_RenderDrawRect(Engine::renderer, &r2);
-		
+#endif
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
 

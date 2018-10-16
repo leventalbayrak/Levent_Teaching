@@ -36,7 +36,11 @@ namespace Tileset
 		return t->n_tilesets - 1;
 	}
 
-	void modify(int index,Tileset *t, char *image_filename, int tile_w, int tile_h, SDL_Renderer *renderer)
+	/*
+	tile_w, tile_h = size of single tile in pixels
+	n_cols, n_rows = number of rows and columns of tiles in the tileset file
+	*/
+	void modify(int index,Tileset *t, char *image_filename, int tile_w, int tile_h, int n_cols, int n_rows, SDL_Renderer *renderer)
 	{
 		SDL_Surface *sprite_surface = IMG_Load(image_filename);
 		assert(sprite_surface);
@@ -47,6 +51,8 @@ namespace Tileset
 		t->tile_w[index] = tile_w;
 		t->tile_h[index] = tile_h;
 		t->tex[index] = sprite_texture;
+		t->n_cols[index] = n_cols;
+		t->n_rows[index] = n_rows;
 	}
 
 	void draw(int index, int tileset_row, int tileset_col, Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer)
