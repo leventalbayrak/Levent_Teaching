@@ -85,7 +85,7 @@ namespace Grid_File
 			unsigned int k = 0;
 			for (unsigned int j = 0; j < line_length; j++)
 			{
-				if (s[j] == '\t') k++;
+				if (s[j] == '\t' || s[j] == ',') k++;
 			}
 			long long int possible_number_of_columns = k + 1;
 
@@ -93,14 +93,14 @@ namespace Grid_File
 			assert(t->table[i] != NULL);
 
 			long long int cols_read = 0;
-			char *st = strtok(lines[i], "\t");
+			char *st = strtok(lines[i], "\t,");
 			while (st != NULL)
 			{
 				t->table[i][cols_read] = new char[strlen(st) + 1];
 				assert(t->table[i][cols_read] != NULL);
 				strcpy(t->table[i][cols_read], st);
 				cols_read++;
-				st = strtok(NULL, "\t");
+				st = strtok(NULL, "\t,");
 			}
 
 			t->ncols[i] = cols_read;

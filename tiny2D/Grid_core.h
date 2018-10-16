@@ -24,8 +24,8 @@ namespace Grid
 */
 		g->x0 = (r->x);
 		g->y0 = (r->y);
-		g->x1 = (r->x + r->w + 0.5);
-		g->y1 = (r->y + r->h + 0.5);
+		g->x1 = (r->x + r->w);
+		g->y1 = (r->y + r->h);
 	}
 
 	void clip_Grid_Region(Region *r, const Grid *g)
