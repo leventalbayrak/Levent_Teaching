@@ -24,7 +24,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	//initialize all systems and open game window
-	Engine::init("hello topdown", 960, 768);
+	Engine::init("hello ToxicToddler2D", 960, 768);
 
 	//load tileset image
 	Tileset::Tileset tileset;
@@ -36,11 +36,11 @@ int main(int argc, char **argv)
 
 	//load collision map (level collisions), "tiled" export csv
 	Grid::Grid collision_map;
-	Grid::load(&collision_map, "topdown_collision.csv");
+	Grid::load(&collision_map, "test_collision.csv");
 	//load tile map (visuals), "tiled" export csv
 	Grid::Grid tile_map;
-	Grid::load(&tile_map, "topdown_map.csv");
-
+	Grid::load(&tile_map, "test_terrain.csv");
+	
 	//load sprite sheet into a texture
 	SDL_Texture *sprite_texture = Texture::load("saitama.png", Engine::renderer);
 
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 	Sprite::make_Instance(1, &sprite_database);
 	Sprite::modify(1, 0, &sprite_database, 100);
 	//player position in the map and its size (size in tile cells)
-	Shape::Rect player_grid_rect = { tile_map.n_cols / 2, tile_map.n_rows / 2 ,1.00,1.00 };
+	Shape::Rect player_grid_rect = { 2,8,1.00,1.00 };
 
 	//make a physics body instance for the player
 	int player_physics_body = Body::make(&bodies);
@@ -92,21 +92,34 @@ int main(int argc, char **argv)
 	printf("map nrows %d ncols %d\n", collision_map.n_rows, collision_map.n_cols);
 
 	//some parameters for the map
-	float current_friction = 0.985;
-	float player_move_force_magnitude_current = 0.0002;
-	float max_vel_x = 1.0 / 32.0;
-	float max_vel_y = 1.0 / 32.0;
+	float current_friction = 0.0;
+	float friction_gravel = 0.98;
+	float friction_ice = 0.9998;
+	float friction_swamp = 0.95;
+
+	float player_move_force_magnitude_current = 0.0001;
+	float player_move_force_magnitude_gravel = 0.00012;
+	float player_move_force_magnitude_ice = 0.000024;
+	float player_move_force_magnitude_swamp = 0.0001;
+	float player_move_force_magnitude_air = 0.00002;
+
+	float player_jump_force_magnitude_current = 0.01;
+	float player_jump_force_magnitude_gravel = 0.012;
+	float player_jump_force_magnitude_ice = 0.01;
+	float player_jump_force_magnitude_swamp = 0.008;
+
+	//gravity applied to player body
+	Vec2D::Vec2D gravity = { 0,0.00005 };
 
 	//type of tile which the player collision box collides at the bottom
 	int vertical_collision_tile_type = 0;
 	int horizontal_collision_tile_type = 0;
 
-	int mouse_x, mouse_y;
-
 	int flip = 0;
 
+	float max_vel_x = 1.0/32.0;
+	float max_vel_y = 1.0/32.0;
 	
-
 	bool done = false;
 	while (!done)
 	{
@@ -124,24 +137,18 @@ int main(int argc, char **argv)
 			}
 		}
 
-
+		
 		int cmd_UP = 0;
 		int cmd_LEFT = 0;
 		int cmd_RIGHT = 0;
 		int cmd_DOWN = 0;
+		
 
-
-		if (keys[SDL_SCANCODE_W]) cmd_UP = 1;
+		if (keys[SDL_SCANCODE_W] == 1 && prev_key_state[SDL_SCANCODE_W] == 0) cmd_UP = 1;
 		if (keys[SDL_SCANCODE_S]) cmd_DOWN = 1;
 		if (keys[SDL_SCANCODE_A]) cmd_LEFT = 1;
 		if (keys[SDL_SCANCODE_D]) cmd_RIGHT = 1;
-
-
-		SDL_GetMouseState(&mouse_x, &mouse_y);
-		Vec2D::Vec2D mouse_screen_pos = { mouse_x,mouse_y };
-		Vec2D::Vec2D mouse_grid_pos;
-		Grid_Camera::screen_to_Grid(&mouse_grid_pos, &mouse_screen_pos, &camera);
-
+		
 		/*
 		GAME CODE
 		*/
@@ -150,7 +157,7 @@ int main(int argc, char **argv)
 		if (cmd_RIGHT) flip = 0;
 
 		//player state 1 = running, 0 = idle
-		if (cmd_LEFT || cmd_RIGHT || cmd_UP || cmd_DOWN)
+		if (cmd_LEFT || cmd_RIGHT)
 		{
 			player_state = 1;
 		}
@@ -162,7 +169,7 @@ int main(int argc, char **argv)
 		//get the body position and assign to player grid position
 		player_grid_rect.x = bodies.pos[player_physics_body].x;
 		player_grid_rect.y = bodies.pos[player_physics_body].y;
-
+		
 		int player_collision_top = 0;
 		int player_collision_bottom = 0;
 		int player_collision_left = 0;
@@ -207,7 +214,7 @@ int main(int argc, char **argv)
 			player_collision_left = 1;
 			horizontal_collision_tile_type = tile_map.data[hr*collision_map.n_cols + hc];
 		}
-		else if (hd == 1)
+		else if(hd == 1)
 		{
 			player_collision_right = 1;
 			horizontal_collision_tile_type = tile_map.data[hr*collision_map.n_cols + hc];
@@ -228,18 +235,24 @@ int main(int argc, char **argv)
 			Body::add_Force(player_physics_body, &bodies, &f);
 		}
 
-		if (cmd_UP == 1 && player_collision_top == 0)
+		if (cmd_UP == 1 && player_collision_bottom == 1)
 		{
-			Vec2D::Vec2D f = { 0, -player_move_force_magnitude_current };
+			Vec2D::Vec2D f = { 0, -player_jump_force_magnitude_current};
 			Body::add_Force(player_physics_body, &bodies, &f);
 		}
 
-		if (cmd_DOWN == 1 && player_collision_bottom == 0)
+		Body::add_Force(player_physics_body, &bodies, &gravity);
+
+		if (vertical_collision_tile_type == 247 || horizontal_collision_tile_type == 247)
 		{
-			Vec2D::Vec2D f = { 0, player_move_force_magnitude_current };
+			Vec2D::Vec2D f = { 0, -player_jump_force_magnitude_current*20 };
 			Body::add_Force(player_physics_body, &bodies, &f);
 		}
-
+		else if (vertical_collision_tile_type == 96 || horizontal_collision_tile_type == 96)
+		{
+			Vec2D::Vec2D f = { 0, -player_jump_force_magnitude_current * 40 };
+			Body::add_Force(player_physics_body, &bodies, &f);
+		}
 
 		//DONE ADDING FORCES
 
@@ -249,12 +262,44 @@ int main(int argc, char **argv)
 		Body::update_Vel(player_physics_body, &bodies);
 		//clip velocity
 		Vec2D::clip(&bodies.vel[player_physics_body], -max_vel_x, max_vel_x, -max_vel_y, max_vel_y);
+		
+		if (vertical_collision_tile_type == 235)
+		{
+			current_friction = friction_ice;
+			player_jump_force_magnitude_current = player_jump_force_magnitude_ice;
+			player_move_force_magnitude_current = player_move_force_magnitude_ice;
+		}
+		else if (vertical_collision_tile_type == 207)
+		{
+			current_friction = friction_swamp;
+			player_jump_force_magnitude_current = player_jump_force_magnitude_swamp;
+			player_move_force_magnitude_current = player_move_force_magnitude_swamp;
+		}
+		else if (vertical_collision_tile_type == 1)
+		{
+			current_friction = friction_gravel;
+			player_jump_force_magnitude_current = player_jump_force_magnitude_gravel;
+			player_move_force_magnitude_current = player_move_force_magnitude_gravel;
+		}
+		else if (vertical_collision_tile_type == 0)
+		{
+			current_friction = 0.0;
+			player_jump_force_magnitude_current = 0.0;
+			player_move_force_magnitude_current = player_move_force_magnitude_air;
+		}
+		else
+		{
+			current_friction = friction_gravel;
+			player_jump_force_magnitude_current = player_jump_force_magnitude_gravel;
+			player_move_force_magnitude_current = player_move_force_magnitude_gravel;
+		}
 
 		//apply friction
-		bodies.vel[player_physics_body].x *= current_friction;
-		bodies.vel[player_physics_body].y *= current_friction;
-		if (abs(bodies.vel[player_physics_body].x) < 0.00001) bodies.vel[player_physics_body].x = 0.0;
-		if (abs(bodies.vel[player_physics_body].y) < 0.00001) bodies.vel[player_physics_body].y = 0.0;
+		if (player_collision_bottom == 1)
+		{
+			bodies.vel[player_physics_body].x *= current_friction;
+			if (abs(bodies.vel[player_physics_body].x) < 0.00001) bodies.vel[player_physics_body].x = 0.0;
+		}
 
 		//apply velocity constraints
 		if (player_collision_bottom == 1 && bodies.vel[player_physics_body].y > 0)
@@ -288,9 +333,6 @@ int main(int argc, char **argv)
 		//based on the area covered, recalculate tile size and position
 		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
-		printf("%.2f %.2f\n", mouse_grid_pos.x, mouse_grid_pos.y);
-		tile_map.data[(int)mouse_grid_pos.y*tile_map.n_cols + (int)mouse_grid_pos.x] = 5 + rand() % 6;
-
 		//RENDER
 
 		//set color to white
@@ -317,8 +359,8 @@ int main(int argc, char **argv)
 		}
 
 		Shape::Rect player_screen_rect;
-		Grid_Camera::grid_to_Screen(&player_screen_rect, &player_grid_rect, &camera);
-
+		Grid_Camera::grid_Coord_to_Screen_Coord(&player_screen_rect, &player_grid_rect, &camera);
+		
 		if (player_state == 1)
 		{
 			Sprite::update(0, 0, &sprite_database, current_time);

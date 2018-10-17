@@ -1,4 +1,5 @@
 #pragma once
+#include "Vec2D_core.h"
 #include "Grid_Camera_data.h"
 #include "Grid_core.h"
 
@@ -18,12 +19,19 @@ namespace Grid_Camera
 		Grid::get_Region_Under_Shape(a, &c->grid_coord);
 	}
 
-	void grid_Coord_to_Screen_Coord(Shape::Rect *screen_coord,const Shape::Rect *grid_coord, const Grid_Camera *c)
+	void grid_to_Screen(Shape::Rect *screen_coord,const Shape::Rect *grid_coord, const Grid_Camera *c)
 	{
 		screen_coord->x = c->init.screen_width*(grid_coord->x - c->grid_coord.x) / c->grid_coord.w;
 		screen_coord->y = c->init.screen_height*(grid_coord->y - c->grid_coord.y) / c->grid_coord.h;
 		screen_coord->w = c->init.screen_width*grid_coord->w / c->grid_coord.w;
 		screen_coord->h = c->init.screen_height*grid_coord->h / c->grid_coord.h;
+	}
+
+	void screen_to_Grid(Vec2D::Vec2D *grid_point, Vec2D::Vec2D *screen_point, const Grid_Camera *c)
+	{
+		
+		grid_point->x = c->grid_coord.x + c->grid_coord.w*(screen_point->x / c->read_only.tile_w);
+		grid_point->y = c->grid_coord.y + c->grid_coord.h*(screen_point->y / c->read_only.tile_h);
 	}
 
 	//must perform this if camera width or height changes

@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 	//load tile map (visuals), "tiled" export csv
 	Grid::Grid tile_map;
 	Grid::load(&tile_map, "topdown_map.csv");
-
+	
 	//load sprite sheet into a texture
 	SDL_Texture *sprite_texture = Texture::load("saitama.png", Engine::renderer);
 
@@ -92,10 +92,8 @@ int main(int argc, char **argv)
 	printf("map nrows %d ncols %d\n", collision_map.n_rows, collision_map.n_cols);
 
 	//some parameters for the map
-	float current_friction = 0.985;
-	float player_move_force_magnitude_current = 0.0002;
-	float max_vel_x = 1.0 / 32.0;
-	float max_vel_y = 1.0 / 32.0;
+	float current_friction = 0.99;
+	float player_move_force_magnitude_current = 0.0001;
 
 	//type of tile which the player collision box collides at the bottom
 	int vertical_collision_tile_type = 0;
@@ -105,8 +103,9 @@ int main(int argc, char **argv)
 
 	int flip = 0;
 
+	float max_vel_x = 1.0/32.0;
+	float max_vel_y = 1.0/32.0;
 	
-
 	bool done = false;
 	while (!done)
 	{
@@ -124,12 +123,12 @@ int main(int argc, char **argv)
 			}
 		}
 
-
+		
 		int cmd_UP = 0;
 		int cmd_LEFT = 0;
 		int cmd_RIGHT = 0;
 		int cmd_DOWN = 0;
-
+		
 
 		if (keys[SDL_SCANCODE_W]) cmd_UP = 1;
 		if (keys[SDL_SCANCODE_S]) cmd_DOWN = 1;
@@ -141,7 +140,7 @@ int main(int argc, char **argv)
 		Vec2D::Vec2D mouse_screen_pos = { mouse_x,mouse_y };
 		Vec2D::Vec2D mouse_grid_pos;
 		Grid_Camera::screen_to_Grid(&mouse_grid_pos, &mouse_screen_pos, &camera);
-
+		
 		/*
 		GAME CODE
 		*/
@@ -162,7 +161,7 @@ int main(int argc, char **argv)
 		//get the body position and assign to player grid position
 		player_grid_rect.x = bodies.pos[player_physics_body].x;
 		player_grid_rect.y = bodies.pos[player_physics_body].y;
-
+		
 		int player_collision_top = 0;
 		int player_collision_bottom = 0;
 		int player_collision_left = 0;
@@ -207,7 +206,7 @@ int main(int argc, char **argv)
 			player_collision_left = 1;
 			horizontal_collision_tile_type = tile_map.data[hr*collision_map.n_cols + hc];
 		}
-		else if (hd == 1)
+		else if(hd == 1)
 		{
 			player_collision_right = 1;
 			horizontal_collision_tile_type = tile_map.data[hr*collision_map.n_cols + hc];
@@ -230,7 +229,7 @@ int main(int argc, char **argv)
 
 		if (cmd_UP == 1 && player_collision_top == 0)
 		{
-			Vec2D::Vec2D f = { 0, -player_move_force_magnitude_current };
+			Vec2D::Vec2D f = { 0, -player_move_force_magnitude_current};
 			Body::add_Force(player_physics_body, &bodies, &f);
 		}
 
@@ -249,7 +248,7 @@ int main(int argc, char **argv)
 		Body::update_Vel(player_physics_body, &bodies);
 		//clip velocity
 		Vec2D::clip(&bodies.vel[player_physics_body], -max_vel_x, max_vel_x, -max_vel_y, max_vel_y);
-
+		
 		//apply friction
 		bodies.vel[player_physics_body].x *= current_friction;
 		bodies.vel[player_physics_body].y *= current_friction;
@@ -289,7 +288,7 @@ int main(int argc, char **argv)
 		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
 		printf("%.2f %.2f\n", mouse_grid_pos.x, mouse_grid_pos.y);
-		tile_map.data[(int)mouse_grid_pos.y*tile_map.n_cols + (int)mouse_grid_pos.x] = 5 + rand() % 6;
+		tile_map.data[(int)mouse_grid_pos.y*tile_map.n_cols + (int)mouse_grid_pos.x] = 5+rand() % 6;
 
 		//RENDER
 
@@ -318,7 +317,7 @@ int main(int argc, char **argv)
 
 		Shape::Rect player_screen_rect;
 		Grid_Camera::grid_to_Screen(&player_screen_rect, &player_grid_rect, &camera);
-
+		
 		if (player_state == 1)
 		{
 			Sprite::update(0, 0, &sprite_database, current_time);
