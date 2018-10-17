@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Grid_data.h"
-#include "Grid_File_core.h"
+#include "Table_File_core.h"
 #include "Shape_data.h"
 namespace Grid
 {
@@ -81,8 +81,8 @@ namespace Grid
 
 	void load(Grid *g, const char *filename)
 	{
-		Grid_File::Grid_File t;
-		Grid_File::read(filename, &t);
+		Table_File::Table_File t;
+		Table_File::read(filename, &t);
 		for (int i = 1; i < t.nrows; i++)
 		{
 			if (t.ncols[i] != t.ncols[i - 1])
@@ -100,6 +100,6 @@ namespace Grid
 			}
 		}
 
-		Grid_File::clean(&t);
+		Table_File::clean(&t);
 	}
 }

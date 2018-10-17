@@ -1,8 +1,8 @@
 #pragma once
 
-namespace Grid_File
+namespace Table_File
 {
-	struct Grid_File
+	struct Table_File
 	{
 		char ***table;
 		unsigned int nrows;

@@ -124,8 +124,8 @@
     <ClInclude Include="Grid_Camera_core.h" />
     <ClInclude Include="Grid_Camera_data.h" />
     <ClInclude Include="Grid_core.h" />
-    <ClInclude Include="Grid_File_core.h" />
-    <ClInclude Include="Grid_File_data.h" />
+    <ClInclude Include="Table_File_core.h" />
+    <ClInclude Include="Table_File_data.h" />
     <ClInclude Include="Shape_core.h" />
     <ClInclude Include="Shape_data.h" />
     <ClInclude Include="Sprite_core.h" />

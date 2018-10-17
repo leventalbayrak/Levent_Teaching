@@ -4,6 +4,7 @@ TODO:
 use custom allocator
 */
 #include "Sprite_data.h"
+#include "Texture_core.h"
 #include "SDL2-2.0.8/include/SDL.h"
 namespace Sprite
 {
@@ -137,6 +138,29 @@ namespace Sprite
 		{
 			SDL_RenderCopyEx(renderer, d->texture[index], &src, &dest, 0, NULL, SDL_FLIP_HORIZONTAL);
 		}
-		
+	}
+
+	namespace File
+	{
+		int add(Data *sprite_database, const char *filename, SDL_Renderer *renderer)
+		{
+			char img_filename[128];
+			FILE *f = fopen(filename, "r");
+			int r = fscanf(f, "img=%s\n", img_filename);
+			SDL_Texture *sprite_texture = Texture::load(img_filename, renderer);
+			if (r != 1) return 0;
+			
+			int counter = 0;
+			for (;;)
+			{
+				Sprite::Data_Args entry;
+				int r = fscanf(f, "frame_x=%d frame_y=%d frame_w=%d frame_h=%d n_frames=%d\n", &entry.frame_pos_x, &entry.frame_pos_y, &entry.frame_w, &entry.frame_h, &entry.n_frames);
+				if (r != 5) break;
+				modify(Sprite::make(sprite_database), sprite_database, &entry, sprite_texture);
+				counter++;
+			}
+
+			return counter;
+		}
 	}
 }

@@ -1,0 +1,3 @@
+img=saitama.png
+frame_x=0 frame_y=0 frame_w=32 frame_h=32 n_frames=3 
+frame_x=0 frame_y=32 frame_w=32 frame_h=32 n_frames=3 

@@ -10,11 +10,11 @@
 #include <random>
 #include <time.h>
 #include <cfloat>
-#include "Grid_File_data.h"
-namespace Grid_File
+#include "Table_File_data.h"
+namespace Table_File
 {
 
-	void read(const char *filename, Grid_File *t)
+	void read(const char *filename, Table_File *t)
 	{
 		FILE *f = fopen(filename, "rb");
 		assert(f != NULL);
@@ -111,7 +111,7 @@ namespace Grid_File
 
 	}
 
-	void clean(Grid_File *t)
+	void clean(Table_File *t)
 	{
 		for (unsigned int i = 0; i < t->nrows; i++)
 		{
@@ -123,7 +123,7 @@ namespace Grid_File
 		}
 		delete[] t->ncols;
 		delete[] t->table;
-		memset(t, 0, sizeof(Grid_File));
+		memset(t, 0, sizeof(Table_File));
 	}
 
 }

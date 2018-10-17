@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable:4996)
 #include <assert.h>
 #include "Tileset_data.h"
 #include "SDL2-2.0.8\include\SDL.h"
@@ -70,5 +71,22 @@ namespace Tileset
 		dest.h = dest_h;
 
 		SDL_RenderCopyEx((SDL_Renderer*)renderer, t->tex[index], &src, &dest, 0, NULL, SDL_FLIP_NONE);
+	}
+
+	namespace File
+	{
+		int add(Tileset *tileset, const char *filename, SDL_Renderer *renderer)
+		{
+			char img_filename[128];
+			FILE *f = fopen(filename, "r");
+			int tile_w = 0;
+			int tile_h = 0;
+			int n_rows = 0;
+			int n_cols = 0;
+			int r = fscanf(f, "img=%s tile_w=%d tile_h=%d n_cols=%d n_rows=%d\n", img_filename, &tile_w, &tile_h, &n_cols, &n_rows);
+			if (r != 5) return tileset->n_tilesets;
+			modify(make(tileset), tileset, img_filename, tile_w, tile_h, n_cols, n_rows, renderer);
+			return tileset->n_tilesets;
+		}
 	}
 }

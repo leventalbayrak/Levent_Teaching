@@ -1,0 +1,1 @@
+img=tileset.png tile_w=32 tile_h=32 n_cols=23 n_rows=21

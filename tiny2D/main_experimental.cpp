@@ -39,11 +39,11 @@ int main(int argc, char **argv)
 	Audio::set_FX_Volume(coin_sound, 64);
 	Audio::set_FX_Volume(ting_sound, 100);
 
+	Tileset::Tileset tileset_database;
+	Tileset::init(&tileset_database, 10);
 	//load tileset image
-	Tileset::Tileset tileset;
-	Tileset::init(&tileset, 10);
-	Tileset::modify(Tileset::make(&tileset), &tileset, "tileset.png", 32, 32, 23, 21, Engine::renderer);
-	
+	Tileset::File::add(&tileset_database, "map_tileset.txt", Engine::renderer);
+	printf("%d tilesets loaded\n", tileset_database.n_tilesets);
 	unsigned char prev_key_state[256];
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
@@ -54,31 +54,15 @@ int main(int argc, char **argv)
 	Grid::Grid tilemap;
 	Grid::load(&tilemap, "topdown_map.csv");
 
-	//load sprite sheet into a texture
-	SDL_Texture *sprite_texture = Texture::load("saitama.png", Engine::renderer);
-
-	//create sprite database that can store many animated sprites
+	//create sprite database that can store many animated sprites from different sprite sheets
 	Sprite::Data sprite_database;
 	Sprite::init(&sprite_database, 10);
+	int n_sprites_added = Sprite::File::add(&sprite_database, "saitama.txt", Engine::renderer);
+	printf("added %d sprites\n", n_sprites_added);
 
 	//create physics bodies
 	Body::Body bodies;
 	Body::init(&bodies, 100);
-
-	//extract animations from the loaded texture
-	Sprite::Data_Args entry;
-	entry.frame_w = 32;
-	entry.frame_h = 32;
-
-	entry.frame_pos_x = 0;
-	entry.frame_pos_y = 0;
-	entry.n_frames = 3;
-	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
-
-	entry.frame_pos_x = 0;
-	entry.frame_pos_y = 32;
-	entry.n_frames = 3;
-	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
 
 	int player_state = 0;
 	//create animation instances for player
@@ -340,9 +324,9 @@ int main(int argc, char **argv)
 			for (int j = grid_region.x0; j <= grid_region.x1; j++)
 			{
 				int grid_data = tmp_level_data[j];
-				int tileset_idx = grid_data / tileset.n_cols[0];
-				int tileset_offset = grid_data % tileset.n_cols[0];
-				Tileset::draw(0, tileset_idx, tileset_offset, &tileset, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
+				int tileset_idx = grid_data / tileset_database.n_cols[0];
+				int tileset_offset = grid_data % tileset_database.n_cols[0];
+				Tileset::draw(0, tileset_idx, tileset_offset, &tileset_database, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
 
 				tx += camera.read_only.tile_w;
 			}
