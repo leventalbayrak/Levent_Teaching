@@ -29,7 +29,6 @@ int main(int argc, char **argv)
 
 	Font::init();
 	int font_index_0 = Font::add("lazy_font.png", 64, 64, Engine::renderer);
-	//int font_index_1 = Font::add("lazy_font_2.png", 64, 64, Engine::renderer);
 
 	//load tileset image
 	Tileset::Tileset tileset;
@@ -110,8 +109,6 @@ int main(int argc, char **argv)
 
 	int flip = 0;
 
-	
-
 	bool done = false;
 	while (!done)
 	{
@@ -144,8 +141,10 @@ int main(int argc, char **argv)
 
 		unsigned int button = SDL_GetMouseState(&mouse_x, &mouse_y);
 		Vec2D::Vec2D mouse_screen_pos = { mouse_x,mouse_y };
+		
 		Vec2D::Vec2D mouse_grid_pos;
 		Grid_Camera::screen_to_Grid(&mouse_grid_pos, &mouse_screen_pos, &camera);
+
 		if (button & SDL_BUTTON(SDL_BUTTON_LEFT))
 		{
 			int index = (int)mouse_grid_pos.y*collision_map.n_cols + (int)mouse_grid_pos.x;
@@ -305,7 +304,6 @@ int main(int argc, char **argv)
 		//based on the area covered, recalculate tile size and position
 		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
-		
 		//RENDER
 
 		//set color to white
