@@ -30,8 +30,8 @@ namespace Grid_Camera
 	void screen_to_Grid(Vec2D::Vec2D *grid_point, Vec2D::Vec2D *screen_point, const Grid_Camera *c)
 	{
 		
-		grid_point->x = c->grid_coord.x + c->grid_coord.w*(screen_point->x / c->read_only.tile_w);
-		grid_point->y = c->grid_coord.y + c->grid_coord.h*(screen_point->y / c->read_only.tile_h);
+		grid_point->x = c->grid_coord.x + c->grid_coord.w*(screen_point->x / c->init.screen_width);
+		grid_point->y = c->grid_coord.y + c->grid_coord.h*(screen_point->y / c->init.screen_height);
 	}
 
 	//must perform this if camera width or height changes
