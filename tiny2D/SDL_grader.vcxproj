@@ -118,6 +118,8 @@
     <ClInclude Include="Body_data.h" />
     <ClInclude Include="Engine_core.h" />
     <ClInclude Include="Engine_data.h" />
+    <ClInclude Include="Font_core.h" />
+    <ClInclude Include="Font_data.h" />
     <ClInclude Include="Grid_Camera_core.h" />
     <ClInclude Include="Grid_Camera_data.h" />
     <ClInclude Include="Grid_core.h" />

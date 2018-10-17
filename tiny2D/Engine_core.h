@@ -10,6 +10,7 @@ using namespace std;
 #include "Grid_Camera_core.h"
 #include "Sprite_core.h"
 #include "Body_core.h"
+#include "Font_core.h"
 
 namespace Engine
 {
@@ -21,5 +22,6 @@ namespace Engine
 		screen_height = _screen_height;
 		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN);
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
 	}
 }

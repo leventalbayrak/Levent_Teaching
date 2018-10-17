@@ -18,6 +18,7 @@ using namespace std;
 #include "Engine_core.h"
 #include "Texture_core.h"
 #include "Shape_core.h"
+#include "Font_core.h"
 
 #define DEBUG 0
 
@@ -26,11 +27,15 @@ int main(int argc, char **argv)
 	//initialize all systems and open game window
 	Engine::init("hello topdown", 960, 768);
 
+	Font::init();
+	int font_index_0 = Font::add("lazy_font.png", 64, 64, Engine::renderer);
+	//int font_index_1 = Font::add("lazy_font_2.png", 64, 64, Engine::renderer);
+
 	//load tileset image
 	Tileset::Tileset tileset;
 	Tileset::init(&tileset, 10);
 	Tileset::modify(Tileset::make(&tileset), &tileset, "tileset.png", 32, 32, 23, 21, Engine::renderer);
-
+	
 	unsigned char prev_key_state[256];
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
@@ -38,8 +43,8 @@ int main(int argc, char **argv)
 	Grid::Grid collision_map;
 	Grid::load(&collision_map, "topdown_collision.csv");
 	//load tile map (visuals), "tiled" export csv
-	Grid::Grid tile_map;
-	Grid::load(&tile_map, "topdown_map.csv");
+	Grid::Grid tilemap;
+	Grid::load(&tilemap, "topdown_map.csv");
 
 	//load sprite sheet into a texture
 	SDL_Texture *sprite_texture = Texture::load("saitama.png", Engine::renderer);
@@ -76,7 +81,7 @@ int main(int argc, char **argv)
 	Sprite::make_Instance(1, &sprite_database);
 	Sprite::modify(1, 0, &sprite_database, 100);
 	//player position in the map and its size (size in tile cells)
-	Shape::Rect player_grid_rect = { tile_map.n_cols / 2, tile_map.n_rows / 2 ,1.00,1.00 };
+	Shape::Rect player_grid_rect = { tilemap.n_cols / 2, tilemap.n_rows / 2 ,1.00,1.00 };
 
 	//make a physics body instance for the player
 	int player_physics_body = Body::make(&bodies);
@@ -137,10 +142,22 @@ int main(int argc, char **argv)
 		if (keys[SDL_SCANCODE_D]) cmd_RIGHT = 1;
 
 
-		SDL_GetMouseState(&mouse_x, &mouse_y);
+		unsigned int button = SDL_GetMouseState(&mouse_x, &mouse_y);
 		Vec2D::Vec2D mouse_screen_pos = { mouse_x,mouse_y };
 		Vec2D::Vec2D mouse_grid_pos;
 		Grid_Camera::screen_to_Grid(&mouse_grid_pos, &mouse_screen_pos, &camera);
+		if (button & SDL_BUTTON(SDL_BUTTON_LEFT))
+		{
+			int index = (int)mouse_grid_pos.y*collision_map.n_cols + (int)mouse_grid_pos.x;
+			collision_map.data[index] = 1;
+			tilemap.data[index] = 9;
+		}
+		if (button & SDL_BUTTON(SDL_BUTTON_RIGHT))
+		{
+			int index = (int)mouse_grid_pos.y*collision_map.n_cols + (int)mouse_grid_pos.x;
+			collision_map.data[index] = 0;
+			tilemap.data[index] = 0;
+		}
 
 		/*
 		GAME CODE
@@ -182,12 +199,12 @@ int main(int argc, char **argv)
 		if (vd == 0)
 		{
 			player_collision_bottom = 1;
-			vertical_collision_tile_type = tile_map.data[vr*collision_map.n_cols + vc];
+			vertical_collision_tile_type = tilemap.data[vr*collision_map.n_cols + vc];
 		}
 		else if (vd == 1)
 		{
 			player_collision_top = 1;
-			vertical_collision_tile_type = tile_map.data[vr*collision_map.n_cols + vc];
+			vertical_collision_tile_type = tilemap.data[vr*collision_map.n_cols + vc];
 		}
 
 		//vertical collision
@@ -205,12 +222,12 @@ int main(int argc, char **argv)
 		if (hd == 0)
 		{
 			player_collision_left = 1;
-			horizontal_collision_tile_type = tile_map.data[hr*collision_map.n_cols + hc];
+			horizontal_collision_tile_type = tilemap.data[hr*collision_map.n_cols + hc];
 		}
 		else if (hd == 1)
 		{
 			player_collision_right = 1;
-			horizontal_collision_tile_type = tile_map.data[hr*collision_map.n_cols + hc];
+			horizontal_collision_tile_type = tilemap.data[hr*collision_map.n_cols + hc];
 		}
 
 
@@ -288,9 +305,7 @@ int main(int argc, char **argv)
 		//based on the area covered, recalculate tile size and position
 		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
-		printf("%.2f %.2f\n", mouse_grid_pos.x, mouse_grid_pos.y);
-		tile_map.data[(int)mouse_grid_pos.y*tile_map.n_cols + (int)mouse_grid_pos.x] = 5 + rand() % 6;
-
+		
 		//RENDER
 
 		//set color to white
@@ -303,7 +318,7 @@ int main(int argc, char **argv)
 		{
 			int tx = camera.read_only.tile_x;
 
-			int *tmp_level_data = &tile_map.data[i*tile_map.n_cols];
+			int *tmp_level_data = &tilemap.data[i*tilemap.n_cols];
 			for (int j = grid_region.x0; j <= grid_region.x1; j++)
 			{
 				int grid_data = tmp_level_data[j];
@@ -330,6 +345,18 @@ int main(int argc, char **argv)
 			Sprite::draw(1, 0, &sprite_database, player_screen_rect.x, player_screen_rect.y, player_screen_rect.w, player_screen_rect.h, Engine::renderer, flip);
 
 		}
+
+		static char msg[256];
+		Vec2D::Vec2D text_pos;
+		text_pos.x = mouse_screen_pos.x + 5;
+		text_pos.y = mouse_screen_pos.y + 15;
+		sprintf(msg, "[%.1f,%.1f]\n", mouse_grid_pos.x, mouse_grid_pos.y);
+		Font::draw(&text_pos, msg, strlen(msg), font_index_0, 0.25, &camera, Engine::renderer);
+
+		text_pos.x = 10;
+		text_pos.y = 10;
+		sprintf(msg, "left click - add block\nright click - delete block");
+		Font::draw(&text_pos, msg, strlen(msg), font_index_0, 0.25, &camera, Engine::renderer);
 
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);

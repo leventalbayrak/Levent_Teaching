@@ -40,22 +40,22 @@ namespace Tileset
 	tile_w, tile_h = size of single tile in pixels
 	n_cols, n_rows = number of rows and columns of tiles in the tileset file
 	*/
-	void modify(int index,Tileset *t, char *image_filename, int tile_w, int tile_h, int n_cols, int n_rows, SDL_Renderer *renderer)
+	void modify(int index,Tileset *t, const char *image_filename, int tile_w, int tile_h, int n_cols, int n_rows, SDL_Renderer *renderer)
 	{
 		SDL_Surface *sprite_surface = IMG_Load(image_filename);
 		assert(sprite_surface);
-		SDL_Texture *sprite_texture = SDL_CreateTextureFromSurface(renderer, sprite_surface);
+		SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, sprite_surface);
 
 		SDL_FreeSurface(sprite_surface);
 
 		t->tile_w[index] = tile_w;
 		t->tile_h[index] = tile_h;
-		t->tex[index] = sprite_texture;
+		t->tex[index] = texture;
 		t->n_cols[index] = n_cols;
 		t->n_rows[index] = n_rows;
 	}
 
-	void draw(int index, int tileset_row, int tileset_col, Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer)
+	void draw(int index, int tileset_row, int tileset_col, Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, const SDL_Renderer *renderer)
 	{
 		SDL_Rect src;
 		src.x = tileset_col * t->tile_w[index];
@@ -69,6 +69,6 @@ namespace Tileset
 		dest.w = dest_w;
 		dest.h = dest_h;
 
-		SDL_RenderCopyEx(renderer, t->tex[index], &src, &dest, 0, NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx((SDL_Renderer*)renderer, t->tex[index], &src, &dest, 0, NULL, SDL_FLIP_NONE);
 	}
 }

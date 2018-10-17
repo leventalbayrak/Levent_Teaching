@@ -77,5 +77,11 @@
     <ClInclude Include="Grid_File_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Font_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Font_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
