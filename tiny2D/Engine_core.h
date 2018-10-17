@@ -16,12 +16,14 @@ namespace Engine
 {
 	void init(const char*window_title, int _screen_width, int _screen_height)
 	{
-		SDL_Init(SDL_INIT_VIDEO);
+		SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 		srand(time(0));
 		screen_width = _screen_width;
 		screen_height = _screen_height;
 		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN);
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+		int audio_buffer_size = 4096;
+		Mix_OpenAudio(22050, AUDIO_S16SYS, 2, audio_buffer_size);
 	}
 }

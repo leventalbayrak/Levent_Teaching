@@ -30,6 +30,8 @@ int main(int argc, char **argv)
 	Font::init();
 	int font_index_0 = Font::add("lazy_font.png", 64, 64, Engine::renderer);
 
+	Mix_Chunk *sound = Mix_LoadWAV("sound.mp3");
+
 	//load tileset image
 	Tileset::Tileset tileset;
 	Tileset::init(&tileset, 10);
