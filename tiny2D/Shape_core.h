@@ -3,12 +3,12 @@
 
 namespace Shape
 {
-	int collision(const Rect *pa, const Rect *sa, const Rect *pb, const Rect *sb)
+	int collision(const Rect *pa, const Rect *pb)
 	{
-		if (pa->x + sa->w < pb->x) return 0;
-		if (pb->x + sb->w < pa->x) return 0;
-		if (pa->y + sa->h < pb->y) return 0;
-		if (pb->y + sb->h < pa->y) return 0;
+		if (pa->x + pa->w < pb->x) return 0;
+		if (pa->x > pb->x + pb->w) return 0;
+		if (pa->y + pa->h < pb->y) return 0;
+		if (pa->y > pb->y + pb->h) return 0;
 		return 1;
 	}
 
