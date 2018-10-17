@@ -16,6 +16,7 @@ using namespace std;
 #include "SDL2-2.0.8\include\SDL_mixer.h"
 
 #include "Engine_core.h"
+#include "Audio_core.h"
 #include "Texture_core.h"
 #include "Shape_core.h"
 #include "Font_core.h"
@@ -29,6 +30,14 @@ int main(int argc, char **argv)
 
 	Font::init();
 	int font_index_0 = Font::add("lazy_font.png", 64, 64, Engine::renderer);
+
+	Audio::init(2048);
+	int coin_sound = Audio::add_FX("coin.wav");
+	int ting_sound = Audio::add_FX("ting.wav");
+	int music = Audio::add_Music("dracula.mp3");
+
+	Audio::set_FX_Volume(coin_sound, 64);
+	Audio::set_FX_Volume(ting_sound, 100);
 
 	//load tileset image
 	Tileset::Tileset tileset;
@@ -108,6 +117,9 @@ int main(int argc, char **argv)
 	int mouse_x, mouse_y;
 
 	int flip = 0;
+
+	Audio::set_Music_Volume(64);
+	Audio::play_Music(music, -1);
 
 	bool done = false;
 	while (!done)
@@ -237,23 +249,27 @@ int main(int argc, char **argv)
 		{
 			Vec2D::Vec2D f = { player_move_force_magnitude_current, 0 };
 			Body::add_Force(player_physics_body, &bodies, &f);
+			
 		}
 		if (cmd_LEFT == 1 && player_collision_left == 0)
 		{
 			Vec2D::Vec2D f = { -player_move_force_magnitude_current, 0 };
 			Body::add_Force(player_physics_body, &bodies, &f);
+		
 		}
 
 		if (cmd_UP == 1 && player_collision_top == 0)
 		{
 			Vec2D::Vec2D f = { 0, -player_move_force_magnitude_current };
 			Body::add_Force(player_physics_body, &bodies, &f);
+			
 		}
 
 		if (cmd_DOWN == 1 && player_collision_bottom == 0)
 		{
 			Vec2D::Vec2D f = { 0, player_move_force_magnitude_current };
 			Body::add_Force(player_physics_body, &bodies, &f);
+		
 		}
 
 
@@ -276,18 +292,22 @@ int main(int argc, char **argv)
 		if (player_collision_bottom == 1 && bodies.vel[player_physics_body].y > 0)
 		{
 			bodies.vel[player_physics_body].y = 0;
+			Audio::play_FX(coin_sound);
 		}
 		if (player_collision_top == 1 && bodies.vel[player_physics_body].y < 0)
 		{
 			bodies.vel[player_physics_body].y = 0;
+			Audio::play_FX(coin_sound);
 		}
 		if (player_collision_right == 1 && bodies.vel[player_physics_body].x > 0)
 		{
 			bodies.vel[player_physics_body].x = 0;
+			Audio::play_FX(coin_sound);
 		}
 		if (player_collision_left == 1 && bodies.vel[player_physics_body].x < 0)
 		{
 			bodies.vel[player_physics_body].x = 0;
+			Audio::play_FX(coin_sound);
 		}
 
 		//integrate velocity

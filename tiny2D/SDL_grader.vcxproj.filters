@@ -78,6 +78,9 @@
     <ClInclude Include="Font_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Audio_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main_experimental.cpp">

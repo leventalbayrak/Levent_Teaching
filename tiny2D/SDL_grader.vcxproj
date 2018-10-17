@@ -114,6 +114,7 @@
     <ClCompile Include="main_experimental.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Audio_core.h" />
     <ClInclude Include="Body_core.h" />
     <ClInclude Include="Body_data.h" />
     <ClInclude Include="Engine_core.h" />
