@@ -34,11 +34,11 @@ namespace Font
 	const Grid_Camera::Grid_Camera *c = camera
 	const SDL_Renderer *renderer = renderer
 	*/
-	void draw(Vec2D::Vec2D *text_pos, const char *str, int length, int font_tileset_index, float size_in_tile_units, const Grid_Camera::Grid_Camera *c, const SDL_Renderer *renderer)
+	void draw(Vec2D::Vec2D *text_pos, Vec2D::Vec2D *text_size, const char *str, int length, int font_tileset_index, const Grid_Camera::Grid_Camera *c, const SDL_Renderer *renderer)
 	{
 		float text_block_x = text_pos->x;
-		float text_w = c->read_only.tile_w * size_in_tile_units;
-		float text_h = c->read_only.tile_h * size_in_tile_units;
+		float text_w = text_size->x;
+		float text_h = text_size->y;
 		for (int i = 0; i < length; i++)
 		{
 			if (str[i] == '\n')

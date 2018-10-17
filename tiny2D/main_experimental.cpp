@@ -28,10 +28,12 @@ int main(int argc, char **argv)
 	//initialize all systems and open game window
 	Engine::init("hello topdown", 960, 768);
 
+	//load font
 	Font::init();
 	int font_index_0 = Font::add("lazy_font.png", 64, 64, Engine::renderer);
 
 	Audio::init(2048);
+
 	int coin_sound = Audio::add_FX("coin.wav");
 	int ting_sound = Audio::add_FX("ting.wav");
 	int music = Audio::add_Music("dracula.mp3");
@@ -44,6 +46,8 @@ int main(int argc, char **argv)
 	//load tileset image
 	Tileset::File::add(&tileset_database, "map_tileset.txt", Engine::renderer);
 	printf("%d tilesets loaded\n", tileset_database.n_tilesets);
+
+
 	unsigned char prev_key_state[256];
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
@@ -73,7 +77,7 @@ int main(int argc, char **argv)
 	Sprite::make_Instance(1, &sprite_database);
 	Sprite::modify(1, 0, &sprite_database, 100);
 	//player position in the map and its size (size in tile cells)
-	Shape::Rect player_grid_rect = { tilemap.n_cols / 2, tilemap.n_rows / 2 ,1.00,1.00 };
+	Shape::Rect player_grid_rect = { tilemap.n_cols / 2, tilemap.n_rows / 2 ,1.0,1.0 };
 
 	//make a physics body instance for the player
 	int player_physics_body = Body::make(&bodies);
@@ -137,7 +141,7 @@ int main(int argc, char **argv)
 
 		unsigned int button = SDL_GetMouseState(&mouse_x, &mouse_y);
 		Vec2D::Vec2D mouse_screen_pos = { mouse_x,mouse_y };
-		
+
 		Vec2D::Vec2D mouse_grid_pos;
 		Grid_Camera::screen_to_Grid(&mouse_grid_pos, &mouse_screen_pos, &camera);
 
@@ -145,7 +149,7 @@ int main(int argc, char **argv)
 		{
 			int index = (int)mouse_grid_pos.y*collision_map.n_cols + (int)mouse_grid_pos.x;
 			collision_map.data[index] = 1;
-			tilemap.data[index] = 9;
+			tilemap.data[index] = 29;
 		}
 		if (button & SDL_BUTTON(SDL_BUTTON_RIGHT))
 		{
@@ -233,27 +237,27 @@ int main(int argc, char **argv)
 		{
 			Vec2D::Vec2D f = { player_move_force_magnitude_current, 0 };
 			Body::add_Force(player_physics_body, &bodies, &f);
-			
+
 		}
 		if (cmd_LEFT == 1 && player_collision_left == 0)
 		{
 			Vec2D::Vec2D f = { -player_move_force_magnitude_current, 0 };
 			Body::add_Force(player_physics_body, &bodies, &f);
-		
+
 		}
 
 		if (cmd_UP == 1 && player_collision_top == 0)
 		{
 			Vec2D::Vec2D f = { 0, -player_move_force_magnitude_current };
 			Body::add_Force(player_physics_body, &bodies, &f);
-			
+
 		}
 
 		if (cmd_DOWN == 1 && player_collision_bottom == 0)
 		{
 			Vec2D::Vec2D f = { 0, player_move_force_magnitude_current };
 			Body::add_Force(player_physics_body, &bodies, &f);
-		
+
 		}
 
 
@@ -350,15 +354,16 @@ int main(int argc, char **argv)
 
 		static char msg[256];
 		Vec2D::Vec2D text_pos;
+		Vec2D::Vec2D text_size = { 16,16 };
 		text_pos.x = mouse_screen_pos.x + 5;
 		text_pos.y = mouse_screen_pos.y + 15;
 		sprintf(msg, "[%.1f,%.1f]\n", mouse_grid_pos.x, mouse_grid_pos.y);
-		Font::draw(&text_pos, msg, strlen(msg), font_index_0, 0.25, &camera, Engine::renderer);
+		Font::draw(&text_pos, &text_size, msg, strlen(msg), font_index_0, &camera, Engine::renderer);
 
 		text_pos.x = 10;
 		text_pos.y = 10;
 		sprintf(msg, "left click - add block\nright click - delete block");
-		Font::draw(&text_pos, msg, strlen(msg), font_index_0, 0.25, &camera, Engine::renderer);
+		Font::draw(&text_pos, &text_size, msg, strlen(msg), font_index_0, &camera, Engine::renderer);
 
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);

@@ -28,10 +28,12 @@ int main(int argc, char **argv)
 	//initialize all systems and open game window
 	Engine::init("hello topdown", 960, 768);
 
+	//load font
 	Font::init();
 	int font_index_0 = Font::add("lazy_font.png", 64, 64, Engine::renderer);
 
 	Audio::init(2048);
+
 	int coin_sound = Audio::add_FX("coin.wav");
 	int ting_sound = Audio::add_FX("ting.wav");
 	int music = Audio::add_Music("dracula.mp3");
@@ -39,11 +41,13 @@ int main(int argc, char **argv)
 	Audio::set_FX_Volume(coin_sound, 64);
 	Audio::set_FX_Volume(ting_sound, 100);
 
+	Tileset::Tileset tileset_database;
+	Tileset::init(&tileset_database, 10);
 	//load tileset image
-	Tileset::Tileset tileset;
-	Tileset::init(&tileset, 10);
-	Tileset::modify(Tileset::make(&tileset), &tileset, "tileset.png", 32, 32, 23, 21, Engine::renderer);
-	
+	Tileset::File::add(&tileset_database, "map_tileset.txt", Engine::renderer);
+	printf("%d tilesets loaded\n", tileset_database.n_tilesets);
+
+
 	unsigned char prev_key_state[256];
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
@@ -54,31 +58,15 @@ int main(int argc, char **argv)
 	Grid::Grid tilemap;
 	Grid::load(&tilemap, "topdown_map.csv");
 
-	//load sprite sheet into a texture
-	SDL_Texture *sprite_texture = Texture::load("saitama.png", Engine::renderer);
-
-	//create sprite database that can store many animated sprites
+	//create sprite database that can store many animated sprites from different sprite sheets
 	Sprite::Data sprite_database;
 	Sprite::init(&sprite_database, 10);
+	int n_sprites_added = Sprite::File::add(&sprite_database, "saitama.txt", Engine::renderer);
+	printf("added %d sprites\n", n_sprites_added);
 
 	//create physics bodies
 	Body::Body bodies;
 	Body::init(&bodies, 100);
-
-	//extract animations from the loaded texture
-	Sprite::Data_Args entry;
-	entry.frame_w = 32;
-	entry.frame_h = 32;
-
-	entry.frame_pos_x = 0;
-	entry.frame_pos_y = 0;
-	entry.n_frames = 3;
-	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
-
-	entry.frame_pos_x = 0;
-	entry.frame_pos_y = 32;
-	entry.n_frames = 3;
-	Sprite::modify(Sprite::make(&sprite_database), &sprite_database, &entry, sprite_texture);
 
 	int player_state = 0;
 	//create animation instances for player
@@ -89,7 +77,7 @@ int main(int argc, char **argv)
 	Sprite::make_Instance(1, &sprite_database);
 	Sprite::modify(1, 0, &sprite_database, 100);
 	//player position in the map and its size (size in tile cells)
-	Shape::Rect player_grid_rect = { tilemap.n_cols / 2, tilemap.n_rows / 2 ,1.00,1.00 };
+	Shape::Rect player_grid_rect = { tilemap.n_cols / 2, tilemap.n_rows / 2 ,1.0,1.0 };
 
 	//make a physics body instance for the player
 	int player_physics_body = Body::make(&bodies);
@@ -161,7 +149,7 @@ int main(int argc, char **argv)
 		{
 			int index = (int)mouse_grid_pos.y*collision_map.n_cols + (int)mouse_grid_pos.x;
 			collision_map.data[index] = 1;
-			tilemap.data[index] = 9;
+			tilemap.data[index] = 29;
 		}
 		if (button & SDL_BUTTON(SDL_BUTTON_RIGHT))
 		{
@@ -340,9 +328,9 @@ int main(int argc, char **argv)
 			for (int j = grid_region.x0; j <= grid_region.x1; j++)
 			{
 				int grid_data = tmp_level_data[j];
-				int tileset_idx = grid_data / tileset.n_cols[0];
-				int tileset_offset = grid_data % tileset.n_cols[0];
-				Tileset::draw(0, tileset_idx, tileset_offset, &tileset, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
+				int tileset_idx = grid_data / tileset_database.n_cols[0];
+				int tileset_offset = grid_data % tileset_database.n_cols[0];
+				Tileset::draw(0, tileset_idx, tileset_offset, &tileset_database, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
 
 				tx += camera.read_only.tile_w;
 			}
@@ -366,15 +354,16 @@ int main(int argc, char **argv)
 
 		static char msg[256];
 		Vec2D::Vec2D text_pos;
+		Vec2D::Vec2D text_size = { 16,16 };
 		text_pos.x = mouse_screen_pos.x + 5;
 		text_pos.y = mouse_screen_pos.y + 15;
 		sprintf(msg, "[%.1f,%.1f]\n", mouse_grid_pos.x, mouse_grid_pos.y);
-		Font::draw(&text_pos, msg, strlen(msg), font_index_0, 0.25, &camera, Engine::renderer);
+		Font::draw(&text_pos,&text_size, msg, strlen(msg), font_index_0, &camera, Engine::renderer);
 
 		text_pos.x = 10;
 		text_pos.y = 10;
 		sprintf(msg, "left click - add block\nright click - delete block");
-		Font::draw(&text_pos, msg, strlen(msg), font_index_0, 0.25, &camera, Engine::renderer);
+		Font::draw(&text_pos, &text_size, msg, strlen(msg), font_index_0, &camera, Engine::renderer);
 
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
