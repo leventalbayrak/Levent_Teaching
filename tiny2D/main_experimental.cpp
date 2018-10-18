@@ -28,11 +28,7 @@ int main(int argc, char **argv)
 	//initialize all systems and open game window
 	Engine::init("hello topdown", 960, 768);
 
-	//load font
-	Font::init();
 	int font_index_0 = Font::add("Transparent_Font.png", 64, 64, Engine::renderer);
-
-	Audio::init(2048);
 
 	int coin_sound = Audio::add_FX("coin.wav");
 	int ting_sound = Audio::add_FX("ting.wav");
@@ -41,12 +37,9 @@ int main(int argc, char **argv)
 	Audio::set_FX_Volume(coin_sound, 64);
 	Audio::set_FX_Volume(ting_sound, 100);
 
-	Tileset::Tileset tileset_database;
-	Tileset::init(&tileset_database, 10);
 	//load tileset image
-	Tileset::File::add(&tileset_database, "map_tileset.txt", Engine::renderer);
-	printf("%d tilesets loaded\n", tileset_database.n_tilesets);
-
+	Engine::add_Tileset("map_tileset.txt");
+	printf("%d tilesets loaded\n", Engine::tileset_db.n_tilesets);
 
 	unsigned char prev_key_state[256];
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
@@ -59,13 +52,10 @@ int main(int argc, char **argv)
 	Grid::load(&tilemap, "soccer_map.csv");
 
 	//create sprite database that can store many animated sprites from different sprite sheets
-	Sprite::Data sprite_database;
-	Sprite::init(&sprite_database, 10);
-	int n_sprites_added = Sprite::File::add(&sprite_database, "saitama.txt", Engine::renderer);
-	printf("added %d sprites\n", n_sprites_added);
-	n_sprites_added = Sprite::File::add(&sprite_database, "ball.txt", Engine::renderer);
-	printf("added %d sprites\n", n_sprites_added);
-
+	
+	Engine::add_Sprite("saitama.txt");	
+	Engine::add_Sprite("ball.txt");
+	
 	//create physics bodies
 	Body::Body bodies;
 	Body::init(&bodies, 100);
@@ -73,16 +63,10 @@ int main(int argc, char **argv)
 	int player_state = 0;
 	//create animation instances for player
 	//run
-	Sprite::make_Instance(0, &sprite_database);
-	Sprite::modify(0, 0, &sprite_database, 100);
-	//idle
-	Sprite::make_Instance(1, &sprite_database);
-	Sprite::modify(1, 0, &sprite_database, 100);
-
-	//ball
-	Sprite::make_Instance(2, &sprite_database);
-	Sprite::modify(2, 0, &sprite_database, 100);
-
+	Engine::modify_Sprite_Instance(0, Engine::make_Sprite_Instance(0), 100);
+	Engine::modify_Sprite_Instance(1, Engine::make_Sprite_Instance(1), 100);
+	Engine::modify_Sprite_Instance(2, Engine::make_Sprite_Instance(2), 100);
+	
 	//player position in the map and its size (size in tile cells)
 	Shape::Rect player_grid_rect = { tilemap.n_cols / 2, tilemap.n_rows / 2 ,2.0,2.0 };
 	Shape::Rect ball_grid_rect = { 0.75*tilemap.n_cols, 0.75*tilemap.n_rows ,1.0,1.0 };
@@ -102,6 +86,11 @@ int main(int argc, char **argv)
 	Grid_Camera::init(&camera, Engine::screen_width, Engine::screen_height);
 	camera.grid_coord.w = Engine::screen_width / 32;
 	camera.grid_coord.h = Engine::screen_height / 32;
+
+	Grid_Camera::Grid_Camera camera_zoomed;
+	Grid_Camera::init(&camera_zoomed, Engine::screen_width, Engine::screen_height);
+	camera_zoomed.grid_coord.w = Engine::screen_width / 64;
+	camera_zoomed.grid_coord.h = Engine::screen_height / 64;
 
 	printf("map nrows %d ncols %d\n", collision_map.n_rows, collision_map.n_cols);
 
@@ -367,12 +356,6 @@ int main(int argc, char **argv)
 
 		camera.grid_coord.x = player_grid_rect.x - camera.grid_coord.w / 2;
 		camera.grid_coord.y = player_grid_rect.y - camera.grid_coord.h / 2;
-		Grid::Region grid_region;
-		//if the camera was on top of a grid, which cells would its grid_coord be covering
-		Grid_Camera::get_Grid_Region_Covered(&grid_region, &camera);
-		Grid::clip_Grid_Region(&grid_region, &collision_map);
-		//based on the area covered, recalculate tile size and position
-		Grid_Camera::calibrate_Tiles(&camera, &grid_region);
 
 		//RENDER
 
@@ -381,23 +364,8 @@ int main(int argc, char **argv)
 		//clear screen with white
 		SDL_RenderClear(Engine::renderer);
 
-		int ty = camera.read_only.tile_y;
-		for (int i = grid_region.y0; i <= grid_region.y1; i++)
-		{
-			int tx = camera.read_only.tile_x;
+		Engine::E_Tileset::draw(0, &camera, &tilemap);
 
-			int *tmp_level_data = &tilemap.data[i*tilemap.n_cols];
-			for (int j = grid_region.x0; j <= grid_region.x1; j++)
-			{
-				int grid_data = tmp_level_data[j];
-				int tileset_idx = grid_data / tileset_database.n_cols[0];
-				int tileset_offset = grid_data % tileset_database.n_cols[0];
-				Tileset::draw(0, tileset_idx, tileset_offset, &tileset_database, tx, ty, camera.read_only.tile_w, camera.read_only.tile_h, Engine::renderer);
-
-				tx += camera.read_only.tile_w;
-			}
-			ty += camera.read_only.tile_h;
-		}
 
 		Shape::Rect player_screen_rect;
 		Grid_Camera::grid_to_Screen(&player_screen_rect, &player_grid_rect, &camera);
@@ -407,18 +375,18 @@ int main(int argc, char **argv)
 
 		if (player_state == 1)
 		{
-			Sprite::update(0, 0, &sprite_database, current_time);
-			Sprite::draw(0, 0, &sprite_database, player_screen_rect.x, player_screen_rect.y, player_screen_rect.w, player_screen_rect.h, Engine::renderer, flip);
+			Sprite::update(0, 0, &Engine::sprite_db, current_time);
+			Sprite::draw(0, 0, &Engine::sprite_db, player_screen_rect.x, player_screen_rect.y, player_screen_rect.w, player_screen_rect.h, Engine::renderer, flip);
 		}
 		else
 		{
-			Sprite::update(1, 0, &sprite_database, current_time);
-			Sprite::draw(1, 0, &sprite_database, player_screen_rect.x, player_screen_rect.y, player_screen_rect.w, player_screen_rect.h, Engine::renderer, flip);
+			Sprite::update(1, 0, &Engine::sprite_db, current_time);
+			Sprite::draw(1, 0, &Engine::sprite_db, player_screen_rect.x, player_screen_rect.y, player_screen_rect.w, player_screen_rect.h, Engine::renderer, flip);
 
 		}
 
-		Sprite::update(2, 0, &sprite_database, current_time);
-		Sprite::draw(2, 0, &sprite_database, ball_screen_rect.x, ball_screen_rect.y, ball_screen_rect.w, ball_screen_rect.h, Engine::renderer, flip);
+		Sprite::update(2, 0, &Engine::sprite_db, current_time);
+		Sprite::draw(2, 0, &Engine::sprite_db, ball_screen_rect.x, ball_screen_rect.y, ball_screen_rect.w, ball_screen_rect.h, Engine::renderer, flip);
 
 
 		static char msg[256];

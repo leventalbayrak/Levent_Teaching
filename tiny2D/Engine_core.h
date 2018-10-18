@@ -3,7 +3,6 @@
 #include <iostream>
 #include <assert.h>
 #include <time.h>
-using namespace std;
 
 #include "Tileset_core.h"
 #include "Grid_core.h"
@@ -24,5 +23,61 @@ namespace Engine
 		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN);
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+		Audio::init(2048);
+		Font::init();
+		Tileset::init(&tileset_db, 64);
+		Sprite::init(&sprite_db, 64);
+	}
+
+	void add_Tileset(const char *filename)
+	{
+		Tileset::File::add(&tileset_db, filename, renderer);
+	}
+
+	void add_Sprite(const char *filename)
+	{
+		Sprite::File::add(&sprite_db, filename, renderer);
+	}
+
+	int make_Sprite_Instance(int which_sprite)
+	{
+		return Sprite::make_Instance(which_sprite, &sprite_db);
+	}
+
+	void modify_Sprite_Instance(int which_sprite,int which_instance, int frame_duration)
+	{
+		Sprite::modify(which_sprite, which_instance, &sprite_db, frame_duration);
+	}
+
+	namespace E_Tileset
+	{
+		void draw(int which_tileset, Grid_Camera::Grid_Camera *c, const Grid::Grid *g)
+		{
+			Grid::Region grid_region;
+			//if the camera was on top of a grid, which cells would its grid_coord be covering
+			Grid_Camera::get_Grid_Region_Covered(&grid_region, c);
+			Grid::clip_Grid_Region(&grid_region, g);
+			//based on the area covered, recalculate tile size and position
+			Grid_Camera::calibrate_Tiles(c, &grid_region);
+
+			int ty = c->read_only.tile_y;
+			for (int i = grid_region.y0; i <= grid_region.y1; i++)
+			{
+				int tx = c->read_only.tile_x;
+
+				int *tmp_level_data = &g->data[i*g->n_cols];
+				for (int j = grid_region.x0; j <= grid_region.x1; j++)
+				{
+					int grid_data = tmp_level_data[j];
+					int tileset_idx = grid_data / tileset_db.n_cols[which_tileset];
+					int tileset_offset = grid_data % tileset_db.n_cols[which_tileset];
+					Tileset::draw(which_tileset, tileset_idx, tileset_offset, &tileset_db, tx, ty, c->read_only.tile_w, c->read_only.tile_h, renderer);
+
+					tx += c->read_only.tile_w;
+				}
+				ty += c->read_only.tile_h;
+			}
+
+		}
 	}
 }
