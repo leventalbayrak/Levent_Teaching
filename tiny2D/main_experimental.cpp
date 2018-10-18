@@ -26,7 +26,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	//initialize all systems and open game window
-	Engine::init("hello side scroller", 960, 768);
+	Engine::init("hello side scroller", 480, 384);
 
 	int font_index_0 = Font::add("Transparent_Font.png", 64, 64, Engine::renderer);
 
@@ -97,6 +97,7 @@ int main(int argc, char **argv)
 	int horizontal_collision_tile_type = 0;
 
 	int mouse_x, mouse_y;
+
 
 	int flip = 0;
 
@@ -239,7 +240,7 @@ int main(int argc, char **argv)
 			Body::add_Force(player_physics_body, &bodies, &f);
 
 		}
-	
+
 		//DONE ADDING FORCES
 
 		//PHYSICS BEGIN
