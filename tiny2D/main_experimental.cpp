@@ -76,7 +76,6 @@ int main(int argc, char **argv)
 	Vec2D::Vec2D tmp_pos = { player_grid_rect.x,player_grid_rect.y };
 	Body::modify(player_physics_body, &bodies, &tmp_pos, 1.0);
 
-
 	int ball_physics_body = Body::make(&bodies);
 	tmp_pos = { ball_grid_rect.x,ball_grid_rect.y };
 	Body::modify(ball_physics_body, &bodies, &tmp_pos, 1.0);
@@ -364,8 +363,12 @@ int main(int argc, char **argv)
 		//clear screen with white
 		SDL_RenderClear(Engine::renderer);
 
-		Engine::E_Tileset::draw(0, &camera, &tilemap);
+		Grid::Region grid_region;
+		//if the camera was on top of a grid, which cells would its grid_coord be covering
+		Grid_Camera::get_Grid_Region_Covered(&grid_region, &camera);
+		Grid::clip_Grid_Region(&grid_region, tilemap.n_cols, tilemap.n_rows);
 
+		Engine::E_Tileset::draw(0, &camera, &grid_region, &tilemap);
 
 		Shape::Rect player_screen_rect;
 		Grid_Camera::grid_to_Screen(&player_screen_rect, &player_grid_rect, &camera);

@@ -4,6 +4,15 @@
 
 namespace Grid_Camera
 {
+	//read only first tile screen position and single tile dimensions
+	struct Calibration
+	{
+		int tile_w;
+		int tile_h;
+		int tile_x;
+		int tile_y;
+	};
+
 	struct Grid_Camera
 	{
 		Shape::Rect grid_coord;
@@ -15,12 +24,5 @@ namespace Grid_Camera
 			int screen_height;
 		} init;
 
-		//read only first tile screen position and single tile dimensions
-		struct {
-			int tile_w;
-			int tile_h;
-			int tile_x;
-			int tile_y;
-		} read_only;
 	};
 }

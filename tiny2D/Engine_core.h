@@ -51,31 +51,27 @@ namespace Engine
 
 	namespace E_Tileset
 	{
-		void draw(int which_tileset, Grid_Camera::Grid_Camera *c, const Grid::Grid *g)
+		void draw(int which_tileset, Grid_Camera::Grid_Camera *cam, const Grid::Region *grid_region, const Grid::Grid *g)
 		{
-			Grid::Region grid_region;
-			//if the camera was on top of a grid, which cells would its grid_coord be covering
-			Grid_Camera::get_Grid_Region_Covered(&grid_region, c);
-			Grid::clip_Grid_Region(&grid_region, g);
-			//based on the area covered, recalculate tile size and position
-			Grid_Camera::calibrate_Tiles(c, &grid_region);
+			Grid_Camera::Calibration c;
+			Grid_Camera::calibrate(&c, cam, grid_region);
 
-			int ty = c->read_only.tile_y;
-			for (int i = grid_region.y0; i <= grid_region.y1; i++)
+			int ty = c.tile_y;
+			for (int i = grid_region->y0; i <= grid_region->y1; i++)
 			{
-				int tx = c->read_only.tile_x;
+				int tx = c.tile_x;
 
 				int *tmp_level_data = &g->data[i*g->n_cols];
-				for (int j = grid_region.x0; j <= grid_region.x1; j++)
+				for (int j = grid_region->x0; j <= grid_region->x1; j++)
 				{
 					int grid_data = tmp_level_data[j];
 					int tileset_idx = grid_data / tileset_db.n_cols[which_tileset];
 					int tileset_offset = grid_data % tileset_db.n_cols[which_tileset];
-					Tileset::draw(which_tileset, tileset_idx, tileset_offset, &tileset_db, tx, ty, c->read_only.tile_w, c->read_only.tile_h, renderer);
+					Tileset::draw(which_tileset, tileset_idx, tileset_offset, &tileset_db, tx, ty, c.tile_w, c.tile_h, renderer);
 
-					tx += c->read_only.tile_w;
+					tx += c.tile_w;
 				}
-				ty += c->read_only.tile_h;
+				ty += c.tile_h;
 			}
 
 		}

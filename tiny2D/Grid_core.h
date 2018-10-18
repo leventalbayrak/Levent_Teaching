@@ -23,12 +23,12 @@ namespace Grid
 		g->y1 = (r->y + r->h);
 	}
 
-	void clip_Grid_Region(Region *r, const Grid *g)
+	void clip_Grid_Region(Region *r, int n_cols, int n_rows)
 	{
 		if (r->x0 < 0) r->x0 = 0;
 		if (r->y0 < 0) r->y0 = 0;
-		if (r->x1 >= g->n_cols) r->x1 = g->n_cols - 1;
-		if (r->y1 >= g->n_rows) r->y1 = g->n_rows - 1;
+		if (r->x1 >= n_cols) r->x1 = n_cols - 1;
+		if (r->y1 >= n_rows) r->y1 = n_rows - 1;
 	}
 
 	//returns rightmost or bottommost collision tile coords
@@ -41,7 +41,7 @@ namespace Grid
 
 		Region grid_under_collision_rect;
 		get_Region_Under_Shape(&grid_under_collision_rect, p);
-		clip_Grid_Region(&grid_under_collision_rect, g);
+		clip_Grid_Region(&grid_under_collision_rect, g->n_cols, g->n_rows);
 		for (int i = grid_under_collision_rect.y0; i <= grid_under_collision_rect.y1; i++)
 		{
 			for (int j = grid_under_collision_rect.x0; j <= grid_under_collision_rect.x1; j++)
