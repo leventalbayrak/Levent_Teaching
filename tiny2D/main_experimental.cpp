@@ -26,36 +26,32 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	//initialize all systems and open game window
-	Engine::init("hello topdown", 960, 768);
+	Engine::init("hello side scroller", 960, 768);
 
 	int font_index_0 = Font::add("Transparent_Font.png", 64, 64, Engine::renderer);
+
 
 	int coin_sound = Audio::add_FX("coin.wav");
 	int ting_sound = Audio::add_FX("ting.wav");
 	int music = Audio::add_Music("dracula.mp3");
 
-	Audio::set_FX_Volume(coin_sound, 64);
-	Audio::set_FX_Volume(ting_sound, 100);
-
 	//load tileset image
 	Engine::add_Tileset("map_tileset.txt");
-	printf("%d tilesets loaded\n", Engine::tileset_db.n_tilesets);
-
+	
 	unsigned char prev_key_state[256];
 	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
 	//load collision map (level collisions), "tiled" export csv
 	Grid::Grid collision_map;
-	Grid::load(&collision_map, "soccer_collision.csv");
+	Grid::load(&collision_map, "platformer_collision.csv");
 	//load tile map (visuals), "tiled" export csv
 	Grid::Grid tilemap;
-	Grid::load(&tilemap, "soccer_map.csv");
+	Grid::load(&tilemap, "platformer_map.csv");
 
 	//create sprite database that can store many animated sprites from different sprite sheets
 	
 	Engine::add_Sprite("saitama.txt");	
-	Engine::add_Sprite("ball.txt");
-	
+
 	//create physics bodies
 	Body::Body bodies;
 	Body::init(&bodies, 100);
@@ -63,22 +59,21 @@ int main(int argc, char **argv)
 	int player_state = 0;
 	//create animation instances for player
 	//run
-	Engine::modify_Sprite_Instance(0, Engine::make_Sprite_Instance(0), 100);
-	Engine::modify_Sprite_Instance(1, Engine::make_Sprite_Instance(1), 100);
-	Engine::modify_Sprite_Instance(2, Engine::make_Sprite_Instance(2), 100);
-	
+	int k = Engine::make_Sprite_Instance(0);
+	Engine::modify_Sprite_Instance(0, k, 100);
+
+	k = Engine::make_Sprite_Instance(1);
+	Engine::modify_Sprite_Instance(1, k, 100);
+
 	//player position in the map and its size (size in tile cells)
-	Shape::Rect player_grid_rect = { tilemap.n_cols / 2, tilemap.n_rows / 2 ,2.0,2.0 };
-	Shape::Rect ball_grid_rect = { 0.75*tilemap.n_cols, 0.75*tilemap.n_rows ,1.0,1.0 };
+	Shape::Rect player_grid_rect = { 10, 10 ,1.0,1.0 };
 
 	//make a physics body instance for the player
 	int player_physics_body = Body::make(&bodies);
 	Vec2D::Vec2D tmp_pos = { player_grid_rect.x,player_grid_rect.y };
 	Body::modify(player_physics_body, &bodies, &tmp_pos, 1.0);
 
-	int ball_physics_body = Body::make(&bodies);
-	tmp_pos = { ball_grid_rect.x,ball_grid_rect.y };
-	Body::modify(ball_physics_body, &bodies, &tmp_pos, 1.0);
+	Vec2D::Vec2D gravity = { 0.0,0.00005 };
 
 	//create a grid camera and adjust its canvas size
 	Grid_Camera::Grid_Camera camera;
@@ -86,17 +81,14 @@ int main(int argc, char **argv)
 	camera.grid_coord.w = Engine::screen_width / 32;
 	camera.grid_coord.h = Engine::screen_height / 32;
 
-	Grid_Camera::Grid_Camera camera_zoomed;
-	Grid_Camera::init(&camera_zoomed, Engine::screen_width, Engine::screen_height);
-	camera_zoomed.grid_coord.w = Engine::screen_width / 64;
-	camera_zoomed.grid_coord.h = Engine::screen_height / 64;
-
-	printf("map nrows %d ncols %d\n", collision_map.n_rows, collision_map.n_cols);
-
 	//some parameters for the map
-	float player_current_friction = 0.985;
-	float ball_current_friction = 0.999;
+	
+	float floor_friction = 0.985;
+	float air_friction = 1.0;
+	float player_current_friction = floor_friction;
+
 	float player_move_force_magnitude_current = 0.0002;
+	float player_jump_force_magnitude_current = 0.01;
 	float max_vel_x = 1.0 / 32.0;
 	float max_vel_y = 1.0 / 32.0;
 
@@ -135,30 +127,10 @@ int main(int argc, char **argv)
 		int cmd_DOWN = 0;
 
 
-		if (keys[SDL_SCANCODE_W]) cmd_UP = 1;
+		if (keys[SDL_SCANCODE_W] && prev_key_state[SDL_SCANCODE_W] == 0) cmd_UP = 1;
 		if (keys[SDL_SCANCODE_S]) cmd_DOWN = 1;
 		if (keys[SDL_SCANCODE_A]) cmd_LEFT = 1;
 		if (keys[SDL_SCANCODE_D]) cmd_RIGHT = 1;
-
-
-		unsigned int button = SDL_GetMouseState(&mouse_x, &mouse_y);
-		Vec2D::Vec2D mouse_screen_pos = { mouse_x,mouse_y };
-
-		Vec2D::Vec2D mouse_grid_pos;
-		Grid_Camera::screen_to_Grid(&mouse_grid_pos, &mouse_screen_pos, &camera);
-
-		if (button & SDL_BUTTON(SDL_BUTTON_LEFT))
-		{
-			int index = (int)mouse_grid_pos.y*collision_map.n_cols + (int)mouse_grid_pos.x;
-			collision_map.data[index] = 1;
-			tilemap.data[index] = 29;
-		}
-		if (button & SDL_BUTTON(SDL_BUTTON_RIGHT))
-		{
-			int index = (int)mouse_grid_pos.y*collision_map.n_cols + (int)mouse_grid_pos.x;
-			collision_map.data[index] = 0;
-			tilemap.data[index] = 0;
-		}
 
 		/*
 		GAME CODE
@@ -168,7 +140,7 @@ int main(int argc, char **argv)
 		if (cmd_RIGHT) flip = 0;
 
 		//player state 1 = running, 0 = idle
-		if (cmd_LEFT || cmd_RIGHT || cmd_UP || cmd_DOWN)
+		if (cmd_LEFT || cmd_RIGHT)
 		{
 			player_state = 1;
 		}
@@ -180,10 +152,6 @@ int main(int argc, char **argv)
 		//get the body position and assign to player grid position
 		player_grid_rect.x = bodies.pos[player_physics_body].x;
 		player_grid_rect.y = bodies.pos[player_physics_body].y;
-
-		ball_grid_rect.x = bodies.pos[ball_physics_body].x;
-		ball_grid_rect.y = bodies.pos[ball_physics_body].y;
-
 
 		int player_collision_top = 0;
 		int player_collision_bottom = 0;
@@ -212,6 +180,18 @@ int main(int argc, char **argv)
 			vertical_collision_tile_type = tilemap.data[vr*collision_map.n_cols + vc];
 		}
 
+		if (vd == -1)
+		{
+			player_current_friction = air_friction;
+		}
+		else
+		{
+			//if (vertical_collision_tile_type == 1)
+			{
+				player_current_friction = floor_friction;
+			}
+		}
+
 		//vertical collision
 
 		Shape::Rect player_collision_rect_horizontal;
@@ -235,44 +215,10 @@ int main(int argc, char **argv)
 			horizontal_collision_tile_type = tilemap.data[hr*collision_map.n_cols + hc];
 		}
 
-
-		//BALL COLLISON
-		int ball_collision_vertical = 0;
-		int ball_collision_horizontal = 0;
-
-		//vertical collision check
-		Shape::Rect ball_collision_rect_vert;
-		ball_collision_rect_vert.x = ball_grid_rect.x + 0.4;
-		ball_collision_rect_vert.y = ball_grid_rect.y + 0.2;
-		ball_collision_rect_vert.w = ball_grid_rect.w - 2.0*0.4;
-		ball_collision_rect_vert.h = ball_grid_rect.h - 0.3;
-
-		Grid::handle_Collision_Ugly(vc, vr, vd, hc, hr, hd, &ball_collision_rect_vert, &collision_map);
-
-		if (vd != -1)
-		{
-			bodies.vel[ball_physics_body].y *= -1;
-			Audio::play_FX(0);
-		}
-
-		//horizontal collision check
-		Shape::Rect ball_collision_rect_hor;
-		ball_collision_rect_hor.x = ball_grid_rect.x + 0.2;
-		ball_collision_rect_hor.y = ball_grid_rect.y + 0.4;
-		ball_collision_rect_hor.w = ball_grid_rect.w - 0.4;
-		ball_collision_rect_hor.h = ball_grid_rect.h - 2.0*0.4;
-
-		Grid::handle_Collision_Ugly(vc, vr, vd, hc, hr, hd, &ball_collision_rect_hor, &collision_map);
-
-		if (hd != -1)
-		{
-			bodies.vel[ball_physics_body].x *= -1;
-			Audio::play_FX(0);
-		}
-		
-
 		//START ADDING FORCES
 		Body::clear_Forces(&bodies);
+
+		Body::add_Force(player_physics_body, &bodies, &gravity);
 
 		if (cmd_RIGHT == 1 && player_collision_right == 0)
 		{
@@ -287,49 +233,32 @@ int main(int argc, char **argv)
 
 		}
 
-		if (cmd_UP == 1 && player_collision_top == 0)
+		if (cmd_UP == 1 && player_collision_top == 0 && player_collision_bottom == 1)
 		{
-			Vec2D::Vec2D f = { 0, -player_move_force_magnitude_current };
+			Vec2D::Vec2D f = { 0, -player_jump_force_magnitude_current };
 			Body::add_Force(player_physics_body, &bodies, &f);
 
 		}
-
-		if (cmd_DOWN == 1 && player_collision_bottom == 0)
-		{
-			Vec2D::Vec2D f = { 0, player_move_force_magnitude_current };
-			Body::add_Force(player_physics_body, &bodies, &f);
-		}
-
-		if (Shape::collision(&player_grid_rect, &ball_grid_rect))
-		{
-			bodies.force[ball_physics_body].x = bodies.vel[player_physics_body].x * 0.1;
-			bodies.force[ball_physics_body].y = bodies.vel[player_physics_body].y * 0.1;
-		}
+	
 		//DONE ADDING FORCES
 
 		//PHYSICS BEGIN
 
 		//integrate acceleration
-		Body::update_Vel(ball_physics_body, &bodies);
 		Body::update_Vel(player_physics_body, &bodies);
 		//clip velocity
-		Vec2D::clip(&bodies.vel[ball_physics_body], -max_vel_x, max_vel_x, -max_vel_y, max_vel_y);
 		Vec2D::clip(&bodies.vel[player_physics_body], -max_vel_x, max_vel_x, -max_vel_y, max_vel_y);
 
 		//apply friction
 		bodies.vel[player_physics_body].x *= player_current_friction;
-		bodies.vel[player_physics_body].y *= player_current_friction;
+		
 		if (abs(bodies.vel[player_physics_body].x) < 0.00001) bodies.vel[player_physics_body].x = 0.0;
 		if (abs(bodies.vel[player_physics_body].y) < 0.00001) bodies.vel[player_physics_body].y = 0.0;
-
-		bodies.vel[ball_physics_body].x *= ball_current_friction;
-		bodies.vel[ball_physics_body].y *= ball_current_friction;
 
 		//apply velocity constraints
 		if (player_collision_bottom == 1 && bodies.vel[player_physics_body].y > 0)
 		{
 			bodies.vel[player_physics_body].y = 0;
-			Audio::play_FX(coin_sound);
 		}
 		if (player_collision_top == 1 && bodies.vel[player_physics_body].y < 0)
 		{
@@ -339,16 +268,13 @@ int main(int argc, char **argv)
 		if (player_collision_right == 1 && bodies.vel[player_physics_body].x > 0)
 		{
 			bodies.vel[player_physics_body].x = 0;
-			Audio::play_FX(coin_sound);
 		}
 		if (player_collision_left == 1 && bodies.vel[player_physics_body].x < 0)
 		{
 			bodies.vel[player_physics_body].x = 0;
-			Audio::play_FX(coin_sound);
 		}
 
 		//integrate velocity
-		Body::update_Pos(ball_physics_body, &bodies);
 		Body::update_Pos(player_physics_body, &bodies);
 
 		//PHYSICS DONE
@@ -373,9 +299,6 @@ int main(int argc, char **argv)
 		Shape::Rect player_screen_rect;
 		Grid_Camera::grid_to_Screen(&player_screen_rect, &player_grid_rect, &camera);
 
-		Shape::Rect ball_screen_rect;
-		Grid_Camera::grid_to_Screen(&ball_screen_rect, &ball_grid_rect, &camera);
-
 		if (player_state == 1)
 		{
 			Sprite::update(0, 0, &Engine::sprite_db, current_time);
@@ -388,23 +311,7 @@ int main(int argc, char **argv)
 
 		}
 
-		Sprite::update(2, 0, &Engine::sprite_db, current_time);
-		Sprite::draw(2, 0, &Engine::sprite_db, ball_screen_rect.x, ball_screen_rect.y, ball_screen_rect.w, ball_screen_rect.h, Engine::renderer, flip);
-
-
-		static char msg[256];
-		Vec2D::Vec2D text_pos;
-		Vec2D::Vec2D text_size = { 16,16 };
-		text_pos.x = mouse_screen_pos.x + 5;
-		text_pos.y = mouse_screen_pos.y + 15;
-		sprintf(msg, "[%.1f,%.1f]\n", mouse_grid_pos.x, mouse_grid_pos.y);
-		Font::draw(&text_pos, &text_size, msg, strlen(msg), font_index_0, &camera, Engine::renderer);
-
-		text_pos.x = 10;
-		text_pos.y = 10;
-		sprintf(msg, "left click - add block\nright click - delete block");
-		Font::draw(&text_pos, &text_size, msg, strlen(msg), font_index_0, &camera, Engine::renderer);
-
+		
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
 
