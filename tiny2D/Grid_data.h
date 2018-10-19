@@ -11,6 +11,11 @@ namespace Grid
 		int *data;
 	};
 
+	struct Point
+	{
+		int x, y;
+	};
+
 	//top left and bottom right cells in a grid
 	struct Region
 	{

@@ -34,9 +34,9 @@ namespace Engine
 		Tileset::File::add(&tileset_db, filename, renderer);
 	}
 
-	void add_Sprite(const char *filename)
+	int add_Sprite(const char *filename)
 	{
-		Sprite::File::add(&sprite_db, filename, renderer);
+		return Sprite::File::add(&sprite_db, filename, renderer);
 	}
 
 	int make_Sprite_Instance(int which_sprite)

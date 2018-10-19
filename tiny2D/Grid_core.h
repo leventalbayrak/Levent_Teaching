@@ -23,6 +23,22 @@ namespace Grid
 		g->y1 = (r->y + r->h);
 	}
 
+	void get_Tile_Under_Point(int &col, int &row, float x, float y)
+	{
+		col = x;
+		row = y;
+	}
+
+	int tile(int x, int y, Grid *g)
+	{
+		return g->data[y*g->n_cols + x];
+	}
+
+	int tile(Point *p, Grid *g)
+	{
+		return g->data[p->y*g->n_cols + p->x];
+	}
+
 	void clip_Grid_Region(Region *r, int n_cols, int n_rows)
 	{
 		if (r->x0 < 0) r->x0 = 0;
@@ -46,7 +62,7 @@ namespace Grid
 		{
 			for (int j = grid_under_collision_rect.x0; j <= grid_under_collision_rect.x1; j++)
 			{
-				if (g->data[i*g->n_cols + j] == 0) continue;
+				if (g->data[i*g->n_cols + j] == -1) continue;
 
 				if (p->y + p->h > i && p->y < i)
 				{

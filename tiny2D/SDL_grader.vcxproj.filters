@@ -81,6 +81,12 @@
     <ClInclude Include="Table_File_core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Collision_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main_experimental.cpp">
