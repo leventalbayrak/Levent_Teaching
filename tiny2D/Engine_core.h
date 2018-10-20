@@ -46,7 +46,7 @@ namespace Engine
 			Sprite::modify(which_sprite, which_instance, &sprite_db, frame_duration);
 		}
 
-		void draw(int which_sprite, int which_instance, Shape::Rect *world_coord, int dir, Grid_Camera::Calibration *c, Grid_Camera::Grid_Camera *cam)
+		void draw(int which_sprite, int which_instance, const Shape::Rect *world_coord, int dir, const Grid_Camera::Calibration *c, const Grid_Camera::Grid_Camera *cam)
 		{
 			Shape::Rect screen_rect;
 			Grid_Camera::grid_to_Screen(&screen_rect, world_coord, c, cam);

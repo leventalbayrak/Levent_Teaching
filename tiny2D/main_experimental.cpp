@@ -24,7 +24,6 @@ using namespace std;
 
 namespace My_Game
 {
-
 	struct Actor
 	{
 		//0 idle, 1 run, 2 jump
@@ -97,18 +96,13 @@ namespace My_Game
 		namespace Parameters
 		{
 			//some parameters for the map
-			Vec2D::Vec2D gravity = { 0.0,0.00005 };
+			Vec2D::Vec2D gravity = { 0.0,0.00004 };
 
 			float floor_friction = 0.985;
 			float air_friction = 1.0;
 
-			/*float player_current_friction = floor_friction;
-			float player_move_force_magnitude_current = 0.0002;
-			float player_jump_force_magnitude_current = 0.01;
-			float player_super_jump_force_magnitude = 0.04;*/
-
-			float max_vel_x = 1.0 / 32.0;
-			float max_vel_y = 1.0 / 32.0;
+			float max_vel_x = 1.0 / 24.0;
+			float max_vel_y = 1.0 / 16.0;
 
 			int super_jump_tile_id = 96;
 		}
@@ -146,8 +140,8 @@ namespace My_Game
 
 		//init camera
 		Grid_Camera::init(&World::camera, Engine::screen_width, Engine::screen_height);
-		World::camera.grid_coord.w = Engine::screen_width / 32;
-		World::camera.grid_coord.h = Engine::screen_height / 32;
+		World::camera.world_coord.w = Engine::screen_width / 32;
+		World::camera.world_coord.h = Engine::screen_height / 32;
 
 		//create physics body manager
 		Body::init(&World::bodies, 100);
@@ -200,15 +194,18 @@ namespace My_Game
 		World::player.move_cmd_up = Command::cmd_UP;
 		World::player.move_cmd_down = Command::cmd_DOWN;
 
+		//update player physics
 		update_Actor(&World::player, current_time);
+
+		//focus camera on player
+		My_Game::World::camera.world_coord.x = World::player.world_coord.x - My_Game::World::camera.world_coord.w / 2;
+		My_Game::World::camera.world_coord.y = World::player.world_coord.y - My_Game::World::camera.world_coord.h / 2;
+
 	}
 
 	void draw()
 	{
 
-		My_Game::World::camera.grid_coord.x = World::player.world_coord.x - My_Game::World::camera.grid_coord.w / 2;
-		My_Game::World::camera.grid_coord.y = World::player.world_coord.y - My_Game::World::camera.grid_coord.h / 2;
-		
 		Grid::Region grid_region;
 		//if the camera was on top of a grid, which cells would its grid_coord be covering
 		Grid_Camera::get_Grid_Region_Covered(&grid_region, &World::camera);
@@ -272,16 +269,26 @@ namespace My_Game
 		
 		Grid::Point tmp;
 
+		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.left_feeler);
+		if (Grid::tile(&tmp, &World::collision_map) > 0)
+		{
+			actor_collision_left = 1;
+		}
+		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.bottomleft_feeler);
+		if (Grid::tile(&tmp, &World::collision_map) > 0)
+		{
+			actor_collision_left = 1;
+		}
+
 		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.right_feeler);
 		if (Grid::tile(&tmp, &World::collision_map) > 0)
 		{
 			actor_collision_right = 1;
 		}
-
-		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.left_feeler);
+		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.bottomright_feeler);
 		if (Grid::tile(&tmp, &World::collision_map) > 0)
 		{
-			actor_collision_left = 1;
+			actor_collision_right = 1;
 		}
 
 		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.bottom_feeler);
@@ -317,7 +324,7 @@ namespace My_Game
 
 		if (actor_on_super_jump_tile)
 		{
-			Vec2D::Vec2D f = { 0, -p->jump_force_mag*4 };
+			Vec2D::Vec2D f = { 0, -p->jump_force_mag*640 };
 			Body::add_Force(p->physics_body, &World::bodies, &f);
 		}
 
@@ -382,7 +389,7 @@ namespace My_Game
 		//UPDATE ANIMATION FRAMES
 		if (p->state == 0)
 		{
-			Sprite::update(p->idle_sprite_db_index, p->idle_sprite_id, &Engine::sprite_db, current_time);
+			Engine::E_Sprite::update(p->idle_sprite_db_index, p->idle_sprite_id, current_time);
 		}
 		else if(p->state == 1)
 		{

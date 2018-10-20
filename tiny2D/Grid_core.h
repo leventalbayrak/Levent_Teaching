@@ -16,13 +16,13 @@ namespace Grid
 	}
 
 
-	void Vec2D_to_Grid(Point *gp, Vec2D::Vec2D *p)
+	inline void Vec2D_to_Grid(Point *gp, Vec2D::Vec2D *p)
 	{
-		gp->x = ceil(p->x);
-		gp->y = ceil(p->y);
+		gp->x = p->x;
+		gp->y = p->y;
 	}
 
-	void get_Region_Under_Shape(Region *g, const Shape::Rect *r)
+	inline void get_Region_Under_Shape(Region *g, const Shape::Rect *r)
 	{
 		g->x0 = (r->x);
 		g->y0 = (r->y);
@@ -30,12 +30,12 @@ namespace Grid
 		g->y1 = (r->y + r->h);
 	}
 
-	int tile(int x, int y, Grid *g)
+	inline int tile(int x, int y, Grid *g)
 	{
 		return g->data[y*g->n_cols + x];
 	}
 
-	int tile(Point *p, Grid *g)
+	inline int tile(Point *p, Grid *g)
 	{
 		return g->data[p->y*g->n_cols + p->x];
 	}
