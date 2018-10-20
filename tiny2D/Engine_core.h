@@ -29,37 +29,48 @@ namespace Engine
 		Sprite::init(&sprite_db, 64);
 	}
 
-	void add_Tileset(const char *filename)
+	namespace E_Sprite
 	{
-		Tileset::File::add(&tileset_db, filename, renderer);
-	}
+		int add(const char *filename)
+		{
+			return Sprite::File::add(&sprite_db, filename, renderer);
+		}
 
-	int add_Sprite(const char *filename)
-	{
-		return Sprite::File::add(&sprite_db, filename, renderer);
-	}
+		int make_Instance(int which_sprite)
+		{
+			return Sprite::make_Instance(which_sprite, &sprite_db);
+		}
 
-	int make_Sprite_Instance(int which_sprite)
-	{
-		return Sprite::make_Instance(which_sprite, &sprite_db);
-	}
+		void modify(int which_sprite, int which_instance, int frame_duration)
+		{
+			Sprite::modify(which_sprite, which_instance, &sprite_db, frame_duration);
+		}
 
-	void modify_Sprite_Instance(int which_sprite,int which_instance, int frame_duration)
-	{
-		Sprite::modify(which_sprite, which_instance, &sprite_db, frame_duration);
-	}
+		void draw(int which_sprite, int which_instance, Shape::Rect *world_coord, int dir, Grid_Camera::Calibration *c, Grid_Camera::Grid_Camera *cam)
+		{
+			Shape::Rect screen_rect;
+			Grid_Camera::grid_to_Screen(&screen_rect, world_coord, c, cam);
+			Sprite::draw(which_sprite, which_instance, &sprite_db, screen_rect.x, screen_rect.y, screen_rect.w, screen_rect.h, renderer, dir);
+		}
 
+		void update(int which_sprite, int which_instance, unsigned int current_time)
+		{
+			Sprite::update(which_sprite, which_instance, &sprite_db, current_time);
+		}
+	}
 	namespace E_Tileset
 	{
-		void draw(int which_tileset, Grid_Camera::Grid_Camera *cam, const Grid::Region *grid_region, const Grid::Grid *g)
+		void add(const char *filename)
 		{
-			Grid_Camera::Calibration c;
-			Grid_Camera::calibrate(&c, cam, grid_region);
+			Tileset::File::add(&tileset_db, filename, renderer);
+		}
 
-			int ty = c.tile_y;
+		void draw(int which_tileset, Grid_Camera::Calibration *c, const Grid::Region *grid_region, const Grid::Grid *g)
+		{
+			int ty = c->tile_y;
 			for (int i = grid_region->y0; i <= grid_region->y1; i++)
 			{
-				int tx = c.tile_x;
+				int tx = c->tile_x;
 
 				int *tmp_level_data = &g->data[i*g->n_cols];
 				for (int j = grid_region->x0; j <= grid_region->x1; j++)
@@ -67,11 +78,11 @@ namespace Engine
 					int grid_data = tmp_level_data[j];
 					int tileset_idx = grid_data / tileset_db.n_cols[which_tileset];
 					int tileset_offset = grid_data % tileset_db.n_cols[which_tileset];
-					Tileset::draw(which_tileset, tileset_idx, tileset_offset, &tileset_db, tx, ty, c.tile_w, c.tile_h, renderer);
+					Tileset::draw(which_tileset, tileset_idx, tileset_offset, &tileset_db, tx, ty, c->tile_w, c->tile_h, renderer);
 
-					tx += c.tile_w;
+					tx += c->tile_w;
 				}
-				ty += c.tile_h;
+				ty += c->tile_h;
 			}
 
 		}

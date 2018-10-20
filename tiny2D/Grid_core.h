@@ -15,18 +15,19 @@ namespace Grid
 		memset(g->data, 0, sizeof(int)*n_cols*n_rows);
 	}
 
+
+	void Vec2D_to_Grid(Point *gp, Vec2D::Vec2D *p)
+	{
+		gp->x = ceil(p->x);
+		gp->y = ceil(p->y);
+	}
+
 	void get_Region_Under_Shape(Region *g, const Shape::Rect *r)
 	{
 		g->x0 = (r->x);
 		g->y0 = (r->y);
 		g->x1 = (r->x + r->w);
 		g->y1 = (r->y + r->h);
-	}
-
-	void get_Tile_Under_Point(int &col, int &row, float x, float y)
-	{
-		col = x;
-		row = y;
 	}
 
 	int tile(int x, int y, Grid *g)
@@ -49,51 +50,6 @@ namespace Grid
 
 	//returns rightmost or bottommost collision tile coords
 //0 bottom 1 top
-//0 left 1 right
-	void handle_Collision_Ugly(int &vert_col, int &vert_row, int &vert_dir, int &hor_col, int &hor_row, int &hor_dir, Shape::Rect *p, Grid *g)
-	{
-		vert_dir = -1;
-		hor_dir = -1;
-
-		Region grid_under_collision_rect;
-		get_Region_Under_Shape(&grid_under_collision_rect, p);
-		clip_Grid_Region(&grid_under_collision_rect, g->n_cols, g->n_rows);
-		for (int i = grid_under_collision_rect.y0; i <= grid_under_collision_rect.y1; i++)
-		{
-			for (int j = grid_under_collision_rect.x0; j <= grid_under_collision_rect.x1; j++)
-			{
-				if (g->data[i*g->n_cols + j] == -1) continue;
-
-				if (p->y + p->h > i && p->y < i)
-				{
-					vert_col = j;
-					vert_row = i;
-					vert_dir = 0;
-				}
-				else
-				{
-					vert_col = j;
-					vert_row = i;
-					vert_dir = 1;
-				}
-
-				if (p->x + p->w > j && p->x < j)
-				{
-					hor_col = j;
-					hor_row = i;
-					hor_dir = 1;
-				}
-				else
-				{
-					hor_col = j;
-					hor_row = i;
-					hor_dir = 0;
-				}
-
-			}
-		}
-	}
-
 
 	void load(Grid *g, const char *filename)
 	{

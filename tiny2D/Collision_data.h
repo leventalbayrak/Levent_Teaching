@@ -4,10 +4,10 @@ namespace Collision
 {
 	struct Point_Feeler
 	{
-		Grid::Point bottom_feeler;
-		Grid::Point top_feeler;
-		Grid::Point left_feeler;
-		Grid::Point right_feeler;
-		Grid::Point mid_feeler;
+		Vec2D::Vec2D bottom_feeler;
+		Vec2D::Vec2D top_feeler;
+		Vec2D::Vec2D left_feeler;
+		Vec2D::Vec2D right_feeler;
+		Vec2D::Vec2D mid_feeler;
 	};
 }

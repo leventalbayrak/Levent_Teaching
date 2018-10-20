@@ -19,12 +19,12 @@ namespace Grid_Camera
 		Grid::get_Region_Under_Shape(a, &c->grid_coord);
 	}
 
-	void grid_to_Screen(Shape::Rect *screen_coord,const Shape::Rect *grid_coord, const Grid_Camera *c)
+	void grid_to_Screen(Shape::Rect *screen_coord,const Shape::Rect *world_coord, const Calibration *c, const Grid_Camera *cam)
 	{
-		screen_coord->x = c->init.screen_width*(grid_coord->x - c->grid_coord.x) / c->grid_coord.w;
-		screen_coord->y = c->init.screen_height*(grid_coord->y - c->grid_coord.y) / c->grid_coord.h;
-		screen_coord->w = c->init.screen_width*grid_coord->w / c->grid_coord.w;
-		screen_coord->h = c->init.screen_height*grid_coord->h / c->grid_coord.h;
+		screen_coord->x = c->tile_x + (world_coord->x - cam->grid_coord.x)*c->tile_w;
+		screen_coord->y = c->tile_y + (world_coord->y - cam->grid_coord.y)*c->tile_h;
+		screen_coord->w = world_coord->w*c->tile_w;
+		screen_coord->h = world_coord->h*c->tile_h;
 	}
 
 	void screen_to_Grid(Vec2D::Vec2D *grid_point, Vec2D::Vec2D *screen_point, const Grid_Camera *c)

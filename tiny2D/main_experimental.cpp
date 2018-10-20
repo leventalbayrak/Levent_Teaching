@@ -53,7 +53,7 @@ namespace My_Game
 		int physics_body;
 	};
 
-	void init_Actor(Actor *p, Shape::Rect *r);
+	void init_Actor_Assets(Actor *p, int idle_sprite_index, int run_sprite_index, int jump_sprite_index);
 	void update_Actor(Actor *p, unsigned int current_time);
 	void draw_Actor(Actor *p);
 
@@ -90,6 +90,7 @@ namespace My_Game
 		Grid::Grid map_objects;
 
 		Grid_Camera::Grid_Camera camera;
+		Grid_Camera::Calibration calibration;
 
 		Body::Body bodies;
 
@@ -122,12 +123,12 @@ namespace My_Game
 
 		Assets::font_index = Font::add("Transparent_Font.png", 64, 64, Engine::renderer);
 
-		Assets::coin_sound = Audio::add_FX("coin.wav");
-		Assets::ting_sound = Audio::add_FX("ting.wav");
-		Assets::music = Audio::add_Music("dracula.mp3");
+		//Assets::coin_sound = Audio::add_FX("coin.wav");
+		//Assets::ting_sound = Audio::add_FX("ting.wav");
+		//Assets::music = Audio::add_Music("dracula.mp3");
 
 		//load tileset image
-		Engine::add_Tileset("map_tileset.txt");
+		Engine::E_Tileset::add("map_tileset.txt");
 
 		//load collision map (level collisions), "tiled" export csv
 		Grid::load(&World::collision_map, "platformer_collision.csv");
@@ -137,7 +138,8 @@ namespace My_Game
 		Grid::load(&World::map_objects, "platformer_objects.csv");
 
 		//load player sprite
-		Engine::add_Sprite("saitama.txt");
+		int number_of_sprites_loaded = Engine::E_Sprite::add("saitama.txt");
+		printf("loaded %d frames\n", number_of_sprites_loaded);
 		Assets::player_run_sprite_index = 0;
 		Assets::player_idle_sprite_index = 1;
 		Assets::player_jump_sprite_index = 2;
@@ -156,9 +158,16 @@ namespace My_Game
 		Audio::set_Music_Volume(64);
 		Audio::play_Music(Assets::music, -1);
 
-		Shape::Rect player_rect = { 10,10,1,1 };
-		init_Actor(&World::player, &player_rect);
-		
+		//initialize player
+		init_Actor_Assets(&World::player, Assets::player_idle_sprite_index,Assets::player_run_sprite_index,Assets::player_jump_sprite_index);
+		World::player.world_coord = { 10,10,1,1 };
+		World::player.jump_force_mag = 0.01;
+		World::player.move_force_mag = 0.0001;
+		World::player.sprite_direction = 0;
+		World::player.state = 0;
+		World::player.physics_body = Body::make(&World::bodies);
+		Vec2D::Vec2D tmp_pos = { World::player.world_coord.x,World::player.world_coord.y };
+		Body::modify(World::player.physics_body, &World::bodies, &tmp_pos, 1.0);
 	}
 
 	void update(unsigned int current_time)
@@ -199,18 +208,20 @@ namespace My_Game
 
 		My_Game::World::camera.grid_coord.x = World::player.world_coord.x - My_Game::World::camera.grid_coord.w / 2;
 		My_Game::World::camera.grid_coord.y = World::player.world_coord.y - My_Game::World::camera.grid_coord.h / 2;
+		
+		Grid::Region grid_region;
+		//if the camera was on top of a grid, which cells would its grid_coord be covering
+		Grid_Camera::get_Grid_Region_Covered(&grid_region, &World::camera);
+		Grid::clip_Grid_Region(&grid_region, World::tilemap.n_cols, World::tilemap.n_rows);
+
+		Grid_Camera::calibrate(&World::calibration, &World::camera, &grid_region);
 
 		//set color to white
 		SDL_SetRenderDrawColor(Engine::renderer, 255, 255, 255, 255);
 		//clear screen with white
 		SDL_RenderClear(Engine::renderer);
 
-		Grid::Region grid_region;
-		//if the camera was on top of a grid, which cells would its grid_coord be covering
-		Grid_Camera::get_Grid_Region_Covered(&grid_region, &World::camera);
-		Grid::clip_Grid_Region(&grid_region, World::tilemap.n_cols, World::tilemap.n_rows);
-
-		Engine::E_Tileset::draw(0, &World::camera, &grid_region, &World::tilemap);
+		Engine::E_Tileset::draw(0, &World::calibration, &grid_region, &World::tilemap);
 
 		draw_Actor(&World::player);
 
@@ -219,26 +230,19 @@ namespace My_Game
 
 	}
 
-	void init_Actor(Actor *p, Shape::Rect *r)
+	void init_Actor_Assets(Actor *p, int idle_sprite_index,int run_sprite_index, int jump_sprite_index)
 	{
-		p->run_sprite_id = Engine::make_Sprite_Instance(Assets::player_run_sprite_index);
-		Engine::modify_Sprite_Instance(Assets::player_run_sprite_index, p->run_sprite_id, 100);
-
-		p->idle_sprite_id = Engine::make_Sprite_Instance(Assets::player_idle_sprite_index);
-		Engine::modify_Sprite_Instance(Assets::player_idle_sprite_index, p->idle_sprite_id, 100);
-
-		p->jump_sprite_id = Engine::make_Sprite_Instance(Assets::player_jump_sprite_index);
-		Engine::modify_Sprite_Instance(Assets::player_jump_sprite_index, p->jump_sprite_id, 100);
-
-		p->world_coord = *r;
-
-		p->physics_body = Body::make(&World::bodies);
-		Vec2D::Vec2D tmp_pos = { p->world_coord.x,p->world_coord.y };
-		Body::modify(p->physics_body, &World::bodies, &tmp_pos, 1.0);
-
-		p->sprite_direction = 0;
-		p->state = 0;
+		p->idle_sprite_db_index = idle_sprite_index;
+		p->idle_sprite_id = Engine::E_Sprite::make_Instance(p->idle_sprite_db_index);
+		Engine::E_Sprite::modify(p->idle_sprite_db_index, p->idle_sprite_id, 100);
 		
+		p->run_sprite_db_index = run_sprite_index;
+		p->run_sprite_id = Engine::E_Sprite::make_Instance(p->run_sprite_db_index);
+		Engine::E_Sprite::modify(p->run_sprite_db_index, p->run_sprite_id, 100);
+
+		p->jump_sprite_db_index = jump_sprite_index;
+		p->jump_sprite_id = Engine::E_Sprite::make_Instance(p->jump_sprite_db_index);
+		Engine::E_Sprite::modify(p->jump_sprite_db_index, p->jump_sprite_id, 100);		
 	}
 	
 	void update_Actor(Actor *p, unsigned int current_time)
@@ -246,14 +250,12 @@ namespace My_Game
 		if (p->move_cmd_left) p->sprite_direction = 1;
 		else if (p->move_cmd_right) p->sprite_direction = 0;
 
+		p->state = 0;//idle
+
 		//player state 1 = running, 0 = idle
 		if (p->move_cmd_left || p->move_cmd_right)
 		{
 			p->state = 1;
-		}
-		else
-		{
-			p->state = 0;
 		}
 
 		p->world_coord.x = World::bodies.pos[p->physics_body].x;
@@ -266,26 +268,38 @@ namespace My_Game
 		int actor_on_super_jump_tile = 0;
 
 		Collision::Point_Feeler actor_feelers;
-		Collision::sense_with_Point_Feelers(&actor_feelers, &p->world_coord);
+		Collision::point_Feeler_Pos(&actor_feelers, &p->world_coord);
 		
-		if (Grid::tile(&actor_feelers.right_feeler, &World::collision_map) > 0)
+		Grid::Point tmp;
+
+		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.right_feeler);
+		if (Grid::tile(&tmp, &World::collision_map) > 0)
 		{
 			actor_collision_right = 1;
 		}
-		if (Grid::tile(&actor_feelers.left_feeler, &World::collision_map) > 0)
+
+		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.left_feeler);
+		if (Grid::tile(&tmp, &World::collision_map) > 0)
 		{
 			actor_collision_left = 1;
 		}
-		if (Grid::tile(&actor_feelers.bottom_feeler, &World::collision_map) > 0)
+
+		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.bottom_feeler);
+		if (Grid::tile(&tmp, &World::collision_map) > 0)
 		{
 			actor_collision_bottom = 1;
 		}
-		if (Grid::tile(&actor_feelers.top_feeler, &World::collision_map) > 0)
+
+		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.top_feeler);
+		if (Grid::tile(&tmp, &World::collision_map) > 0)
 		{
 			actor_collision_top = 1;
 		}
 
-		if (Grid::tile(&actor_feelers.bottom_feeler, &World::map_objects) == World::Parameters::super_jump_tile_id)
+		printf("left %d right %d top %d bottom %d\n", actor_collision_left, actor_collision_right, actor_collision_top, actor_collision_bottom);
+
+		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.mid_feeler);
+		if (Grid::tile(&tmp, &World::map_objects) == World::Parameters::super_jump_tile_id)
 		{
 			actor_on_super_jump_tile = 1;
 		}
@@ -365,40 +379,39 @@ namespace My_Game
 		//integrate velocity
 		Body::update_Pos(p->physics_body, &World::bodies);
 
+		//UPDATE ANIMATION FRAMES
 		if (p->state == 0)
 		{
 			Sprite::update(p->idle_sprite_db_index, p->idle_sprite_id, &Engine::sprite_db, current_time);
 		}
 		else if(p->state == 1)
 		{
-			Sprite::update(p->run_sprite_db_index, p->run_sprite_id, &Engine::sprite_db, current_time);	
+			Engine::E_Sprite::update(p->run_sprite_db_index, p->run_sprite_id, current_time);	
 		}
 		else if(p->state == 2)
 		{
-			Sprite::update(p->jump_sprite_db_index, p->jump_sprite_id, &Engine::sprite_db, current_time);
+			Engine::E_Sprite::update(p->jump_sprite_db_index, p->jump_sprite_id, current_time);
 		}
 		else
 		{
-			Sprite::update(p->idle_sprite_db_index, p->idle_sprite_id, &Engine::sprite_db, current_time);
+			Engine::E_Sprite::update(p->idle_sprite_db_index, p->idle_sprite_id, current_time);
 		}
 	}
 
 	void draw_Actor(Actor *p)
 	{
-		Shape::Rect player_screen_rect;
-		Grid_Camera::grid_to_Screen(&player_screen_rect, &p->world_coord, &World::camera);
 
 		if (p->state == 0)
 		{
-			Sprite::draw(Assets::player_idle_sprite_index, p->idle_sprite_id, &Engine::sprite_db, player_screen_rect.x, player_screen_rect.y, player_screen_rect.w, player_screen_rect.h, Engine::renderer, p->sprite_direction);
+			Engine::E_Sprite::draw(p->idle_sprite_db_index, p->idle_sprite_id, &p->world_coord, p->sprite_direction, &World::calibration, &World::camera);
 		}
 		else if (p->state == 1)
 		{
-			Sprite::draw(Assets::player_run_sprite_index, p->run_sprite_id, &Engine::sprite_db, player_screen_rect.x, player_screen_rect.y, player_screen_rect.w, player_screen_rect.h, Engine::renderer, p->sprite_direction);
+			Engine::E_Sprite::draw(p->run_sprite_db_index, p->run_sprite_id, &p->world_coord, p->sprite_direction, &World::calibration, &World::camera);
 		}
 		else if (p->state == 2)
 		{
-			Sprite::draw(Assets::player_jump_sprite_index, p->jump_sprite_id, &Engine::sprite_db, player_screen_rect.x, player_screen_rect.y, player_screen_rect.w, player_screen_rect.h, Engine::renderer, p->sprite_direction);
+			Engine::E_Sprite::draw(p->jump_sprite_db_index, p->jump_sprite_id, &p->world_coord, p->sprite_direction, &World::calibration, &World::camera);
 		}
 	}
 }
@@ -413,8 +426,6 @@ int main(int argc, char **argv)
 	while (!done)
 	{
 		unsigned int current_time = SDL_GetTicks();
-
-		My_Game::update(done);
 
 		My_Game::update(current_time);
 
