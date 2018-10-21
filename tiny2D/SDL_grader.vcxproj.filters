@@ -89,7 +89,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main_experimental.cpp">
+    <ClCompile Include="main_experimental_new_collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
