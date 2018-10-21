@@ -87,9 +87,12 @@
     <ClInclude Include="Collision_core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="My_Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main_experimental_new_collision.cpp">
+    <ClCompile Include="main_my_game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

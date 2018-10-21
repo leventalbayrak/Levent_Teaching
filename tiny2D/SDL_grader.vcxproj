@@ -123,6 +123,7 @@
     <ClInclude Include="Grid_Camera_core.h" />
     <ClInclude Include="Grid_Camera_data.h" />
     <ClInclude Include="Grid_core.h" />
+    <ClInclude Include="My_Game.h" />
     <ClInclude Include="Table_File_core.h" />
     <ClInclude Include="Table_File_data.h" />
     <ClInclude Include="Shape_core.h" />
@@ -137,7 +138,7 @@
     <ClInclude Include="Vec2D_data.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main_experimental_new_collision.cpp" />
+    <ClCompile Include="main_my_game.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
