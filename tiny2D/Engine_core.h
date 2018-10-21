@@ -16,7 +16,7 @@ namespace Engine
 {
 	void init(const char*window_title, int _screen_width, int _screen_height)
 	{
-		SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+		SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK);
 		srand(time(0));
 		screen_width = _screen_width;
 		screen_height = _screen_height;
@@ -27,6 +27,54 @@ namespace Engine
 		Font::init();
 		Tileset::init(&tileset_db, 64);
 		Sprite::init(&sprite_db, 64);
+
+		keys = (unsigned char*)SDL_GetKeyboardState(NULL);
+		memcpy(prev_key_state, keys, 256);
+
+		int n_connected = SDL_NumJoysticks();
+		printf("found %d game controllers\n", n_connected);
+		int k = min(n_connected, max_n_game_controllers);
+		n_game_controllers = 0;
+		for (int i = 0; i < k; i++)
+		{
+			if (SDL_IsGameController(i))
+			{
+				game_controller[n_game_controllers] = SDL_GameControllerOpen(i);
+				n_game_controllers++;
+			}
+		}
+		printf("connected to %d game controllers\n", n_game_controllers);
+	}
+
+	void event_Loop()
+	{
+		memcpy(prev_key_state, keys, 256);
+
+		//consume all window events first
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			if (event.type == SDL_QUIT)
+			{
+				exit(0);
+			}
+			
+		}
+
+		for (int i = 0; i < n_game_controllers; i++)
+		{
+			memcpy(prev_game_controller_sticks[i], game_controller_sticks[i], sizeof(int) * 6);
+			for (int j = 0; j < 6; j++)
+			{
+				game_controller_sticks[i][j] = SDL_GameControllerGetAxis(game_controller[i], (SDL_GameControllerAxis)j);
+			}
+			memcpy(prev_game_controller_buttons[i], game_controller_buttons[i], sizeof(int) * 15);
+			for (int j = 0; j < 15; j++)
+			{
+				game_controller_buttons[i][j] = SDL_GameControllerGetButton(game_controller[i], (SDL_GameControllerButton)j);
+			}
+		}
+		
 	}
 
 	namespace E_Sprite

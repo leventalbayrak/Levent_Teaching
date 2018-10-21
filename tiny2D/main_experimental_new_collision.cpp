@@ -59,12 +59,6 @@ namespace My_Game
 	void update_Enemy_AI(Actor *e, unsigned int current_time);
 	void update_Map_Events(Actor *e, unsigned int current_time);
 
-	namespace Input
-	{
-		unsigned char prev_key_state[256];
-		unsigned char *keys = NULL;
-	}
-
 	namespace Command
 	{
 		int cmd_UP, cmd_DOWN, cmd_LEFT, cmd_RIGHT;
@@ -127,14 +121,6 @@ namespace My_Game
 		//initialize all systems and open game window
 		Engine::init("hello side scroller", 480 * 2, 384 * 2);
 
-		Input::keys = (unsigned char*)SDL_GetKeyboardState(NULL);
-
-		Assets::font_index = Font::add("Transparent_Font.png", 64, 64, Engine::renderer);
-
-		//Assets::coin_sound = Audio::add_FX("coin.wav");
-		//Assets::ting_sound = Audio::add_FX("ting.wav");
-		//Assets::music = Audio::add_Music("dracula.mp3");
-
 		//load tileset image
 		Engine::E_Tileset::add("map_tileset.txt");
 
@@ -144,7 +130,7 @@ namespace My_Game
 		Grid::load(&World::tilemap, "platformer_map.csv");
 		//load tile map objects, "tiled" export csv
 		Grid::load(&World::object_map, "platformer_objects.csv");
-		//load parallax map
+		//load parallax maps
 		Grid::load(&World::parallax_map1, "platformer_parallax_map1.csv");
 		Grid::load(&World::parallax_map2, "platformer_parallax_map2.csv");
 
@@ -166,9 +152,6 @@ namespace My_Game
 
 	void begin()
 	{
-		Audio::set_Music_Volume(64);
-		Audio::play_Music(Assets::music, -1);
-
 		//initialize player
 		init_Actor_Assets(&World::player, Assets::player_idle_sprite_index, Assets::player_run_sprite_index, Assets::player_jump_sprite_index);
 		World::player.world_coord = { 10,10,1,1 };
@@ -197,27 +180,24 @@ namespace My_Game
 	void update(unsigned int current_time)
 	{
 
-		memcpy(Input::prev_key_state, Input::keys, 256);
-
-		//consume all window events first
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			if (event.type == SDL_QUIT)
-			{
-				exit(0);
-			}
-		}
+		Engine::event_Loop();
 
 		Command::cmd_UP = 0;
 		Command::cmd_DOWN = 0;
 		Command::cmd_LEFT = 0;
 		Command::cmd_RIGHT = 0;
 
-		if (Input::keys[SDL_SCANCODE_W] && Input::prev_key_state[SDL_SCANCODE_W] == 0) Command::cmd_UP = 1;
-		if (Input::keys[SDL_SCANCODE_S]) Command::cmd_DOWN = 1;
-		if (Input::keys[SDL_SCANCODE_A]) Command::cmd_LEFT = 1;
-		if (Input::keys[SDL_SCANCODE_D]) Command::cmd_RIGHT = 1;
+		if (Engine::keys[SDL_SCANCODE_W] && Engine::prev_key_state[SDL_SCANCODE_W] == 0) Command::cmd_UP = 1;
+		if (Engine::keys[SDL_SCANCODE_SPACE] && Engine::prev_key_state[SDL_SCANCODE_SPACE] == 0) Command::cmd_UP = 1;
+		if (Engine::keys[SDL_SCANCODE_A]) Command::cmd_LEFT = 1;
+		if (Engine::keys[SDL_SCANCODE_D]) Command::cmd_RIGHT = 1;
+
+		if (Engine::game_controller_buttons[0][SDL_CONTROLLER_BUTTON_A] && Engine::prev_game_controller_buttons[0][SDL_CONTROLLER_BUTTON_A] == 0) Command::cmd_UP = 1;
+		if (Engine::game_controller_sticks[0][SDL_CONTROLLER_AXIS_LEFTX] < -5000) Command::cmd_LEFT = 1;
+		else if (Engine::game_controller_sticks[0][SDL_CONTROLLER_AXIS_LEFTX] > 5000) Command::cmd_RIGHT = 1;
+		
+		if (Engine::game_controller_buttons[0][SDL_CONTROLLER_BUTTON_DPAD_LEFT]) Command::cmd_LEFT = 1;
+		if (Engine::game_controller_buttons[0][SDL_CONTROLLER_BUTTON_DPAD_RIGHT]) Command::cmd_RIGHT = 1;
 
 		World::player.move_cmd_left = Command::cmd_LEFT;
 		World::player.move_cmd_right = Command::cmd_RIGHT;
