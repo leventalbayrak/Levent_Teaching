@@ -104,7 +104,6 @@ namespace My_Game
 		}
 
 		Actor player;
-		
 		Actor enemies[Parameters::n_enemies];
 
 		Grid::Grid collision_map;
@@ -460,7 +459,7 @@ namespace My_Game
 		if (Grid::tile(&actor_feelers.mid_feeler, &World::object_map) == World::Parameters::super_jump_tile_id)
 		{
 			//FIX::feeler is inside the box for a long time!
-			Vec2D::Vec2D f = { 0, -e->jump_force_mag*0.1 };
+			Vec2D::Vec2D f = { e->move_force_mag, -e->jump_force_mag*0.1 };
 			Body::add_Force(e->physics_body, &World::bodies, &f);
 		}
 	}
