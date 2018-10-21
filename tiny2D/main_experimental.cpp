@@ -99,7 +99,8 @@ namespace My_Game
 			int super_jump_tile_id = 96;
 			int teleport_tile_id = 283;
 
-			const int n_enemies = 100;
+			const int n_enemies = 512;
+			int n_active_enemies = 0;
 		}
 
 		Actor player;
@@ -176,7 +177,7 @@ namespace My_Game
 		for (int i = 0; i < World::Parameters::n_enemies; i++)
 		{
 			init_Actor_Assets(&World::enemies[i], Assets::player_idle_sprite_index, Assets::player_run_sprite_index, Assets::player_jump_sprite_index);
-			World::enemies[i].world_coord = { (float)(5 + rand() % 20),(float)(10 + rand() % 5),1,1 };
+			World::enemies[i].world_coord = { (float)(5+rand()%10),(float)(10),1,1 };
 			World::enemies[i].jump_force_mag = 0.01;
 			World::enemies[i].move_force_mag = 0.0001;
 			World::enemies[i].sprite_direction = 0;
@@ -221,7 +222,11 @@ namespace My_Game
 		update_Map_Events(&World::player, current_time);
 		update_Actor(&World::player, current_time);
 
-		for (int i = 0; i < World::Parameters::n_enemies; i++)
+		if (World::Parameters::n_active_enemies >= World::Parameters::n_enemies)
+		{
+			exit(0);
+		}
+		for (int i = 0; i < World::Parameters::n_active_enemies; i++)
 		{
 			update_Enemy_AI(&World::enemies[i], current_time);
 			update_Map_Events(&World::enemies[i], current_time);
@@ -252,7 +257,7 @@ namespace My_Game
 		Engine::E_Tileset::draw(0, &World::calibration, &grid_region, &World::tilemap);
 
 		draw_Actor(&World::player);
-		for (int i = 0; i < World::Parameters::n_enemies; i++)
+		for (int i = 0; i < World::Parameters::n_active_enemies; i++)
 		{
 			draw_Actor(&World::enemies[i]);
 		}
@@ -448,6 +453,8 @@ namespace My_Game
 			e->world_coord.y = 10;
 			World::bodies.pos[e->physics_body].x = e->world_coord.x;
 			World::bodies.pos[e->physics_body].y = e->world_coord.y;
+
+			World::Parameters::n_active_enemies++;
 		}
 
 		if (Grid::tile(&actor_feelers.mid_feeler, &World::object_map) == World::Parameters::super_jump_tile_id)
