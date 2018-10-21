@@ -97,8 +97,8 @@ namespace My_Game
 			float max_vel_x = 1.0 / 24.0;
 			float max_vel_y = 1.0 / 16.0;
 
-			int super_jump_tile_id = 96;
-			int teleport_tile_id = 283;
+			int super_jump_tile_id = 11;
+			int teleport_tile_id = 15;
 
 			const int n_enemies = 512;
 			int n_active_enemies = 0;
