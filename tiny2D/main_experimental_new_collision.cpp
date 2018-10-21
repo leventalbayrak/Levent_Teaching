@@ -111,6 +111,8 @@ namespace My_Game
 		Grid::Grid collision_map;
 		Grid::Grid tilemap;
 		Grid::Grid object_map;
+		Grid::Grid parallax_map1;
+		Grid::Grid parallax_map2;
 
 		Grid_Camera::Grid_Camera camera;
 		Grid_Camera::Calibration calibration;
@@ -142,6 +144,9 @@ namespace My_Game
 		Grid::load(&World::tilemap, "platformer_map.csv");
 		//load tile map objects, "tiled" export csv
 		Grid::load(&World::object_map, "platformer_objects.csv");
+		//load parallax map
+		Grid::load(&World::parallax_map1, "platformer_parallax_map1.csv");
+		Grid::load(&World::parallax_map2, "platformer_parallax_map2.csv");
 
 		//load player sprite
 		int number_of_sprites_loaded = Engine::E_Sprite::add("saitama.txt");
@@ -245,19 +250,46 @@ namespace My_Game
 	void draw()
 	{
 
-		Grid::Region grid_region;
-		//if the camera was on top of a grid, which cells would its grid_coord be covering
-		Grid_Camera::get_Grid_Region_Covered(&grid_region, &World::camera);
-		Grid::clip_Grid_Region(&grid_region, World::tilemap.n_cols, World::tilemap.n_rows);
-
-		Grid_Camera::calibrate(&World::calibration, &World::camera, &grid_region);
+		
 
 		//set color to white
 		SDL_SetRenderDrawColor(Engine::renderer, 255, 255, 255, 255);
 		//clear screen with white
 		SDL_RenderClear(Engine::renderer);
 
+		Grid::Region grid_region;
+
+
+		Grid_Camera::Grid_Camera parallax_camera;
+		Grid_Camera::Calibration parallax_calibration;
+
+		
+
+		parallax_camera.init = World::camera.init;
+		parallax_camera.world_coord = World::camera.world_coord;
+		parallax_camera.world_coord.x *= 0.2;
+		parallax_camera.world_coord.y *= 1;
+		Grid_Camera::get_Grid_Region_Covered(&grid_region, &parallax_camera);
+		Grid::clip_Grid_Region(&grid_region, World::parallax_map2.n_cols, World::parallax_map2.n_rows);
+		Grid_Camera::calibrate(&parallax_calibration, &parallax_camera, &grid_region);
+		Engine::E_Tileset::draw(0, &parallax_calibration, &grid_region, &World::parallax_map2);
+
+		parallax_camera.init = World::camera.init;
+		parallax_camera.world_coord = World::camera.world_coord;
+		parallax_camera.world_coord.x *= 0.4;
+		parallax_camera.world_coord.y *= 1;
+		Grid_Camera::get_Grid_Region_Covered(&grid_region, &parallax_camera);
+		Grid::clip_Grid_Region(&grid_region, World::parallax_map1.n_cols, World::parallax_map1.n_rows);
+		Grid_Camera::calibrate(&parallax_calibration, &parallax_camera, &grid_region);
+		Engine::E_Tileset::draw(0, &parallax_calibration, &grid_region, &World::parallax_map1);
+
+
+		Grid_Camera::get_Grid_Region_Covered(&grid_region, &World::camera);
+		Grid::clip_Grid_Region(&grid_region, World::tilemap.n_cols, World::tilemap.n_rows);
+		Grid_Camera::calibrate(&World::calibration, &World::camera, &grid_region);
 		Engine::E_Tileset::draw(0, &World::calibration, &grid_region, &World::tilemap);
+
+		
 
 		draw_Actor(&World::player);
 		for (int i = 0; i < World::Parameters::n_active_enemies; i++)
