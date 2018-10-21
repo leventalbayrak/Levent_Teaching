@@ -55,6 +55,8 @@ namespace My_Game
 	void init_Actor_Assets(Actor *p, int idle_sprite_index, int run_sprite_index, int jump_sprite_index);
 	void update_Actor(Actor *p, unsigned int current_time);
 	void draw_Actor(Actor *p);
+	void update_Enemy_AI(Actor *e, unsigned int current_time);
+	void update_Map_Events(Actor *e, unsigned int current_time);
 
 	namespace Input
 	{
@@ -82,16 +84,6 @@ namespace My_Game
 
 	namespace World
 	{
-		Actor player;
-
-		Grid::Grid collision_map;
-		Grid::Grid tilemap;
-		Grid::Grid map_objects;
-
-		Grid_Camera::Grid_Camera camera;
-		Grid_Camera::Calibration calibration;
-
-		Body::Body bodies;
 
 		namespace Parameters
 		{
@@ -105,7 +97,25 @@ namespace My_Game
 			float max_vel_y = 1.0 / 16.0;
 
 			int super_jump_tile_id = 96;
+			int teleport_tile_id = 283;
+
+			const int n_enemies = 100;
 		}
+
+		Actor player;
+		
+		Actor enemies[Parameters::n_enemies];
+
+		Grid::Grid collision_map;
+		Grid::Grid tilemap;
+		Grid::Grid object_map;
+
+		Grid_Camera::Grid_Camera camera;
+		Grid_Camera::Calibration calibration;
+
+		Body::Body bodies;
+
+		
 	}
 
 	void init()
@@ -129,7 +139,7 @@ namespace My_Game
 		//load tile map (visuals), "tiled" export csv
 		Grid::load(&World::tilemap, "platformer_map.csv");
 		//load tile map objects, "tiled" export csv
-		Grid::load(&World::map_objects, "platformer_objects.csv");
+		Grid::load(&World::object_map, "platformer_objects.csv");
 
 		//load player sprite
 		int number_of_sprites_loaded = Engine::E_Sprite::add("saitama.txt");
@@ -144,7 +154,7 @@ namespace My_Game
 		World::camera.world_coord.h = Engine::screen_height / 32;
 
 		//create physics body manager
-		Body::init(&World::bodies, 100);
+		Body::init(&World::bodies, World::Parameters::n_enemies);
 	}
 
 	void begin()
@@ -162,6 +172,19 @@ namespace My_Game
 		World::player.physics_body = Body::make(&World::bodies);
 		Vec2D::Vec2D tmp_pos = { World::player.world_coord.x,World::player.world_coord.y };
 		Body::modify(World::player.physics_body, &World::bodies, &tmp_pos, 1.0);
+
+		for (int i = 0; i < World::Parameters::n_enemies; i++)
+		{
+			init_Actor_Assets(&World::enemies[i], Assets::player_idle_sprite_index, Assets::player_run_sprite_index, Assets::player_jump_sprite_index);
+			World::enemies[i].world_coord = { (float)(5 + rand() % 20),(float)(10 + rand() % 5),1,1 };
+			World::enemies[i].jump_force_mag = 0.01;
+			World::enemies[i].move_force_mag = 0.0001;
+			World::enemies[i].sprite_direction = 0;
+			World::enemies[i].state = 0;
+			World::enemies[i].physics_body = Body::make(&World::bodies);
+			Vec2D::Vec2D tmp_pos = { World::enemies[i].world_coord.x,World::enemies[i].world_coord.y };
+			Body::modify(World::enemies[i].physics_body, &World::bodies, &tmp_pos, 1.0);
+		}
 	}
 
 	void update(unsigned int current_time)
@@ -195,7 +218,15 @@ namespace My_Game
 		World::player.move_cmd_down = Command::cmd_DOWN;
 
 		//update player physics
+		update_Map_Events(&World::player, current_time);
 		update_Actor(&World::player, current_time);
+
+		for (int i = 0; i < World::Parameters::n_enemies; i++)
+		{
+			update_Enemy_AI(&World::enemies[i], current_time);
+			update_Map_Events(&World::enemies[i], current_time);
+			update_Actor(&World::enemies[i], current_time);		
+		}
 
 		//focus camera on player
 		My_Game::World::camera.world_coord.x = World::player.world_coord.x - My_Game::World::camera.world_coord.w / 2;
@@ -221,6 +252,10 @@ namespace My_Game
 		Engine::E_Tileset::draw(0, &World::calibration, &grid_region, &World::tilemap);
 
 		draw_Actor(&World::player);
+		for (int i = 0; i < World::Parameters::n_enemies; i++)
+		{
+			draw_Actor(&World::enemies[i]);
+		}
 
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
@@ -262,53 +297,38 @@ namespace My_Game
 		int actor_collision_bottom = 0;
 		int actor_collision_left = 0;
 		int actor_collision_right = 0;
-		int actor_on_super_jump_tile = 0;
 
 		Collision::Point_Feeler actor_feelers;
-		Collision::point_Feeler_Pos(&actor_feelers, &p->world_coord);
+		Collision::point_Feeler_Pos(&actor_feelers, &p->world_coord, 0.05, 0.1);
 		
-		Grid::Point tmp;
-
-		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.left_feeler);
-		if (Grid::tile(&tmp, &World::collision_map) > 0)
-		{
-			actor_collision_left = 1;
-		}
-		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.bottomleft_feeler);
-		if (Grid::tile(&tmp, &World::collision_map) > 0)
+		if (Grid::tile(&actor_feelers.left_feeler, &World::collision_map) > 0)
 		{
 			actor_collision_left = 1;
 		}
 
-		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.right_feeler);
-		if (Grid::tile(&tmp, &World::collision_map) > 0)
+		if (Grid::tile(&actor_feelers.bottomleft_feeler, &World::collision_map) > 0)
 		{
-			actor_collision_right = 1;
+			actor_collision_left = 1;
 		}
-		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.bottomright_feeler);
-		if (Grid::tile(&tmp, &World::collision_map) > 0)
+
+		if (Grid::tile(&actor_feelers.right_feeler, &World::collision_map) > 0)
 		{
 			actor_collision_right = 1;
 		}
 
-		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.bottom_feeler);
-		if (Grid::tile(&tmp, &World::collision_map) > 0)
+		if (Grid::tile(&actor_feelers.bottomright_feeler, &World::collision_map) > 0)
+		{
+			actor_collision_right = 1;
+		}
+
+		if (Grid::tile(&actor_feelers.bottom_feeler, &World::collision_map) > 0)
 		{
 			actor_collision_bottom = 1;
 		}
 
-		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.top_feeler);
-		if (Grid::tile(&tmp, &World::collision_map) > 0)
+		if (Grid::tile(&actor_feelers.top_feeler, &World::collision_map) > 0)
 		{
 			actor_collision_top = 1;
-		}
-
-		printf("left %d right %d top %d bottom %d\n", actor_collision_left, actor_collision_right, actor_collision_top, actor_collision_bottom);
-
-		Grid::Vec2D_to_Grid(&tmp, &actor_feelers.mid_feeler);
-		if (Grid::tile(&tmp, &World::map_objects) == World::Parameters::super_jump_tile_id)
-		{
-			actor_on_super_jump_tile = 1;
 		}
 
 		if (actor_collision_bottom == 0)
@@ -317,16 +337,8 @@ namespace My_Game
 		}
 
 		//START ADDING FORCES
-		//clear forces on player
-		World::bodies.force[p->physics_body] = {};
-
+		
 		Body::add_Force(p->physics_body, &World::bodies, &World::Parameters::gravity);
-
-		if (actor_on_super_jump_tile)
-		{
-			Vec2D::Vec2D f = { 0, -p->jump_force_mag*640 };
-			Body::add_Force(p->physics_body, &World::bodies, &f);
-		}
 
 		if (p->move_cmd_right == 1 && actor_collision_right == 0)
 		{
@@ -356,11 +368,11 @@ namespace My_Game
 
 		//integrate acceleration
 		Body::update_Vel(p->physics_body, &World::bodies);
-		//clip velocity
-		Vec2D::clip(&World::bodies.vel[p->physics_body], -World::Parameters::max_vel_x, World::Parameters::max_vel_x, -World::Parameters::max_vel_y, World::Parameters::max_vel_y);
-
 		//apply friction
 		World::bodies.vel[p->physics_body].x *= current_friction;
+		
+		//clip velocity
+		Vec2D::clip(&World::bodies.vel[p->physics_body], -World::Parameters::max_vel_x, World::Parameters::max_vel_x, -World::Parameters::max_vel_y, World::Parameters::max_vel_y);
 
 		if (abs(World::bodies.vel[p->physics_body].x) < 0.00001) World::bodies.vel[p->physics_body].x = 0.0;
 		if (abs(World::bodies.vel[p->physics_body].y) < 0.00001) World::bodies.vel[p->physics_body].y = 0.0;
@@ -385,6 +397,9 @@ namespace My_Game
 
 		//integrate velocity
 		Body::update_Pos(p->physics_body, &World::bodies);
+		
+		World::bodies.force[p->physics_body] = {};
+
 
 		//UPDATE ANIMATION FRAMES
 		if (p->state == 0)
@@ -420,6 +435,64 @@ namespace My_Game
 		{
 			Engine::E_Sprite::draw(p->jump_sprite_db_index, p->jump_sprite_id, &p->world_coord, p->sprite_direction, &World::calibration, &World::camera);
 		}
+	}
+
+	void update_Map_Events(Actor *e, unsigned int current_time)
+	{
+		Collision::Point_Feeler actor_feelers;
+		Collision::point_Feeler_Pos(&actor_feelers, &e->world_coord, 0.05, 0.1);
+
+		if (Grid::tile(&actor_feelers.mid_feeler, &World::object_map) == World::Parameters::teleport_tile_id)
+		{
+			e->world_coord.x = 10;
+			e->world_coord.y = 10;
+			World::bodies.pos[e->physics_body].x = e->world_coord.x;
+			World::bodies.pos[e->physics_body].y = e->world_coord.y;
+		}
+
+		if (Grid::tile(&actor_feelers.mid_feeler, &World::object_map) == World::Parameters::super_jump_tile_id)
+		{
+			//FIX::feeler is inside the box for a long time!
+			Vec2D::Vec2D f = { 0, -e->jump_force_mag*0.1 };
+			Body::add_Force(e->physics_body, &World::bodies, &f);
+		}
+	}
+
+	void update_Enemy_AI(Actor *e, unsigned int current_time)
+	{
+
+		e->move_cmd_left = 0;
+		e->move_cmd_right = 0;
+		e->move_cmd_up = 0;
+		e->move_cmd_down = 0;
+
+
+		Collision::Point_Feeler actor_feelers_far;
+		Collision::point_Feeler_Pos(&actor_feelers_far, &e->world_coord,0.4,0.8);
+
+		Collision::Point_Feeler actor_feelers_close;
+		Collision::point_Feeler_Pos(&actor_feelers_close, &e->world_coord, 0.05, 0.1);
+
+		if (Grid::tile(&actor_feelers_far.right_feeler, &World::collision_map) < 0)
+		{
+			e->move_cmd_right = 1;
+		}
+		else
+		{
+			//FIX::feeler inside collision for a long time!
+			e->move_cmd_right = 1;
+			if (rand() % 5 == 0)
+			{
+				e->move_cmd_right = 0;
+				e->move_cmd_left = 1;
+			}
+			if (Grid::tile(&actor_feelers_close.bottom_feeler, &World::collision_map) > 0)
+			{
+				e->move_cmd_up = 1;
+			}
+		}
+		
+		
 	}
 }
 

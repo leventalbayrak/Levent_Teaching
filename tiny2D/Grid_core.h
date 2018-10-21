@@ -40,6 +40,11 @@ namespace Grid
 		return g->data[p->y*g->n_cols + p->x];
 	}
 
+	inline int tile(Vec2D::Vec2D *p, Grid *g)
+	{
+		return g->data[(int)p->y*g->n_cols + (int)p->x];
+	}
+
 	void clip_Grid_Region(Region *r, int n_cols, int n_rows)
 	{
 		if (r->x0 < 0) r->x0 = 0;

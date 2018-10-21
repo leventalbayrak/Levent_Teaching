@@ -19,6 +19,15 @@ namespace Body
 		a->mass = (float*)malloc(sizeof(float)*a->array_size);
 	}
 
+	void resize(Body *a)
+	{
+		a->array_size += a->array_size >> 1;
+		a->vel = (Vec2D::Vec2D*)realloc(a->vel, sizeof(Vec2D::Vec2D)*a->array_size);
+		a->force = (Vec2D::Vec2D*)realloc(a->force, sizeof(Vec2D::Vec2D)*a->array_size);
+		a->pos = (Vec2D::Vec2D*)realloc(a->pos, sizeof(Vec2D::Vec2D)*a->array_size);
+		a->mass = (float*)realloc(a->mass, sizeof(float)*a->array_size);
+	}
+
 	void clear_Forces(Body *a)
 	{
 		memset(a->force, 0, sizeof(Vec2D::Vec2D)*a->n_bodies);
@@ -26,6 +35,10 @@ namespace Body
 
 	int make(Body *a)
 	{
+		if (a->n_bodies >= a->array_size)
+		{
+			resize(a);
+		}
 		++a->n_bodies;
 		return a->n_bodies - 1;
 	}
@@ -53,6 +66,12 @@ namespace Body
 	void update_Pos(int index, Body *a)
 	{
 		Vec2D::add(&a->pos[index], &a->vel[index]);
+	}
+
+	void apply_Friction(int index,Vec2D::Vec2D *friction, Body *a)
+	{
+		a->vel[index].x *= friction->x;
+		a->vel[index].y *= friction->y;
 	}
 
 	void copy(Snapshot *s, int index, const Body *bodies)
