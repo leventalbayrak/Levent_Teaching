@@ -71,13 +71,10 @@ namespace My_Game
 		namespace Parameters
 		{
 			//some parameters for the map
-			Vec2D::Vec2D gravity = { 0.0,0.00005 };
+			Vec2D::Vec2D gravity = { 0.0, 0.01 };
 
-			float floor_friction = 0.985;
-			float air_friction = 1.0;
-
-			float max_vel_x = 1.0 / 24.0;
-			float max_vel_y = 1.0 / 16.0;
+			float max_vel_x = 24.0;
+			float max_vel_y = 16.0;
 
 			int super_jump_tile_id = 11;
 			int teleport_tile_id = 15;
@@ -149,8 +146,8 @@ namespace My_Game
 		//initialize player
 		init_Actor_Assets(&World::player, Assets::player_idle_sprite_index, Assets::player_run_sprite_index, Assets::player_jump_sprite_index);
 		World::player.world_coord = { 10,10,1,1 };
-		World::player.jump_force_mag = 0.01;
-		World::player.move_force_mag = 0.0001;
+		World::player.jump_force_mag = 0.16;
+		World::player.move_force_mag = 0.04;
 		World::player.sprite_direction = 0;
 		World::player.state = 0;
 		World::player.physics_body = Body::make(&World::bodies);
@@ -161,8 +158,8 @@ namespace My_Game
 		{
 			init_Actor_Assets(&World::enemies[i], Assets::enemy_idle_sprite_index, Assets::enemy_run_sprite_index, Assets::enemy_jump_sprite_index);
 			World::enemies[i].world_coord = { (float)(5 + rand() % 10),(float)(10),1,1 };
-			World::enemies[i].jump_force_mag = 0.01;
-			World::enemies[i].move_force_mag = 0.0001;
+			World::enemies[i].jump_force_mag = 0.16;
+			World::enemies[i].move_force_mag = 0.04;
 			World::enemies[i].sprite_direction = 0;
 			World::enemies[i].state = 0;
 			World::enemies[i].physics_body = Body::make(&World::bodies);
@@ -297,7 +294,7 @@ namespace My_Game
 
 	void update_Actor_Physics(Actor *p, unsigned int current_time)
 	{
-		float current_friction = 0.985;//later...
+		float current_friction = 0.8;//later...
 
 		//DONE ADDING FORCES
 
@@ -514,10 +511,12 @@ namespace My_Game
 			e->move_cmd_right = 1;
 			if (rand() % 2 == 0)
 			{
-				e->move_cmd_right = 0;
-				e->move_cmd_left = 1;
+			//	e->move_cmd_right = 0;
+			//	e->move_cmd_left = 1;
 			}
-			if (Grid::tile(&actor_feelers_close.bottom_feeler, &World::collision_map) > 0)
+			if (Grid::tile(&actor_feelers_close.bottom_feeler, &World::collision_map) > 0
+				||
+				Grid::tile(&actor_feelers_close.bottomright_feeler, &World::collision_map) > 0)
 			{
 				e->move_cmd_up = 1;
 			}
