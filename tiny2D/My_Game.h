@@ -134,8 +134,8 @@ namespace My_Game
 		
 		//init camera
 		Grid_Camera::init(&World::camera, Engine::screen_width, Engine::screen_height);
-		World::camera.world_coord.w = Engine::screen_width / 64;
-		World::camera.world_coord.h = Engine::screen_height / 64;
+		World::camera.world_coord.w = Engine::screen_width / 48;
+		World::camera.world_coord.h = Engine::screen_height / 48;
 
 		//create physics body manager
 		Body::init(&World::bodies, World::Parameters::n_enemies);
