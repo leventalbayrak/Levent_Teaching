@@ -23,6 +23,10 @@ namespace My_Game
 		int move_cmd_right;
 		int move_cmd_up;
 		int move_cmd_down;
+		int prev_move_cmd_left;
+		int prev_move_cmd_right;
+		int prev_move_cmd_up;
+		int prev_move_cmd_down;
 
 		Shape::Rect world_coord;
 
@@ -177,18 +181,22 @@ namespace My_Game
 		Command::cmd_LEFT = 0;
 		Command::cmd_RIGHT = 0;
 
-		if (Engine::keys[SDL_SCANCODE_W] && Engine::prev_key_state[SDL_SCANCODE_W] == 0) Command::cmd_UP = 1;
-		if (Engine::keys[SDL_SCANCODE_SPACE] && Engine::prev_key_state[SDL_SCANCODE_SPACE] == 0) Command::cmd_UP = 1;
+		if (Engine::keys[SDL_SCANCODE_W]) Command::cmd_UP = 1;
+		if (Engine::keys[SDL_SCANCODE_SPACE]) Command::cmd_UP = 1;
 		if (Engine::keys[SDL_SCANCODE_A]) Command::cmd_LEFT = 1;
 		if (Engine::keys[SDL_SCANCODE_D]) Command::cmd_RIGHT = 1;
 
-		if (Engine::Input::game_controller_buttons[0][SDL_CONTROLLER_BUTTON_A] && Engine::Input::prev_game_controller_buttons[0][SDL_CONTROLLER_BUTTON_A] == 0) Command::cmd_UP = 1;
+		if (Engine::Input::game_controller_buttons[0][SDL_CONTROLLER_BUTTON_A]) Command::cmd_UP = 1;
 		if (Engine::Input::game_controller_sticks[0][SDL_CONTROLLER_AXIS_LEFTX] < -5000) Command::cmd_LEFT = 1;
 		else if (Engine::Input::game_controller_sticks[0][SDL_CONTROLLER_AXIS_LEFTX] > 5000) Command::cmd_RIGHT = 1;
 
 		if (Engine::Input::game_controller_buttons[0][SDL_CONTROLLER_BUTTON_DPAD_LEFT]) Command::cmd_LEFT = 1;
 		if (Engine::Input::game_controller_buttons[0][SDL_CONTROLLER_BUTTON_DPAD_RIGHT]) Command::cmd_RIGHT = 1;
 
+		World::player.prev_move_cmd_left = World::player.move_cmd_left;
+		World::player.prev_move_cmd_right = World::player.move_cmd_right;
+		World::player.prev_move_cmd_up = World::player.move_cmd_up;
+		World::player.prev_move_cmd_down = World::player.move_cmd_down;
 		World::player.move_cmd_left = Command::cmd_LEFT;
 		World::player.move_cmd_right = Command::cmd_RIGHT;
 		World::player.move_cmd_up = Command::cmd_UP;
@@ -413,7 +421,7 @@ namespace My_Game
 			Body::add_Force(p->physics_body, &World::bodies, &f);
 		}
 
-		if (p->move_cmd_up == 1 && on_ground == 1)
+		if (p->move_cmd_up == 1 && p->prev_move_cmd_up == 0 && on_ground == 1)
 		{
 			Vec2D::Vec2D f = { 0, -p->jump_force_mag*1.2 };
 			Body::add_Force(p->physics_body, &World::bodies, &f);
@@ -480,7 +488,10 @@ namespace My_Game
 
 	void update_Enemy_AI(Actor *e, unsigned int current_time)
 	{
-
+		e->prev_move_cmd_left = e->move_cmd_left;
+		e->prev_move_cmd_right = e->move_cmd_right;
+		e->prev_move_cmd_up = e->move_cmd_up;
+		e->prev_move_cmd_down = e->move_cmd_down;
 		e->move_cmd_left = 0;
 		e->move_cmd_right = 0;
 		e->move_cmd_up = 0;
@@ -501,7 +512,7 @@ namespace My_Game
 		{
 			//FIX::feeler inside collision for a long time!
 			e->move_cmd_right = 1;
-			if (rand() % 5 == 0)
+			if (rand() % 2 == 0)
 			{
 				e->move_cmd_right = 0;
 				e->move_cmd_left = 1;
