@@ -56,16 +56,19 @@ namespace Body
 		Vec2D::add(&a->force[index], f);
 	}
 
-	void update_Vel(int index, Body *a)
+	void update_Vel(int index, Body *a, float dt)
 	{
 		//implicit euler
-		Vec2D::Vec2D accel = { a->force[index].x / a->mass[index],a->force[index].y / a->mass[index] };
+		Vec2D::Vec2D accel = { dt*a->force[index].x / a->mass[index],dt*a->force[index].y / a->mass[index] };
 		Vec2D::add(&a->vel[index], &accel);
 	}
 
-	void update_Pos(int index, Body *a)
+	void update_Pos(int index, Body *a, float dt)
 	{
-		Vec2D::add(&a->pos[index], &a->vel[index]);
+		Vec2D::Vec2D t = a->vel[index];
+		t.x *= dt;
+		t.y *= dt;
+		Vec2D::add(&a->pos[index], &t);
 	}
 
 	void apply_Friction(int index,Vec2D::Vec2D *friction, Body *a)
