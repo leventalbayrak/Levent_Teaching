@@ -499,7 +499,7 @@ namespace My_Game
 
 
 		Collision::Point_Feeler actor_feelers_far;
-		Collision::point_Feeler_Pos(&actor_feelers_far, &e->world_coord, 0.4, 0.8);
+		Collision::point_Feeler_Pos(&actor_feelers_far, &e->world_coord, 0.8, 0.8);
 
 		Collision::Point_Feeler actor_feelers_close;
 		Collision::point_Feeler_Pos(&actor_feelers_close, &e->world_coord, 0.01, 0.02);
