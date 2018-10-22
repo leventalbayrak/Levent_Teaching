@@ -1,5 +1,29 @@
 #pragma once
+
+//load libraries
+#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2.lib")
+#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2main.lib")
+#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2_image.lib")
+#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2_mixer.lib")
+#pragma comment(linker,"/subsystem:console")
+
+#include <iostream>
+#include <assert.h>
+#include <time.h>
+using namespace std;
+
+//include SDL header
+#include "SDL2-2.0.8\include\SDL.h"
+#include "SDL2-2.0.8\include\SDL_image.h"
+#include "SDL2-2.0.8\include\SDL_mixer.h"
+
 #include "Engine_data.h"
+#include "Audio_core.h"
+#include "Texture_core.h"
+#include "Shape_core.h"
+#include "Font_core.h"
+#include "Collision_core.h"
+
 #include <iostream>
 #include <assert.h>
 #include <time.h>
@@ -80,6 +104,11 @@ namespace Engine
 		Input::prev_mouse_right = Input::mouse_right;
 		Input::mouse_left = mouse_button & SDL_BUTTON(SDL_BUTTON_LEFT);
 		Input::mouse_right = mouse_button & SDL_BUTTON(SDL_BUTTON_RIGHT);
+	}
+
+	unsigned int time()
+	{
+		return SDL_GetTicks();
 	}
 
 	namespace E_Sprite

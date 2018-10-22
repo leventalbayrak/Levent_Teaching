@@ -1,27 +1,6 @@
 #pragma once
-//load libraries
-#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2.lib")
-#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2main.lib")
-#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2_image.lib")
-#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2_mixer.lib")
-#pragma comment(linker,"/subsystem:console")
-
-#include <iostream>
-#include <assert.h>
-#include <time.h>
-using namespace std;
-
-//include SDL header
-#include "SDL2-2.0.8\include\SDL.h"
-#include "SDL2-2.0.8\include\SDL_image.h"
-#include "SDL2-2.0.8\include\SDL_mixer.h"
 
 #include "include/Engine_core.h"
-#include "include/Audio_core.h"
-#include "include/Texture_core.h"
-#include "include/Shape_core.h"
-#include "include/Font_core.h"
-#include "include/Collision_core.h"
 
 namespace My_Game
 {
@@ -161,7 +140,7 @@ namespace My_Game
 		Body::init(&World::bodies, World::Parameters::n_enemies);
 	}
 
-	void begin()
+	void begin_Play()
 	{
 		//initialize player
 		init_Actor_Assets(&World::player, Assets::player_idle_sprite_index, Assets::player_run_sprite_index, Assets::player_jump_sprite_index);
