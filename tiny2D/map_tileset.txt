@@ -1,1 +1,1 @@
-img=tileset.png tile_w=32 tile_h=32 n_cols=23 n_rows=21
+img=tileset_levent.png tile_w=32 tile_h=32 n_cols=4 n_rows=4
