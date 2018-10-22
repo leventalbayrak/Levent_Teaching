@@ -76,6 +76,10 @@ namespace My_Game
 		int player_run_sprite_index;
 		int player_idle_sprite_index;
 		int player_jump_sprite_index;
+
+		int enemy_run_sprite_index;
+		int enemy_idle_sprite_index;
+		int enemy_jump_sprite_index;
 	}
 
 	namespace World
@@ -136,12 +140,18 @@ namespace My_Game
 		Grid::load(&World::parallax_map2, "platformer_parallax_map2.csv");
 
 		//load player sprite
-		int number_of_sprites_loaded = Engine::E_Sprite::add("saitama.txt");
+		int number_of_sprites_loaded = Engine::E_Sprite::add("saitama_pink.txt");
 		printf("loaded %d frames\n", number_of_sprites_loaded);
 		Assets::player_run_sprite_index = 0;
 		Assets::player_idle_sprite_index = 1;
 		Assets::player_jump_sprite_index = 2;
 
+		number_of_sprites_loaded = Engine::E_Sprite::add("saitama_blue.txt");
+		printf("loaded %d frames\n", number_of_sprites_loaded);
+		Assets::enemy_run_sprite_index = 3;
+		Assets::enemy_idle_sprite_index = 4;
+		Assets::enemy_jump_sprite_index = 5;
+		
 		//init camera
 		Grid_Camera::init(&World::camera, Engine::screen_width, Engine::screen_height);
 		World::camera.world_coord.w = Engine::screen_width / 32;
@@ -166,7 +176,7 @@ namespace My_Game
 
 		for (int i = 0; i < World::Parameters::n_enemies; i++)
 		{
-			init_Actor_Assets(&World::enemies[i], Assets::player_idle_sprite_index, Assets::player_run_sprite_index, Assets::player_jump_sprite_index);
+			init_Actor_Assets(&World::enemies[i], Assets::enemy_idle_sprite_index, Assets::enemy_run_sprite_index, Assets::enemy_jump_sprite_index);
 			World::enemies[i].world_coord = { (float)(5 + rand() % 10),(float)(10),1,1 };
 			World::enemies[i].jump_force_mag = 0.01;
 			World::enemies[i].move_force_mag = 0.0001;
@@ -484,7 +494,7 @@ namespace My_Game
 		if (Grid::tile(&actor_feelers.mid_feeler, &World::object_map) == World::Parameters::super_jump_tile_id)
 		{
 			//FIX::feeler is inside the box for a long time!
-			Vec2D::Vec2D f = { 0, -e->jump_force_mag*0.1 };
+			Vec2D::Vec2D f = { e->move_force_mag*20, -e->jump_force_mag*0.1 };
 			Body::add_Force(e->physics_body, &World::bodies, &f);
 		}
 	}
