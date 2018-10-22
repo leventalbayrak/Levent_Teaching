@@ -27,6 +27,11 @@ using namespace std;
 #include <iostream>
 #include <assert.h>
 #include <time.h>
+#include <stdlib.h>
+#include <math.h>
+#include <algorithm>
+
+using namespace std;
 
 #include "Tileset_core.h"
 #include "Grid_core.h"
@@ -38,10 +43,15 @@ using namespace std;
 
 namespace Engine
 {
+	unsigned int time()
+	{
+		return SDL_GetTicks();
+	}
+
 	void init(const char*window_title, int _screen_width, int _screen_height)
 	{
 		SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK);
-		srand(time(0));
+		srand(Engine::time());
 		screen_width = _screen_width;
 		screen_height = _screen_height;
 		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN);
@@ -106,10 +116,7 @@ namespace Engine
 		Input::mouse_right = mouse_button & SDL_BUTTON(SDL_BUTTON_RIGHT);
 	}
 
-	unsigned int time()
-	{
-		return SDL_GetTicks();
-	}
+	
 
 	namespace E_Sprite
 	{
