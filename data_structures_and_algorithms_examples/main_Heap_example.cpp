@@ -1,3 +1,7 @@
+/*
+Data structures and algorithms
+Levent Albayrak 2018
+*/
 #include "Heap_Example.h"
 #include <Windows.h>
 #include <time.h>
@@ -21,7 +25,7 @@ int main()
 		int priority = rand();
 		sorted_data[i] = priority;
 
-		Min_Heap::add(&heap, priority);
+		Min_Heap::add(&heap, priority, 0);
 	}
 
 	qsort(sorted_data, n_data, sizeof(int), cmp_Int);
@@ -29,7 +33,8 @@ int main()
 	bool you_are_fired = false;
 	for (int i = 0; i < n_data; i++)
 	{
-		int priority = Min_Heap::remove(&heap);
+		int priority, data;
+		Min_Heap::remove(priority, data, &heap);
 		if (sorted_data[i] != priority)
 		{
 			you_are_fired = true;
