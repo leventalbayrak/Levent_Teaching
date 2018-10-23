@@ -1,8 +1,37 @@
 #pragma once
-#include "Engine_data.h"
+
+//load libraries
+#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2.lib")
+#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2main.lib")
+#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2_image.lib")
+#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2_mixer.lib")
+#pragma comment(linker,"/subsystem:console")
+
 #include <iostream>
 #include <assert.h>
 #include <time.h>
+using namespace std;
+
+//include SDL header
+#include "SDL2-2.0.8\include\SDL.h"
+#include "SDL2-2.0.8\include\SDL_image.h"
+#include "SDL2-2.0.8\include\SDL_mixer.h"
+
+#include "Engine_data.h"
+#include "Audio_core.h"
+#include "Texture_core.h"
+#include "Shape_core.h"
+#include "Font_core.h"
+#include "Collision_core.h"
+
+#include <iostream>
+#include <assert.h>
+#include <time.h>
+#include <stdlib.h>
+#include <math.h>
+#include <algorithm>
+
+using namespace std;
 
 #include "Tileset_core.h"
 #include "Grid_core.h"
@@ -14,10 +43,15 @@
 
 namespace Engine
 {
+	unsigned int time()
+	{
+		return SDL_GetTicks();
+	}
+
 	void init(const char*window_title, int _screen_width, int _screen_height)
 	{
 		SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK);
-		srand(time(0));
+		srand(Engine::time());
 		screen_width = _screen_width;
 		screen_height = _screen_height;
 		window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN);
@@ -81,6 +115,8 @@ namespace Engine
 		Input::mouse_left = mouse_button & SDL_BUTTON(SDL_BUTTON_LEFT);
 		Input::mouse_right = mouse_button & SDL_BUTTON(SDL_BUTTON_RIGHT);
 	}
+
+	
 
 	namespace E_Sprite
 	{
