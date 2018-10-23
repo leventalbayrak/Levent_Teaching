@@ -19,7 +19,5 @@ int main(int argc, char **argv)
 		My_Game::draw();
 	}
 
-
-
 	return 0;
 }
