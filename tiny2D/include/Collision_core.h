@@ -33,10 +33,10 @@ namespace Collision
 		p->right_feeler = { (float)(r->x + r->w + r->w*t_margin), p->left_feeler.y };
 		p->mid_feeler = { p->bottom_feeler.x,p->left_feeler.y };
 
-		p->topleft_feeler = { p->left_feeler.x + r->w*x_margin,p->top_feeler.y + r->h*x_margin };
-		p->topright_feeler = { p->right_feeler.x - r->w*x_margin,p->top_feeler.y - r->h*x_margin };
-		p->bottomleft_feeler = { p->left_feeler.x + r->w*x_margin,p->bottom_feeler.y - r->h*x_margin };
-		p->bottomright_feeler = { p->right_feeler.x - r->w*x_margin,p->bottom_feeler.y - r->h*x_margin };
+		p->topleft_feeler = { p->left_feeler.x - r->w*x_margin,p->top_feeler.y - r->h*x_margin };
+		p->topright_feeler = { p->right_feeler.x + r->w*x_margin,p->top_feeler.y - r->h*x_margin };
+		p->bottomleft_feeler = { p->left_feeler.x - r->w*x_margin,p->bottom_feeler.y + r->h*x_margin };
+		p->bottomright_feeler = { p->right_feeler.x + r->w*x_margin,p->bottom_feeler.y + r->h*x_margin };
 	}
 
 }

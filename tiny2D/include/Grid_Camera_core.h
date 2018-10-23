@@ -36,8 +36,10 @@ namespace Grid_Camera
 
 	//must perform this if camera width or height changes
 	//given a grid region that the camera grid_coord covers, recalculate tile data
-	void calibrate(Calibration *c, const Grid_Camera *cam,const Grid::Region *a)
+	void calibrate(Calibration *c, const Grid_Camera *cam, const Grid::Region *a)
 	{
+		
+
 		c->tile_w = ceil(cam->init.screen_width / cam->world_coord.w);
 		c->tile_h = ceil(cam->init.screen_height / cam->world_coord.h);
 		c->tile_x = ((float)a->x0 - cam->world_coord.x) * c->tile_w;
