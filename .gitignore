@@ -2,3 +2,6 @@
 *.un~
 *.txt~
 *.swp
+*.db
+*.opendb
+*.ipch
