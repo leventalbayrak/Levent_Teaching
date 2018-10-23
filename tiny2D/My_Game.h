@@ -147,7 +147,7 @@ namespace My_Game
 		init_Actor_Assets(&World::player, Assets::player_idle_sprite_index, Assets::player_run_sprite_index, Assets::player_jump_sprite_index);
 		World::player.world_coord = { 10,10,1,1 };
 		World::player.jump_force_mag = 512;
-		World::player.move_force_mag = 100;
+		World::player.move_force_mag = 98;
 		World::player.sprite_direction = 0;
 		World::player.state = 0;
 		World::player.physics_body = Body::make(&World::bodies);
@@ -464,6 +464,8 @@ namespace My_Game
 
 		if (Grid::tile(&actor_feelers.mid_feeler, &World::object_map) == World::Parameters::teleport_tile_id)
 		{
+			e->move_force_mag += 200;
+
 			e->world_coord.x = 10;
 			e->world_coord.y = 10;
 			World::bodies.pos[e->physics_body].x = e->world_coord.x;
@@ -475,6 +477,8 @@ namespace My_Game
 
 		if (Grid::tile(&actor_feelers.mid_feeler, &World::object_map) == World::Parameters::super_jump_tile_id)
 		{
+			e->move_force_mag += 5;
+			e->jump_force_mag += 5;
 			//FIX::feeler is inside the box for a long time!
 			Vec2D::Vec2D f = { e->move_force_mag * 20, 0 };
 			Body::add_Force(e->physics_body, &World::bodies, &f);
