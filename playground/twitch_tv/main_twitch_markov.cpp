@@ -43,6 +43,7 @@ int main(int argc, char **argv)
 	static const char *username = "plogp";
 	static const char *token = "zi5igvfgn3914hg3hczbe497m8uzpp";
 
+
 	Twitch::Connection connection;
 	Twitch::init(&connection, username, token);
 	
