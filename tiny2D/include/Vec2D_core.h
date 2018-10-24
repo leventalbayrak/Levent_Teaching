@@ -9,6 +9,11 @@ namespace Vec2D
 		a->y += b->y;
 	}
 
+	inline float dist_Squared(Vec2D *a, Vec2D *b)
+	{
+		return (a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y);
+	}
+
 	inline float mag(Vec2D *a)
 	{
 		float m = a->x*a->x + a->y * a->y;

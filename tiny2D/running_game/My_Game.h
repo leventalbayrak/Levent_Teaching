@@ -131,7 +131,7 @@ namespace My_Game
 		Assets::enemy_run_sprite_index = 3;
 		Assets::enemy_idle_sprite_index = 4;
 		Assets::enemy_jump_sprite_index = 5;
-		
+
 		//init camera
 		Grid_Camera::init(&World::camera, Engine::screen_width, Engine::screen_height);
 		World::camera.world_coord.w = Engine::screen_width / 32;
@@ -147,7 +147,7 @@ namespace My_Game
 		init_Actor_Assets(&World::player, Assets::player_idle_sprite_index, Assets::player_run_sprite_index, Assets::player_jump_sprite_index);
 		World::player.world_coord = { 10,10,1,1 };
 		World::player.jump_force_mag = 512;
-		World::player.move_force_mag = 100;
+		World::player.move_force_mag = 98;
 		World::player.sprite_direction = 0;
 		World::player.state = 0;
 		World::player.physics_body = Body::make(&World::bodies);
@@ -170,7 +170,7 @@ namespace My_Game
 
 	void update(unsigned int current_time, float dt)
 	{
-		
+
 		Engine::event_Loop();
 
 		Command::cmd_UP = 0;
@@ -264,7 +264,7 @@ namespace My_Game
 		Grid_Camera::calibrate(&World::calibration, &World::camera, &grid_region);
 		Engine::E_Tileset::draw(0, &World::calibration, &grid_region, &World::tilemap);
 
-		
+
 		for (int i = 0; i < World::Parameters::n_active_enemies; i++)
 		{
 			draw_Actor(&World::enemies[i]);
@@ -295,20 +295,20 @@ namespace My_Game
 	{
 		float current_friction = 0.8;//later...
 
-		//DONE ADDING FORCES
+									 //DONE ADDING FORCES
 
 
-		//PHYSICS BEGIN
+									 //PHYSICS BEGIN
 
 
-		//printf("force %.4f %.4f vel %.4f %.4f\n", World::bodies.force[p->physics_body].x, World::bodies.force[p->physics_body].y, World::bodies.vel[p->physics_body].x, World::bodies.vel[p->physics_body].y);
+									 //printf("force %.4f %.4f vel %.4f %.4f\n", World::bodies.force[p->physics_body].x, World::bodies.force[p->physics_body].y, World::bodies.vel[p->physics_body].x, World::bodies.vel[p->physics_body].y);
 
-		//integrate acceleration
+									 //integrate acceleration
 		Body::update_Vel(p->physics_body, &World::bodies, dt);
 		//apply friction
 		World::bodies.vel[p->physics_body].x *= current_friction;// *dt;
 
-		//clip velocity
+																 //clip velocity
 		Vec2D::clip(&World::bodies.vel[p->physics_body], -World::Parameters::max_vel_x, World::Parameters::max_vel_x, -World::Parameters::max_vel_y, World::Parameters::max_vel_y);
 
 		if (abs(World::bodies.vel[p->physics_body].x) < 0.00001) World::bodies.vel[p->physics_body].x = 0.0;
@@ -375,7 +375,7 @@ namespace My_Game
 
 		p->state = 0;//idle
 
-		//player state 1 = running, 0 = idle
+					 //player state 1 = running, 0 = idle
 		if (p->move_cmd_left || p->move_cmd_right)
 		{
 			p->state = 1;
@@ -464,6 +464,8 @@ namespace My_Game
 
 		if (Grid::tile(&actor_feelers.mid_feeler, &World::object_map) == World::Parameters::teleport_tile_id)
 		{
+			e->move_force_mag += 200;
+
 			e->world_coord.x = 10;
 			e->world_coord.y = 10;
 			World::bodies.pos[e->physics_body].x = e->world_coord.x;
@@ -475,8 +477,10 @@ namespace My_Game
 
 		if (Grid::tile(&actor_feelers.mid_feeler, &World::object_map) == World::Parameters::super_jump_tile_id)
 		{
+			e->move_force_mag += 5;
+			e->jump_force_mag += 5;
 			//FIX::feeler is inside the box for a long time!
-			Vec2D::Vec2D f = { e->move_force_mag*20, 0 };
+			Vec2D::Vec2D f = { e->move_force_mag * 20, 0 };
 			Body::add_Force(e->physics_body, &World::bodies, &f);
 		}
 	}

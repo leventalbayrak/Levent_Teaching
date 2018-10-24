@@ -1,0 +1,5 @@
+APP firefox www.google.com
+APP firefox www.yahoo.com
+APP firefox www.steampowered.com
+APP mspaint
+
