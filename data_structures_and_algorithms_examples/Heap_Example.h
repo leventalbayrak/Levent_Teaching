@@ -19,7 +19,7 @@ namespace Min_Heap
 
 	void init(Min_Heap *h, int size)
 	{
-		h->n_data = 0;
+		h->n_data = 1;
 		h->array_size = size;
 		h->priority = (int*)malloc(sizeof(int)*h->array_size);
 		h->data = (int*)malloc(sizeof(int)*h->array_size);
@@ -42,8 +42,8 @@ namespace Min_Heap
 
 		for (;;)
 		{
-			if (current_index <= 0) break;
-			int parent_index = (current_index - 1) / 2;
+			if (current_index <= 1) break;
+			int parent_index = current_index >> 1;
 			if (h->priority[current_index] >= h->priority[parent_index]) break;
 
 			int tmp_p = h->priority[current_index];
@@ -60,18 +60,19 @@ namespace Min_Heap
 
 	void remove(int &priority, int &data, Min_Heap *h)
 	{
-		priority = h->priority[0];
-		data = h->data[0];
+		priority = h->priority[1];
+		data = h->data[1];
 
-		h->priority[0] = h->priority[h->n_data - 1];
-		h->data[0] = h->data[h->n_data - 1];
-		h->n_data--;
-		int current_index = 0;
+		--h->n_data;
+		h->priority[1] = h->priority[h->n_data];
+		h->data[1] = h->data[h->n_data];
+		
+		int current_index = 1;
 
 		for (;;)
 		{
 
-			int child_index = 2 * current_index + 1;
+			int child_index = current_index << 1;
 			if (child_index >= h->n_data) break;
 
 			if (child_index + 1 < h->n_data && h->priority[child_index] >= h->priority[child_index + 1])
