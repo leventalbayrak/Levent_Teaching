@@ -3,11 +3,11 @@
 int main(int argc, char **argv)
 {
 
-	My_Game::init();
+	My_Game::init(800, 600);
 	My_Game::begin_Play();
 
 	unsigned int last_frame_time = 0;
-	for (;;)
+	for(;;)
 	{
 		unsigned int current_time = Engine::time();
 		if (current_time - last_frame_time < 15) continue;
@@ -18,6 +18,8 @@ int main(int argc, char **argv)
 
 		My_Game::draw();
 	}
+
+
 
 	return 0;
 }
