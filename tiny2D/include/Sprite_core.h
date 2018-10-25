@@ -116,7 +116,7 @@ namespace Sprite
 		}	
 	}
 
-	void draw(int index, int instance_index, Data *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer, int flip)
+	void draw(int index, int instance_index, Data *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer, int flip, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 	{
 		SDL_Rect src;
 		src.x = d->frame_pos_x[index] + d->frame_w[index] * d->instances[index].current_frame[instance_index];
@@ -129,6 +129,9 @@ namespace Sprite
 		dest.y = dest_y;
 		dest.w = dest_w;
 		dest.h = dest_h;
+
+		SDL_SetTextureAlphaMod(d->texture[index], a);
+		SDL_SetTextureColorMod(d->texture[index], r, g, b);
 
 		if (flip == 0)
 		{

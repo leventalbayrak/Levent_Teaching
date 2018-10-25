@@ -139,6 +139,7 @@
     <ClInclude Include="include\Vec2D_core.h" />
     <ClInclude Include="include\Vec2D_data.h" />
     <ClInclude Include="My_Game.h" />
+    <ClInclude Include="RGBA_data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

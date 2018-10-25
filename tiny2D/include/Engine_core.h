@@ -40,6 +40,7 @@ using namespace std;
 #include "Body_core.h"
 #include "Font_core.h"
 #include "Audio_core.h"
+#include "RGBA_data.h"
 
 namespace Engine
 {
@@ -135,11 +136,11 @@ namespace Engine
 			Sprite::modify(which_sprite, which_instance, &sprite_db, frame_duration);
 		}
 
-		void draw(int which_sprite, int which_instance, const Shape::Rect *world_coord, int dir, const Grid_Camera::Calibration *c, const Grid_Camera::Grid_Camera *cam)
+		void draw(int which_sprite, int which_instance, const Shape::Rect *world_coord, int dir, const Grid_Camera::Grid_Camera *cam, const RGBA::RGBA *rgba)
 		{
 			Shape::Rect screen_rect;
-			Grid_Camera::grid_to_Screen(&screen_rect, world_coord, c, cam);
-			Sprite::draw(which_sprite, which_instance, &sprite_db, screen_rect.x, screen_rect.y, screen_rect.w, screen_rect.h, renderer, dir);
+			Grid_Camera::grid_to_Screen(&screen_rect, world_coord, cam);
+			Sprite::draw(which_sprite, which_instance, &sprite_db, screen_rect.x, screen_rect.y, screen_rect.w, screen_rect.h, renderer, dir, rgba->r, rgba->g, rgba->b, rgba->a);
 		}
 
 		void update(int which_sprite, int which_instance, unsigned int current_time)
@@ -154,24 +155,24 @@ namespace Engine
 			Tileset::File::add(&tileset_db, filename, renderer);
 		}
 
-		void draw(int which_tileset, Grid_Camera::Calibration *c, const Grid::Region *grid_region, const Grid::Grid *g)
+		void draw(int which_tileset, const Grid_Camera::Grid_Camera *cam, const Grid::Grid *g)
 		{
-			int ty = c->tile_y;
-			for (int i = grid_region->y0; i <= grid_region->y1; i++)
+			int ty = cam->calibration.tile_y;
+			for (int i = cam->grid_region_covered.y0; i <= cam->grid_region_covered.y1; i++)
 			{
-				int tx = c->tile_x;
+				int tx = cam->calibration.tile_x;
 
 				int *tmp_level_data = &g->data[i*g->n_cols];
-				for (int j = grid_region->x0; j <= grid_region->x1; j++)
+				for (int j = cam->grid_region_covered.x0; j <= cam->grid_region_covered.x1; j++)
 				{
 					int grid_data = tmp_level_data[j];
 					int tileset_idx = grid_data / tileset_db.n_cols[which_tileset];
 					int tileset_offset = grid_data % tileset_db.n_cols[which_tileset];
-					Tileset::draw(which_tileset, tileset_idx, tileset_offset, &tileset_db, tx, ty, c->tile_w, c->tile_h, renderer);
+					Tileset::draw(which_tileset, tileset_idx, tileset_offset, &tileset_db, tx, ty, cam->calibration.tile_w, cam->calibration.tile_h, renderer);
 
-					tx += c->tile_w;
+					tx += cam->calibration.tile_w;
 				}
-				ty += c->tile_h;
+				ty += cam->calibration.tile_h;
 			}
 
 		}
