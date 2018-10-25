@@ -223,9 +223,7 @@ namespace My_Game
 		}
 
 
-
-
-		//upodate bullet pos
+		//update bullet pos
 		for (int i = 0; i < World::Parameters::max_n_bullets; i++)
 		{
 			if (World::bullet_state[i] == 1)
@@ -258,21 +256,17 @@ namespace My_Game
 		World::camera.world_coord.x = World::player_world_coord.x - World::camera.world_coord.w / 2;
 		World::camera.world_coord.y = World::player_world_coord.y - World::camera.world_coord.h / 2;
 
-		Grid::Region region;
-		Grid::get_Region_Under_Shape(&region, &World::camera.world_coord);
+		
+		Grid_Camera::calibrate(&World::camera);
 
-		//redundant region!!!!
-		Grid_Camera::Calibration calibration;
-		Grid_Camera::calibrate(&calibration, &World::camera, &region);
-
-		Engine::E_Tileset::draw(0, &calibration, &region, &World::tile_map);
+		Engine::E_Tileset::draw(0, &World::camera, &World::tile_map);
 
 		Engine::E_Sprite::draw(Assets::Animation::run_animation_database_id,
 			Assets::Animation::run_animation_instance,
 			&World::player_world_coord,
 			0,
-			&calibration,
-			&World::camera
+			&World::camera,
+			&RGBA::default
 		);
 
 
@@ -280,8 +274,8 @@ namespace My_Game
 			Assets::Animation::crosshair_animation_instance,
 			&World::crosshair_world_coord,
 			0,
-			&calibration,
-			&World::camera
+			&World::camera,
+			&RGBA::default
 		);
 
 		int counter = 0;
@@ -290,12 +284,19 @@ namespace My_Game
 			if (World::bullet_state[i] == 1)
 			{
 				counter++;
+				RGBA::RGBA rgba = RGBA::default;
+				
+				rgba.r = rand()%256;
+				rgba.g = rand() % 256;
+				rgba.b = rand() % 256;
+				rgba.a = rand() % 256;
+
 				Engine::E_Sprite::draw(Assets::Animation::run_animation_database_id,
 					Assets::Animation::run_animation_instance,
 					&World::bullet_world_coord[i],
 					0,
-					&calibration,
-					&World::camera
+					&World::camera,
+					&rgba
 				);
 			}
 		}

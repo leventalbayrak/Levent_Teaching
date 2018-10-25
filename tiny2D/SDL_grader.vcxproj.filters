@@ -101,5 +101,8 @@
     <ClInclude Include="RGBA_data.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="Heap_Example.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

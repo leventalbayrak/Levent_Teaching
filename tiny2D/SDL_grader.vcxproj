@@ -114,6 +114,7 @@
     <ClCompile Include="main_my_game.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Heap_Example.h" />
     <ClInclude Include="include\Audio_core.h" />
     <ClInclude Include="include\Body_core.h" />
     <ClInclude Include="include\Body_data.h" />
