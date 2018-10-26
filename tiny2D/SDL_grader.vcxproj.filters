@@ -104,5 +104,11 @@
     <ClInclude Include="Heap_Example.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Actor_core.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Actor_data.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

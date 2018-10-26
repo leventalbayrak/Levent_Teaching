@@ -1,10 +1,10 @@
 #pragma once
 
 //load libraries
-#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2.lib")
-#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2main.lib")
-#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2_image.lib")
-#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2_mixer.lib")
+#pragma comment(lib,"include\\SDL2-2.0.8\\lib\\x86\\SDL2.lib")
+#pragma comment(lib,"include\\SDL2-2.0.8\\lib\\x86\\SDL2main.lib")
+#pragma comment(lib,"include\\SDL2-2.0.8\\lib\\x86\\SDL2_image.lib")
+#pragma comment(lib,"include\\SDL2-2.0.8\\lib\\x86\\SDL2_mixer.lib")
 #pragma comment(linker,"/subsystem:console")
 
 #include <iostream>
@@ -61,8 +61,7 @@ namespace Engine
 		Audio::init(2048);
 		Font::init();
 		Tileset::init(&tileset_db, 64);
-		Sprite::init(&sprite_db, 64);
-
+		
 		keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 		memcpy(prev_key_state, keys, 256);
 
@@ -117,37 +116,6 @@ namespace Engine
 		Input::mouse_right = mouse_button & SDL_BUTTON(SDL_BUTTON_RIGHT);
 	}
 
-	
-
-	namespace E_Sprite
-	{
-		int add(const char *filename)
-		{
-			return Sprite::File::add(&sprite_db, filename, renderer);
-		}
-
-		int make_Instance(int which_sprite)
-		{
-			return Sprite::make_Instance(which_sprite, &sprite_db);
-		}
-
-		void modify(int which_sprite, int which_instance, int frame_duration)
-		{
-			Sprite::modify(which_sprite, which_instance, &sprite_db, frame_duration);
-		}
-
-		void draw(int which_sprite, int which_instance, const Shape::Rect *world_coord, int dir, const Grid_Camera::Grid_Camera *cam, const RGBA::RGBA *rgba)
-		{
-			Shape::Rect screen_rect;
-			Grid_Camera::grid_to_Screen(&screen_rect, world_coord, cam);
-			Sprite::draw(which_sprite, which_instance, &sprite_db, screen_rect.x, screen_rect.y, screen_rect.w, screen_rect.h, renderer, dir, rgba->r, rgba->g, rgba->b, rgba->a);
-		}
-
-		void update(int which_sprite, int which_instance, unsigned int current_time)
-		{
-			Sprite::update(which_sprite, which_instance, &sprite_db, current_time);
-		}
-	}
 	namespace E_Tileset
 	{
 		void add(const char *filename)

@@ -8,7 +8,7 @@
 
 namespace Body
 {
-	void init(Body *a, int array_size)
+	void init(Factory *a, int array_size)
 	{
 		a->array_size = array_size;
 		a->n_bodies = 0;
@@ -19,7 +19,7 @@ namespace Body
 		a->mass = (float*)malloc(sizeof(float)*a->array_size);
 	}
 
-	void resize(Body *a)
+	void resize(Factory *a)
 	{
 		a->array_size += a->array_size >> 1;
 		a->vel = (Vec2D::Vec2D*)realloc(a->vel, sizeof(Vec2D::Vec2D)*a->array_size);
@@ -28,12 +28,12 @@ namespace Body
 		a->mass = (float*)realloc(a->mass, sizeof(float)*a->array_size);
 	}
 
-	void clear_Forces(Body *a)
+	void clear_Forces(Factory *a)
 	{
 		memset(a->force, 0, sizeof(Vec2D::Vec2D)*a->n_bodies);
 	}
 
-	int make(Body *a)
+	int make_Instance(Factory *a)
 	{
 		if (a->n_bodies >= a->array_size)
 		{
@@ -43,7 +43,7 @@ namespace Body
 		return a->n_bodies - 1;
 	}
 
-	void modify(int index,Body *a, Vec2D::Vec2D *pos, float mass)
+	void modify(int index, Factory *a, Vec2D::Vec2D *pos, float mass)
 	{
 		a->vel[index] = {};
 		a->force[index] = {};
@@ -51,19 +51,19 @@ namespace Body
 		a->mass[index] = mass;
 	}
 
-	void add_Force(int index, Body *a, Vec2D::Vec2D *f)
+	void add_Force(int index, Factory *a, Vec2D::Vec2D *f)
 	{
 		Vec2D::add(&a->force[index], f);
 	}
 
-	void update_Vel(int index, Body *a, float dt)
+	void update_Vel(int index, Factory *a, float dt)
 	{
 		//implicit euler
 		Vec2D::Vec2D accel = { dt*a->force[index].x / a->mass[index],dt*a->force[index].y / a->mass[index] };
 		Vec2D::add(&a->vel[index], &accel);
 	}
 
-	void update_Pos(int index, Body *a, float dt)
+	void update_Pos(int index, Factory *a, float dt)
 	{
 		Vec2D::Vec2D t = a->vel[index];
 		t.x *= dt;
@@ -71,13 +71,13 @@ namespace Body
 		Vec2D::add(&a->pos[index], &t);
 	}
 
-	void apply_Friction(int index,Vec2D::Vec2D *friction, Body *a)
+	void apply_Friction(int index,Vec2D::Vec2D *friction, Factory *a)
 	{
 		a->vel[index].x *= friction->x;
 		a->vel[index].y *= friction->y;
 	}
 
-	void copy(Snapshot *s, int index, const Body *bodies)
+	void copy(Snapshot *s, int index, const Factory *bodies)
 	{
 		s->vel = bodies->vel[index];
 		s->force = bodies->force[index];
@@ -85,7 +85,7 @@ namespace Body
 		s->mass = bodies->mass[index];
 	}
 
-	void copy(int index, Body *bodies, const Snapshot *s)
+	void copy(int index, Factory *bodies, const Snapshot *s)
 	{
 		bodies->vel[index] = s->vel;
 		bodies->force[index] = s->force;

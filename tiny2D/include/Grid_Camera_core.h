@@ -13,7 +13,7 @@ namespace Grid_Camera
 		c->init.screen_height = screen_height;
 	}
 
-	void grid_to_Screen(Shape::Rect *screen_coord,const Shape::Rect *world_coord, const Grid_Camera *cam)
+	void grid_to_Screen(Shape::Rect::Data *screen_coord,const Shape::Rect::Data *world_coord, const Grid_Camera *cam)
 	{
 		screen_coord->x = (world_coord->x - cam->world_coord.x)*cam->calibration.tile_w;
 		screen_coord->y = (world_coord->y - cam->world_coord.y)*cam->calibration.tile_h;

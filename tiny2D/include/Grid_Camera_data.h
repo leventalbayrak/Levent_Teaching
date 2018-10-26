@@ -9,7 +9,7 @@ namespace Grid_Camera
 
 	struct Grid_Camera
 	{
-		Shape::Rect world_coord;
+		Shape::Rect::Data world_coord;
 
 		//initialize
 		struct

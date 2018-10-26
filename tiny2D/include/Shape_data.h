@@ -2,9 +2,19 @@
 
 namespace Shape
 {
-	struct Rect
+	namespace Rect
 	{
-		float x, y, w, h;
-	};
+		struct Data
+		{
+			float x, y, w, h;
+		};
+
+		struct Factory
+		{
+			Data *rect;
+			int n_rect;
+			int array_size;
+		};
+	}
 }
 
