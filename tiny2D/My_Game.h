@@ -34,6 +34,8 @@ namespace My_Game
 			unsigned int unfortunate_event_frequency = 2000;
 		}
 
+		Tileset::Tileset tileset;
+
 		Grid_Camera::Grid_Camera camera;
 		Grid::Grid tile_map;
 		Grid::Grid background_map;
@@ -48,14 +50,17 @@ namespace My_Game
 		//initialize all systems and open game window
 		Engine::init("hello", screen_w, screen_h);
 
-		Engine::E_Tileset::add("map_tileset.txt");
+		Tileset::init(&World::tileset,16);
+		Tileset::File::add(&World::tileset, "map_tileset.txt", Engine::renderer);
 
-		Grid::load(&World::tile_map, "bear_run_tilemap.csv");
+		Grid::load(&World::tile_map, "bear_run_tilemap_tilemap.csv");
 		Grid::load(&World::background_map, "bear_run_tilemap_background.csv");
 
 		Grid_Camera::init(&World::camera, Engine::screen_width, Engine::screen_height);
-		World::camera.world_coord.w = 20;
-		World::camera.world_coord.h = 15;
+		World::camera.world_coord.x = 0;
+		World::camera.world_coord.y = 1;
+		World::camera.world_coord.w = 0.025 * Engine::screen_width;
+		World::camera.world_coord.h = 0.025 * Engine::screen_height;
 
 		Actor::init(&World::saitama, 1000);
 		Actor::add(&World::saitama, "saitama_pink_run.txt", Engine::renderer);
@@ -78,6 +83,10 @@ namespace My_Game
 		Engine::event_Loop();
 	
 		//add forces to actors
+
+		int k = rand() % World::saitama.n_actors;
+		Vec2D::Vec2D force = { 1 + rand() % 5 ,-(1 + rand() % 5) };
+		Actor::add_Force(k, &World::saitama, &force);
 
 		//after done adding all forces
 		//execute the loop below
@@ -111,11 +120,11 @@ namespace My_Game
 		SDL_RenderClear(Engine::renderer);
 
 		World::camera.world_coord.x = 0;
-		World::camera.world_coord.y = 0;
+		World::camera.world_coord.y = 1;
 		Grid_Camera::calibrate(&World::camera);
 
-		Engine::E_Tileset::draw(0, &World::camera, &World::background_map);
-		Engine::E_Tileset::draw(0, &World::camera, &World::tile_map);
+		Tileset::draw_Grid(0, &World::tileset, &World::camera, &World::background_map, Engine::renderer);
+		Tileset::draw_Grid(0, &World::tileset, &World::camera, &World::tile_map, Engine::renderer);
 		
 		for (int i = 0; i < World::saitama.n_actors; i++)
 		{

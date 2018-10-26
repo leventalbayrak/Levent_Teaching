@@ -44,6 +44,11 @@ namespace Actor
 		f->n_sprites++;
 	}
 
+	void add_Force(int which_instance, Factory *f, Vec2D::Vec2D *force)
+	{
+		Body::add_Force(which_instance, &f->bodies, force);
+	}
+
 	void update_Vel(int which_instance, Factory *f, float dt)
 	{
 		Body::update_Vel(which_instance, &f->bodies, dt);

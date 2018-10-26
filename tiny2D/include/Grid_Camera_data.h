@@ -27,7 +27,5 @@ namespace Grid_Camera
 			int tile_h;
 		} calibration;
 
-		Grid::Region grid_region_covered;
-
 	};
 }

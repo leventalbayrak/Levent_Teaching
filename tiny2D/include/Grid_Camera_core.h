@@ -32,11 +32,13 @@ namespace Grid_Camera
 	//given a grid region that the camera grid_coord covers, recalculate tile data
 	void calibrate(Grid_Camera *cam)
 	{
-		Grid::get_Region_Under_Shape(&cam->grid_region_covered, &cam->world_coord);
 
+		int x0 = cam->world_coord.x;
+		int y0 = cam->world_coord.y;
+		
 		cam->calibration.tile_w = ceil(cam->init.screen_width / cam->world_coord.w);
 		cam->calibration.tile_h = ceil(cam->init.screen_height / cam->world_coord.h);
-		cam->calibration.tile_x = ((float)cam->grid_region_covered.x0 - cam->world_coord.x) * cam->calibration.tile_w;
-		cam->calibration.tile_y = ((float)cam->grid_region_covered.y0 - cam->world_coord.y) * cam->calibration.tile_h;
+		cam->calibration.tile_x = (x0 - cam->world_coord.x) * cam->calibration.tile_w;
+		cam->calibration.tile_y = (y0 - cam->world_coord.y) * cam->calibration.tile_h;
 	}
 }

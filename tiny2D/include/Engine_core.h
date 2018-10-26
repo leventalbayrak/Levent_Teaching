@@ -123,26 +123,6 @@ namespace Engine
 			Tileset::File::add(&tileset_db, filename, renderer);
 		}
 
-		void draw(int which_tileset, const Grid_Camera::Grid_Camera *cam, const Grid::Grid *g)
-		{
-			int ty = cam->calibration.tile_y;
-			for (int i = cam->grid_region_covered.y0; i <= cam->grid_region_covered.y1; i++)
-			{
-				int tx = cam->calibration.tile_x;
-
-				int *tmp_level_data = &g->data[i*g->n_cols];
-				for (int j = cam->grid_region_covered.x0; j <= cam->grid_region_covered.x1; j++)
-				{
-					int grid_data = tmp_level_data[j];
-					int tileset_idx = grid_data / tileset_db.n_cols[which_tileset];
-					int tileset_offset = grid_data % tileset_db.n_cols[which_tileset];
-					Tileset::draw(which_tileset, tileset_idx, tileset_offset, &tileset_db, tx, ty, cam->calibration.tile_w, cam->calibration.tile_h, renderer);
-
-					tx += cam->calibration.tile_w;
-				}
-				ty += cam->calibration.tile_h;
-			}
-
-		}
+		
 	}
 }
