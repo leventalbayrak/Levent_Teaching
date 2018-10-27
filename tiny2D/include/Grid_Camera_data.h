@@ -1,21 +1,15 @@
 #pragma once
 
 #include "Shape_data.h"
+#include "Grid_data.h"
 
 namespace Grid_Camera
 {
-	//read only first tile screen position and single tile dimensions
-	struct Calibration
-	{
-		int tile_x;
-		int tile_y;
-		int tile_w;
-		int tile_h;
-	};
+	
 
 	struct Grid_Camera
 	{
-		Shape::Rect world_coord;
+		Shape::Rect::Data world_coord;
 
 		//initialize
 		struct
@@ -23,6 +17,15 @@ namespace Grid_Camera
 			int screen_width;
 			int screen_height;
 		} init;
+
+		//read only first tile screen position and single tile dimensions
+		struct 
+		{
+			int tile_x;
+			int tile_y;
+			int tile_w;
+			int tile_h;
+		} calibration;
 
 	};
 }

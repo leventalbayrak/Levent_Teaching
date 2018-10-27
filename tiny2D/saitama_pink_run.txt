@@ -1,0 +1,2 @@
+img=saitama_pink.png
+frame_x=0 frame_y=0 frame_w=32 frame_h=32 n_frames=3 

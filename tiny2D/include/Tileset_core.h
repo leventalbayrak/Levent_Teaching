@@ -56,13 +56,13 @@ namespace Tileset
 		t->n_rows[index] = n_rows;
 	}
 
-	void draw(int index, int tileset_row, int tileset_col, Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, const SDL_Renderer *renderer)
+	void draw_Single(int which_tileset, int tile_row, int tile_col, const Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, const SDL_Renderer *renderer)
 	{
 		SDL_Rect src;
-		src.x = tileset_col * t->tile_w[index];
-		src.y = tileset_row * t->tile_h[index];
-		src.w = t->tile_w[index];
-		src.h = t->tile_h[index];
+		src.x = tile_col * t->tile_w[which_tileset];
+		src.y = tile_row * t->tile_h[which_tileset];
+		src.w = t->tile_w[which_tileset];
+		src.h = t->tile_h[which_tileset];
 
 		SDL_Rect dest;
 		dest.x = dest_x;
@@ -70,7 +70,34 @@ namespace Tileset
 		dest.w = dest_w;
 		dest.h = dest_h;
 
-		SDL_RenderCopyEx((SDL_Renderer*)renderer, t->tex[index], &src, &dest, 0, NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx((SDL_Renderer*)renderer, t->tex[which_tileset], &src, &dest, 0, NULL, SDL_FLIP_NONE);
+	}
+
+	void draw_Grid(int which_tileset, const Tileset *tileset, const Grid_Camera::Grid_Camera *cam, const Grid::Grid *g, SDL_Renderer *renderer)
+	{
+		int x0 = cam->world_coord.x;
+		int y0 = cam->world_coord.y;
+		int x1 = cam->world_coord.x + cam->world_coord.w;
+		int y1 = cam->world_coord.y + cam->world_coord.h;
+
+		int ty = cam->calibration.tile_y;
+		for (int i = y0; i <= y1; i++)
+		{
+			int tx = cam->calibration.tile_x;
+
+			int *tmp_level_data = &g->data[i*g->n_cols];
+			for (int j = x0; j <= x1; j++)
+			{
+				int grid_data = tmp_level_data[j];
+				int tileset_row = grid_data / tileset->n_cols[which_tileset];
+				int tileset_col = grid_data % tileset->n_cols[which_tileset];
+				draw_Single(which_tileset, tileset_row, tileset_col, tileset, tx, ty, cam->calibration.tile_w, cam->calibration.tile_h, renderer);
+
+				tx += cam->calibration.tile_w;
+			}
+			ty += cam->calibration.tile_h;
+		}
+
 	}
 
 	namespace File

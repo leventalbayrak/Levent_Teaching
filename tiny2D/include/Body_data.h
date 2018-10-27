@@ -3,7 +3,7 @@
 #include "Vec2D_data.h"
 namespace Body
 {
-	struct Body
+	struct Factory
 	{
 		int n_bodies;
 		int array_size;

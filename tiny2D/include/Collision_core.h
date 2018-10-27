@@ -5,7 +5,7 @@
 #include "Vec2D_core.h"
 namespace Collision
 {
-	void box(Shape::Rect *out, const Shape::Rect *in, float shrink)
+	void box(Shape::Rect::Data *out, const Shape::Rect::Data *in, float shrink)
 	{
 		out->x = in->x + shrink * in->w;
 		out->y = in->y + shrink * in->h;
@@ -13,7 +13,7 @@ namespace Collision
 		out->h = in->h - 2.0 * shrink * in->h;
 	}
 
-	void point_Feeler_Pos(Point_Feeler *p, const Shape::Rect *r, float t_margin, float x_margin)
+	void point_Feeler_Pos(Point_Feeler *p, const Shape::Rect::Data *r, float t_margin, float x_margin)
 	{
 		/*
 		        top

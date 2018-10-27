@@ -3,6 +3,7 @@
 #include "Tileset_data.h"
 #include "Sprite_data.h"
 #include "Grid_Camera_core.h"
+#include "Actor_data.h"
 
 namespace Engine
 {
@@ -12,7 +13,6 @@ namespace Engine
 	int screen_height;
 
 	Tileset::Tileset tileset_db;
-	Sprite::Data sprite_db;
 
 	unsigned char prev_key_state[256];
 	unsigned char *keys = NULL;

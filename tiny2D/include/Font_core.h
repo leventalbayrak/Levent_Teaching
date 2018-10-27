@@ -50,7 +50,7 @@ namespace Font
 
 			int row = str[i] >> 4;//divide by 16
 			int col = str[i] & 15;//str[i] % 16 but faster :)
-			Tileset::draw(font_tileset_index, row, col, &internal::tileset, text_pos->x, text_pos->y, text_w, text_h, renderer);
+			Tileset::draw_Single(font_tileset_index, row, col, &internal::tileset, text_pos->x, text_pos->y, text_w, text_h, renderer);
 			text_pos->x += text_w;
 
 		}

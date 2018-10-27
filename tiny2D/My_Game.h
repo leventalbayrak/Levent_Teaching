@@ -1,6 +1,10 @@
 #pragma once
 
+//BEAR RUN
+
 #include "include/Engine_core.h"
+#include "Heap_Example.h"
+#include "include/Actor_core.h"
 
 namespace My_Game
 {
@@ -14,54 +18,31 @@ namespace My_Game
 	{
 		namespace Animation
 		{
-			int run_animation_database_id;
-			int idle_animation_database_id;
-			int crosshair_animation_database_id;
-			int bullet_animation_database_id;
-
-			int run_animation_instance;
-			int idle_animation_instance;
-			int crosshair_animation_instance;
-
-
-			int *bullet_animation_instance;
+			
 		}
 	}
 
 	namespace World
 	{
 		
-
-		namespace Input
-		{
-			int left_x;
-			int left_y;
-			int right_x;
-			int right_y;
-		}
-
 		namespace Parameters
 		{
+			int max_n_runners = 512;
+			float min_run_speed = 0.08;
+			float max_run_speed = 0.1;
 
-			float crosshair_distance_from_player = 5.0;
-			int max_n_bullets = 512;
-			float bullet_inactivation_distance = 256.0;
-
+			unsigned int unfortunate_event_frequency = 2000;
 		}
 
-		Shape::Rect player_world_coord;
-		Shape::Rect crosshair_world_coord;
-		Shape::Rect *bullet_world_coord;
-		int *bullet_state;
-		
-		Vec2D::Vec2D player_velocity;
-		Vec2D::Vec2D *bullet_velocities;
+		Tileset::Tileset tileset;
 
 		Grid_Camera::Grid_Camera camera;
 		Grid::Grid tile_map;
-		Grid::Grid collision_map;
+		Grid::Grid background_map;
 
-		Vec2D::Vec2D right_stick_direction;
+		Actor::Factory saitama;
+
+		Min_Heap::Min_Heap heap;
 	}
 
 	void init(int screen_w, int screen_h)
@@ -69,185 +50,68 @@ namespace My_Game
 		//initialize all systems and open game window
 		Engine::init("hello", screen_w, screen_h);
 
-		Engine::E_Sprite::add("saitama_pink.txt");
-		Engine::E_Sprite::add("crosshair.txt");
+		Tileset::init(&World::tileset,16);
+		Tileset::File::add(&World::tileset, "map_tileset.txt", Engine::renderer);
 
-		Assets::Animation::run_animation_database_id = 0;
-		Assets::Animation::idle_animation_database_id = 1;
-		Assets::Animation::crosshair_animation_database_id = 3;
-		Assets::Animation::bullet_animation_database_id = 0;
-
-		Assets::Animation::run_animation_instance = Engine::E_Sprite::make_Instance(0);
-		Assets::Animation::idle_animation_instance = Engine::E_Sprite::make_Instance(1);
-
-		Assets::Animation::crosshair_animation_instance = Engine::E_Sprite::make_Instance(3);
-
-		Assets::Animation::bullet_animation_instance = new int[World::Parameters::max_n_bullets];
-		for (int i = 0; i < World::Parameters::max_n_bullets; i++)
-		{
-			Assets::Animation::bullet_animation_instance[i] = Engine::E_Sprite::make_Instance(0);
-		}
-
-		Engine::E_Sprite::modify(Assets::Animation::run_animation_database_id,
-			Assets::Animation::run_animation_instance, 100);
-		Engine::E_Sprite::modify(Assets::Animation::crosshair_animation_database_id,
-			Assets::Animation::crosshair_animation_instance, 100);
-
-		Engine::E_Tileset::add("map_tileset.txt");
-
-		
-		Grid::load(&World::tile_map, "twinstick_tilemap.csv");
-
-		
-		Grid::load(&World::collision_map, "twinstick_collision.csv");
-
+		Grid::load(&World::tile_map, "bear_run_tilemap_tilemap.csv");
+		Grid::load(&World::background_map, "bear_run_tilemap_background.csv");
 
 		Grid_Camera::init(&World::camera, Engine::screen_width, Engine::screen_height);
-		World::camera.world_coord.w = 20;
-		World::camera.world_coord.h = 15;
+		World::camera.world_coord.x = 0;
+		World::camera.world_coord.y = 1;
+		World::camera.world_coord.w = 0.025 * Engine::screen_width;
+		World::camera.world_coord.h = 0.025 * Engine::screen_height;
 
+		Actor::init(&World::saitama, 1000);
+		Actor::add(&World::saitama, "saitama_pink_run.txt", Engine::renderer);
 
-		World::bullet_world_coord = new Shape::Rect[World::Parameters::max_n_bullets];
-		World::bullet_state = new int [World::Parameters::max_n_bullets];
-		World::bullet_velocities = new Vec2D::Vec2D[World::Parameters::max_n_bullets];
 	}
 
 	void begin_Play()
 	{
-
-		World::player_world_coord.x = 50;
-		World::player_world_coord.y = 50;
-		World::player_world_coord.w = 1;
-		World::player_world_coord.h = 1;
-
-
-		World::crosshair_world_coord.x = 50;
-		World::crosshair_world_coord.y = 50;
-		World::crosshair_world_coord.w = 1;
-		World::crosshair_world_coord.h = 1;
-
-		for (int i = 0; i < World::Parameters::max_n_bullets; i++)
+		for (int i = 0; i < 1000; i++)
 		{
-			World::bullet_world_coord[i].x = 0;
-			World::bullet_world_coord[i].y = 0;
-			World::bullet_world_coord[i].w = 1;
-			World::bullet_world_coord[i].h = 1;
-
-			World::bullet_state[i] = 0;
-
-			World::bullet_velocities[i] = {};
+			int k = Actor::make_Instance(&World::saitama);
+			Actor::set_Pos(k, 0, World::camera.world_coord.h-1, &World::saitama);
 		}
-
+		printf("n_actors = %d\n", World::saitama.n_actors);
 	}
 
 	void update(unsigned int current_time, float dt)
 	{
 
 		Engine::event_Loop();
-
-		//game controller input
-		World::Input::left_x = Engine::Input::game_controller_sticks[0][SDL_CONTROLLER_AXIS_LEFTX];
-		World::Input::left_y = Engine::Input::game_controller_sticks[0][SDL_CONTROLLER_AXIS_LEFTY];
-		World::Input::right_x = Engine::Input::game_controller_sticks[0][SDL_CONTROLLER_AXIS_RIGHTX];
-		World::Input::right_y = Engine::Input::game_controller_sticks[0][SDL_CONTROLLER_AXIS_RIGHTY];
-
-		World::player_velocity = {};
-
-		if (World::Input::left_x < -6000)
-		{
-			World::player_velocity.x = -0.1;
-		}
-		if (World::Input::left_x > 6000)
-		{
-			World::player_velocity.x = 0.1;
-		}
-		if (World::Input::left_y < -6000)
-		{
-			World::player_velocity.y = -0.1;
-		}
-		if (World::Input::left_y > 6000)
-		{
-			World::player_velocity.y = 0.1;
-		}
-
-		int shoot_bullet = 0;
-		if (Engine::Input::game_controller_sticks[0][SDL_CONTROLLER_AXIS_TRIGGERRIGHT] > 0)
-		{
-			shoot_bullet = 1;
-		}
-
-		if (World::Input::right_x > -6000 && World::Input::right_x < 6000)
-		{
-			if (World::Input::right_y > -6000 && World::Input::right_y < 6000)
-			{
-				World::Input::right_x = 0;
-				World::Input::right_y = 0;
-			}
-			
-		}
 	
-		World::right_stick_direction = {};
+		//add forces to actors
 
-		double mag = sqrt(World::Input::right_x*World::Input::right_x + World::Input::right_y*World::Input::right_y);
-		if (mag != 0)
+		int k = rand() % World::saitama.n_actors;
+		Vec2D::Vec2D force = { 1 + rand() % 5 ,-(1 + rand() % 5) };
+		Actor::add_Force(k, &World::saitama, &force);
+
+		//after done adding all forces
+		//execute the loop below
+
+		for (int i = 0; i < World::saitama.n_actors; i++)
 		{
-			World::right_stick_direction.x = World::Input::right_x / mag;
-			World::right_stick_direction.y = World::Input::right_y / mag;
+			//integrate forces
+			Actor::update_Vel(i, &World::saitama, dt);
+
+			//check for collisions
+			//to prevent a collision, set the velocity of the collision axis to zero
+
+
+			//update position
+			Actor::update_Pos(i, &World::saitama, dt);
+	
+			//zero the forces
+			World::saitama.bodies.force[i] = {};
+		}
+
+		for (int i = 0; i < World::saitama.n_actors; i++)
+		{
+			Actor::update_Sprite_Frame(i, &World::saitama, current_time);
 		}
 		
-
-		World::crosshair_world_coord.x = World::player_world_coord.x + World::right_stick_direction.x*World::Parameters::crosshair_distance_from_player;
-		World::crosshair_world_coord.y = World::player_world_coord.y + World::right_stick_direction.y*World::Parameters::crosshair_distance_from_player;
-
-		World::player_world_coord.x += World::player_velocity.x;
-		World::player_world_coord.y += World::player_velocity.y;
-
-		if (shoot_bullet == 1 && mag != 0)
-		{
-
-			for (int i = 0; i < World::Parameters::max_n_bullets; i++)
-			{
-				if (World::bullet_state[i] == 0)
-				{
-					World::bullet_state[i] = 1;
-					World::bullet_world_coord[i].x = World::player_world_coord.x;
-					World::bullet_world_coord[i].y = World::player_world_coord.y;
-					
-					World::bullet_velocities[i].x = World::player_velocity.x + World::right_stick_direction.x * 0.5;
-					World::bullet_velocities[i].y = World::player_velocity.y + World::right_stick_direction.y * 0.5;
-					
-					break;
-				}
-			}
-			
-		}
-
-
-
-
-		//upodate bullet pos
-		for (int i = 0; i < World::Parameters::max_n_bullets; i++)
-		{
-			if (World::bullet_state[i] == 1)
-			{
-				Vec2D::Vec2D a = { World::bullet_world_coord[i].x, World::bullet_world_coord[i].y };
-				Vec2D::Vec2D b = { World::player_world_coord.x, World::player_world_coord.y };
-				if (Vec2D::dist_Squared(&a,&b) > World::Parameters::bullet_inactivation_distance)
-				{
-					World::bullet_state[i] = 0;
-					continue;
-				}
-				World::bullet_world_coord[i].x += World::bullet_velocities[i].x;
-				World::bullet_world_coord[i].y += World::bullet_velocities[i].y;
-			}
-		}
-
-
-		//update animations
-		Engine::E_Sprite::update(Assets::Animation::run_animation_database_id,
-			Assets::Animation::run_animation_instance, current_time);
-		Engine::E_Sprite::update(Assets::Animation::crosshair_animation_database_id,
-			Assets::Animation::crosshair_animation_instance, current_time);
 	}
 
 	void draw()
@@ -255,53 +119,19 @@ namespace My_Game
 
 		SDL_RenderClear(Engine::renderer);
 
-		World::camera.world_coord.x = World::player_world_coord.x - World::camera.world_coord.w / 2;
-		World::camera.world_coord.y = World::player_world_coord.y - World::camera.world_coord.h / 2;
+		World::camera.world_coord.x = 0;
+		World::camera.world_coord.y = 1;
+		Grid_Camera::calibrate(&World::camera);
 
-		Grid::Region region;
-		Grid::get_Region_Under_Shape(&region, &World::camera.world_coord);
-
-		//redundant region!!!!
-		Grid_Camera::Calibration calibration;
-		Grid_Camera::calibrate(&calibration, &World::camera, &region);
-
-		Engine::E_Tileset::draw(0, &calibration, &region, &World::tile_map);
-
-		Engine::E_Sprite::draw(Assets::Animation::run_animation_database_id,
-			Assets::Animation::run_animation_instance,
-			&World::player_world_coord,
-			0,
-			&calibration,
-			&World::camera
-		);
-
-
-		Engine::E_Sprite::draw(Assets::Animation::crosshair_animation_database_id,
-			Assets::Animation::crosshair_animation_instance,
-			&World::crosshair_world_coord,
-			0,
-			&calibration,
-			&World::camera
-		);
-
-		int counter = 0;
-		for (int i = 0; i < World::Parameters::max_n_bullets; i++)
+		Tileset::draw_Grid(0, &World::tileset, &World::camera, &World::background_map, Engine::renderer);
+		Tileset::draw_Grid(0, &World::tileset, &World::camera, &World::tile_map, Engine::renderer);
+		
+		for (int i = 0; i < World::saitama.n_actors; i++)
 		{
-			if (World::bullet_state[i] == 1)
-			{
-				counter++;
-				Engine::E_Sprite::draw(Assets::Animation::run_animation_database_id,
-					Assets::Animation::run_animation_instance,
-					&World::bullet_world_coord[i],
-					0,
-					&calibration,
-					&World::camera
-				);
-			}
+			Actor::draw(i, &World::saitama, 0, &RGBA::default,&World::camera, Engine::renderer);
 		}
-
-		printf("number of active bullets %d\n", counter);
-
+		
+		
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
 

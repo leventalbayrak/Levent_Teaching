@@ -22,7 +22,7 @@ namespace Grid
 		gp->y = p->y;
 	}
 
-	inline void get_Region_Under_Shape(Region *g, const Shape::Rect *r)
+	inline void get_Region_Under_Shape(Region *g, const Shape::Rect::Data *r)
 	{
 		g->x0 = (r->x);
 		g->y0 = (r->y);

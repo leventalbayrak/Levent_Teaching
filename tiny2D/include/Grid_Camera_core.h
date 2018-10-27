@@ -13,18 +13,12 @@ namespace Grid_Camera
 		c->init.screen_height = screen_height;
 	}
 
-	//if this camera was placed on a grid, which cells of the grid would be under its grid_coord?
-	void get_Grid_Region_Covered(Grid::Region *a, const Grid_Camera *c)
+	void grid_to_Screen(Shape::Rect::Data *screen_coord,const Shape::Rect::Data *world_coord, const Grid_Camera *cam)
 	{
-		Grid::get_Region_Under_Shape(a, &c->world_coord);
-	}
-
-	void grid_to_Screen(Shape::Rect *screen_coord,const Shape::Rect *world_coord, const Calibration *c, const Grid_Camera *cam)
-	{
-		screen_coord->x = (world_coord->x - cam->world_coord.x)*c->tile_w;
-		screen_coord->y = (world_coord->y - cam->world_coord.y)*c->tile_h;
-		screen_coord->w = world_coord->w*c->tile_w;
-		screen_coord->h = world_coord->h*c->tile_h;
+		screen_coord->x = (world_coord->x - cam->world_coord.x)*cam->calibration.tile_w;
+		screen_coord->y = (world_coord->y - cam->world_coord.y)*cam->calibration.tile_h;
+		screen_coord->w = world_coord->w*cam->calibration.tile_w;
+		screen_coord->h = world_coord->h*cam->calibration.tile_h;
 	}
 
 	void screen_to_Grid(Vec2D::Vec2D *grid_point, Vec2D::Vec2D *screen_point, const Grid_Camera *c)
@@ -36,13 +30,15 @@ namespace Grid_Camera
 
 	//must perform this if camera width or height changes
 	//given a grid region that the camera grid_coord covers, recalculate tile data
-	void calibrate(Calibration *c, const Grid_Camera *cam, const Grid::Region *a)
+	void calibrate(Grid_Camera *cam)
 	{
-		
 
-		c->tile_w = ceil(cam->init.screen_width / cam->world_coord.w);
-		c->tile_h = ceil(cam->init.screen_height / cam->world_coord.h);
-		c->tile_x = ((float)a->x0 - cam->world_coord.x) * c->tile_w;
-		c->tile_y = ((float)a->y0 - cam->world_coord.y) * c->tile_h;
+		int x0 = cam->world_coord.x;
+		int y0 = cam->world_coord.y;
+		
+		cam->calibration.tile_w = ceil(cam->init.screen_width / cam->world_coord.w);
+		cam->calibration.tile_h = ceil(cam->init.screen_height / cam->world_coord.h);
+		cam->calibration.tile_x = (x0 - cam->world_coord.x) * cam->calibration.tile_w;
+		cam->calibration.tile_y = (y0 - cam->world_coord.y) * cam->calibration.tile_h;
 	}
 }
