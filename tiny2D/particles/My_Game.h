@@ -118,6 +118,8 @@ namespace My_Game
 			if (World::emitter.state[i] == 1) active_count++;
 		}
 		
+		//printf("count %d\n",active_count);
+
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
 	}

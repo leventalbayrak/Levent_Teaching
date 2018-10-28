@@ -5,3 +5,8 @@
 *.ipch
 *.db
 *.opendb
+*.pdb
+*.pdb
+*.log
+*.exe
+*.obj

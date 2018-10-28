@@ -116,5 +116,11 @@
     <ClInclude Include="include\Light_data.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\Particle_data.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Particle_core.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

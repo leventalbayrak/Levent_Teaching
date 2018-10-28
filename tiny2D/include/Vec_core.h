@@ -3,29 +3,29 @@
 #include <math.h>
 namespace Vec2D
 {
-	inline void add(Vec2D *a, Vec2D *b)
+	inline void add(Vec2D *a, const Vec2D *b)
 	{
 		a->x += b->x;
 		a->y += b->y;
 	}
 
-	inline void sub(Vec2D *a, Vec2D *b)
+	inline void sub(Vec2D *a, const Vec2D *b)
 	{
 		a->x -= b->x;
 		a->y -= b->y;
 	}
 
-	inline float dot(Vec2D *a, Vec2D *b)
+	inline float dot(const Vec2D *a, const Vec2D *b)
 	{
 		return a->x*b->x + a->y*b->y;
 	}
 
-	inline float dist_Squared(Vec2D *a, Vec2D *b)
+	inline float dist_Squared(const Vec2D *a, const Vec2D *b)
 	{
 		return (a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y);
 	}
 
-	inline float mag(Vec2D *a)
+	inline float mag(const Vec2D *a)
 	{
 		float m = a->x*a->x + a->y * a->y;
 		if (m == 0.0) return 0.0;
@@ -58,31 +58,31 @@ namespace Vec2D
 namespace Vec3D
 {
 
-	inline void add(Vec3D *a, Vec3D *b)
+	inline void add(Vec3D *a, const Vec3D *b)
 	{
 		a->x += b->x;
 		a->y += b->y;
 		a->z += b->z;
 	}
 
-	inline void sub(Vec3D *a, Vec3D *b)
+	inline void sub(Vec3D *a, const Vec3D *b)
 	{
 		a->x -= b->x;
 		a->y -= b->y;
 		a->z -= b->z;
 	}
 
-	inline float dot(Vec3D *a, Vec3D *b)
+	inline float dot(const Vec3D *a, const Vec3D *b)
 	{
 		return a->x*b->x + a->y*b->y + a->z*b->z;
 	}
 
-	inline float dist_Squared(Vec3D *a, Vec3D *b)
+	inline float dist_Squared(const Vec3D *a, const Vec3D *b)
 	{
 		return (a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y) + (a->z - b->z)*(a->z - b->z);
 	}
 
-	inline float mag(Vec3D *a)
+	inline float mag(const Vec3D *a)
 	{
 		float m = a->x*a->x + a->y * a->y + a->z*a->z;
 		if (m == 0.0) return 0.0;

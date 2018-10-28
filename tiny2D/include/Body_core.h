@@ -51,7 +51,7 @@ namespace Body
 		a->mass[index] = mass;
 	}
 
-	void add_Force(int index, Factory *a, Vec2D::Vec2D *f)
+	void add_Force(int index, Factory *a, const Vec2D::Vec2D *f)
 	{
 		Vec2D::add(&a->force[index], f);
 	}
@@ -77,19 +77,4 @@ namespace Body
 		a->vel[index].y *= friction->y;
 	}
 
-	void copy(Snapshot *s, int index, const Factory *bodies)
-	{
-		s->vel = bodies->vel[index];
-		s->force = bodies->force[index];
-		s->pos = bodies->pos[index];
-		s->mass = bodies->mass[index];
-	}
-
-	void copy(int index, Factory *bodies, const Snapshot *s)
-	{
-		bodies->vel[index] = s->vel;
-		bodies->force[index] = s->force;
-		bodies->pos[index] = s->pos;
-		bodies->mass[index] = s->mass;
-	}
 }
