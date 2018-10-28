@@ -14,6 +14,7 @@ namespace Shape
 
 		void resize(Factory *f)
 		{
+			f->array_size += f->array_size >> 1;
 			f->rect = (Data*)realloc(f->rect,sizeof(Data)*f->array_size);
 		}
 

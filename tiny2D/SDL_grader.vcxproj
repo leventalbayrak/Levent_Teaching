@@ -130,6 +130,9 @@
     <ClInclude Include="include\Grid_Camera_data.h" />
     <ClInclude Include="include\Grid_core.h" />
     <ClInclude Include="include\Grid_data.h" />
+    <ClInclude Include="include\Light_core.h" />
+    <ClInclude Include="include\Light_data.h" />
+    <ClInclude Include="include\RGBA_data.h" />
     <ClInclude Include="include\Shape_core.h" />
     <ClInclude Include="include\Shape_data.h" />
     <ClInclude Include="include\Sprite_core.h" />
@@ -139,10 +142,9 @@
     <ClInclude Include="include\Texture_core.h" />
     <ClInclude Include="include\Tileset_core.h" />
     <ClInclude Include="include\Tileset_data.h" />
-    <ClInclude Include="include\Vec2D_core.h" />
-    <ClInclude Include="include\Vec2D_data.h" />
+    <ClInclude Include="include\Vec_core.h" />
+    <ClInclude Include="include\Vec_data.h" />
     <ClInclude Include="My_Game.h" />
-    <ClInclude Include="RGBA_data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

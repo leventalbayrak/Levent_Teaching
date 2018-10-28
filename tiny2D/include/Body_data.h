@@ -1,6 +1,6 @@
 #pragma once
 #include "Shape_data.h"
-#include "Vec2D_data.h"
+#include "Vec_data.h"
 namespace Body
 {
 	struct Factory
