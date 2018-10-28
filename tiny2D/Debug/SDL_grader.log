@@ -53,4 +53,5 @@ c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(80): warnin
 c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(80): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  LINK : C:\Users\levent\Documents\GitHub\Levent_Development\tiny2D\Debug\SDL_grader.exe not found or not built by the last incremental link; performing full link
   SDL_grader.vcxproj -> C:\Users\levent\Documents\GitHub\Levent_Development\tiny2D\Debug\SDL_grader.exe

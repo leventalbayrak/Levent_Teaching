@@ -10,3 +10,7 @@
 *.log
 *.exe
 *.obj
+*.log
+*.pdb
+*.tlog
+*.idb
