@@ -85,6 +85,19 @@ namespace Actor
 		f->world_coords.rect[which_actor].y = f->bodies.pos[which_actor].y;
 	}
 
+	void undo_Pos_Update(int which_actor, Factory *f)
+	{
+		f->bodies.pos[which_actor] = f->bodies.last_pos[which_actor];
+		//copy physics body position to world coord
+		f->world_coords.rect[which_actor].x = f->bodies.pos[which_actor].x;
+		f->world_coords.rect[which_actor].y = f->bodies.pos[which_actor].y;
+	}
+
+	void apply_Friction(int which_actor, const Vec2D::Vec2D *friction, Factory *f)
+	{
+		Body::apply_Friction(which_actor, friction, &f->bodies);
+	}
+
 	void set_Sprite(int which_actor, int which_sprite, Factory *f)
 	{
 		f->current_sprite[which_actor] = which_sprite;
@@ -92,10 +105,31 @@ namespace Actor
 	
 	void set_Pos(int which_actor,float x, float y, Factory *f)
 	{
+		f->bodies.last_pos[which_actor] = f->bodies.pos[which_actor];
+
 		f->world_coords.rect[which_actor].x = x;
 		f->world_coords.rect[which_actor].y = y;
+		
 		f->bodies.pos[which_actor].x = x;
 		f->bodies.pos[which_actor].y = y;
+	}
+
+	void set_Vel(int which_actor, const Vec2D::Vec2D *vel, Factory *f)
+	{
+		f->bodies.vel[which_actor] = *vel;
+	}
+
+	Vec2D::Vec2D *get_Vel(int which_actor, Factory *f)
+	{
+		return &f->bodies.vel[which_actor];
+	}
+	Vec2D::Vec2D *get_Pos(int which_actor, Factory *f)
+	{
+		return &f->bodies.pos[which_actor];
+	}
+	Vec2D::Vec2D *get_Last_Pos(int which_actor, Factory *f)
+	{
+		return &f->bodies.last_pos[which_actor];
 	}
 
 	void set_Size(int which_actor, float w, float h, Factory *f)
@@ -110,7 +144,7 @@ namespace Actor
 		f->world_coords.rect[which_actor].h *= scale;
 	}
 
-	int spawn(Factory *f, unsigned int current_time)
+	int spawn(Factory *f, float scale, unsigned int current_time)
 	{
 		int k = internal::find_New(f);
 		if (k == -1) return -1;
@@ -139,15 +173,16 @@ namespace Actor
 
 		f->world_coords.rect[k2].x = 0;
 		f->world_coords.rect[k2].y = 0;
-		f->world_coords.rect[k2].w = 1.0;
+		f->world_coords.rect[k2].w = scale;
 		//TODO: WATCH THIS
-		f->world_coords.rect[k2].h = (float)f->sprites[0].texture_info.frame_h / f->sprites[0].texture_info.frame_w;
+		f->world_coords.rect[k2].h = scale*(float)f->sprites[0].texture_info.frame_h / f->sprites[0].texture_info.frame_w;
 
 		return k;
 	}
 
-	void draw(const Factory *f, Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer)
+	int draw(const Factory *f, Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer)
 	{
+		int n_drawn = 0;
 		for (int i = 0; i < f->array_size; i++)
 		{
 			if (f->state[i] != -1)
@@ -165,8 +200,12 @@ namespace Actor
 					renderer,
 					f->sprite_flip[i],
 					f->color[i].r, f->color[i].g, f->color[i].b, f->color[i].a);
+
+				n_drawn++;
 			}
 		}
+
+		return n_drawn;
 	}
 
 }

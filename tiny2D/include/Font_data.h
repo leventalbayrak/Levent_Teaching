@@ -1,10 +1,11 @@
 #pragma once
-#include "Tileset_core.h"
-
+#include "Tileset_data.h"
+#include "Shape_data.h"
 namespace Font
 {
-	namespace internal
+	struct Font
 	{
+		Shape::Rect::Data screen_coord;
 		Tileset::Tileset tileset;
-	}
+	};
 }

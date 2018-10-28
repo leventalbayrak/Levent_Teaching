@@ -16,6 +16,7 @@ namespace Body
 		a->vel = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->force = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->pos = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
+		a->last_pos = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->mass = (float*)malloc(sizeof(float)*a->array_size);
 	}
 
@@ -25,6 +26,7 @@ namespace Body
 		a->vel = (Vec2D::Vec2D*)realloc(a->vel, sizeof(Vec2D::Vec2D)*a->array_size);
 		a->force = (Vec2D::Vec2D*)realloc(a->force, sizeof(Vec2D::Vec2D)*a->array_size);
 		a->pos = (Vec2D::Vec2D*)realloc(a->pos, sizeof(Vec2D::Vec2D)*a->array_size);
+		a->last_pos = (Vec2D::Vec2D*)realloc(a->pos, sizeof(Vec2D::Vec2D)*a->array_size);
 		a->mass = (float*)realloc(a->mass, sizeof(float)*a->array_size);
 	}
 
@@ -47,6 +49,7 @@ namespace Body
 	{
 		a->vel[index] = {};
 		a->force[index] = {};
+		a->last_pos[index] = *pos;
 		a->pos[index] = *pos;
 		a->mass[index] = mass;
 	}
@@ -68,13 +71,14 @@ namespace Body
 		Vec2D::Vec2D t = a->vel[index];
 		t.x *= dt;
 		t.y *= dt;
+		a->last_pos[index] = a->pos[index];
 		Vec2D::add(&a->pos[index], &t);
 	}
 
-	void apply_Friction(int index,Vec2D::Vec2D *friction, Factory *a)
+	void apply_Friction(int index, const Vec2D::Vec2D *friction, Factory *a)
 	{
-		a->vel[index].x *= friction->x;
-		a->vel[index].y *= friction->y;
+		a->vel[index].x *= 1.0 - friction->x;
+		a->vel[index].y *= 1.0 - friction->y;
 	}
 
 }
