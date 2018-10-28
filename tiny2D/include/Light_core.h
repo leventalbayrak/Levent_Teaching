@@ -54,6 +54,7 @@ namespace Light
 		SDL_LockTexture(internal::lightmap, NULL, (void**)&pixels, &pitch);
 
 		int buffer_size = pitch * internal::h;
+#pragma omp parallel for num_threads(4)
 		for (int index = 0; index < buffer_size; index += 4)
 		{
 			int x = (index % pitch) / 4;

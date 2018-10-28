@@ -72,7 +72,7 @@ namespace My_Game
 
 	void begin_Play()
 	{
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 1; i++)
 		{
 			Light::ambient = 0.0;
 			int l1 = Light::make_Instance(&World::lights);

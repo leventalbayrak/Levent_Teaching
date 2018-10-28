@@ -31,8 +31,8 @@ c:\users\levent\documents\github\levent_development\tiny2d\include\font_core.h(5
 c:\users\levent\documents\github\levent_development\tiny2d\include\collision_core.h(12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\collision_core.h(13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\sprite_core.h(52): warning C4018: '>=': signed/unsigned mismatch
-c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(67): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(67): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(68): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(68): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(137): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(136): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(135): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
@@ -48,8 +48,8 @@ c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(151): warni
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Generating code
-  0 of 77 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+  8 of 79 functions (10.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SDL_grader.vcxproj -> C:\Users\levent\Documents\GitHub\Levent_Development\tiny2D\Release\SDL_grader.exe
