@@ -8,6 +8,42 @@
 
 namespace Actor
 {
+	void init(Factory *f, int array_size);
+
+	void add_Sprite(Factory *f, const char *filename, SDL_Renderer *renderer);
+
+	void add_Force(int which_actor, Factory *f, Vec2D::Vec2D *force);
+
+	void update_Vel(int which_actor, Factory *f, float dt);
+
+	void update_Pos(int which_actor, Factory *f, float dt);
+
+	void undo_Pos_Update(int which_actor, Factory *f);
+
+	void apply_Friction(int which_actor, const Vec2D::Vec2D *friction, Factory *f);
+
+	void set_Sprite(int which_actor, int which_sprite, Factory *f);
+
+	void set_Pos(int which_actor, float x, float y, Factory *f);
+
+	void set_Vel(int which_actor, const Vec2D::Vec2D *vel, Factory *f);
+
+	Vec2D::Vec2D *get_Vel(int which_actor, Factory *f);
+	Vec2D::Vec2D *get_Pos(int which_actor, Factory *f);
+	Vec2D::Vec2D *get_Last_Pos(int which_actor, Factory *f);
+
+	void set_Size(int which_actor, float w, float h, Factory *f);
+
+	void set_Scale(int which_actor, Factory *f, float scale);
+
+	int spawn(Factory *f, float scale, unsigned int current_time);
+
+	int draw(const Factory *f, Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer);
+
+}
+
+namespace Actor
+{
 	namespace internal
 	{
 		void resize_Sprites(Factory *f)

@@ -5,6 +5,26 @@
 #include "Grid_data.h"
 #include "Table_File_core.h"
 #include "Shape_data.h"
+
+namespace Grid
+{
+	void init(Grid *g, int n_rows, int n_cols);
+
+	inline void Vec2D_to_Grid(Point *gp, Vec2D::Vec2D *p);
+
+	inline void get_Region_Under_Shape(Region *g, const Shape::Rect::Data *r);
+
+	inline int tile(int x, int y, Grid *g);
+
+	inline int tile(Point *p, Grid *g);
+
+	inline int tile(Vec2D::Vec2D *p, Grid *g);
+
+	void clip_Grid_Region(Region *r, int n_cols, int n_rows);
+
+	void load(Grid *g, const char *filename);
+}
+
 namespace Grid
 {
 	void init(Grid *g, int n_rows, int n_cols)

@@ -1,0 +1,54 @@
+.TH "Particle" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Particle
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBEmitter\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinit\fP (\fBEmitter\fP *e, const char *filename, int array_size, SDL_Renderer *renderer)"
+.br
+.ti -1c
+.RI "int \fBspawn\fP (\fBEmitter\fP *e, int how_many, float scale, const \fBVec2D::Vec2D\fP *pos, const \fBVec2D::Vec2D\fP *initial_vel, const \fBVec2D::Vec2D\fP *force_min, const \fBVec2D::Vec2D\fP *force_max, int min_life, int max_life, unsigned int current_time)"
+.br
+.ti -1c
+.RI "void \fBupdate_Vel_and_Life\fP (\fBEmitter\fP *e, unsigned int current_time, float dt)"
+.br
+.ti -1c
+.RI "void \fBapply_Force\fP (\fBEmitter\fP *e, const \fBVec2D::Vec2D\fP *force)"
+.br
+.ti -1c
+.RI "void \fBupdate_Pos\fP (\fBEmitter\fP *e, unsigned int current_time, float dt)"
+.br
+.ti -1c
+.RI "int \fBdraw\fP (\fBEmitter\fP *e, const \fBGrid_Camera::Grid_Camera\fP *cam, unsigned int current_time, SDL_Renderer *renderer)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void Particle::apply_Force (\fBEmitter\fP * e, const \fBVec2D::Vec2D\fP * force)"
+
+.SS "int Particle::draw (\fBEmitter\fP * e, const \fBGrid_Camera::Grid_Camera\fP * cam, unsigned int current_time, SDL_Renderer * renderer)"
+
+.SS "void Particle::init (\fBEmitter\fP * e, const char * filename, int array_size, SDL_Renderer * renderer)"
+
+.SS "int Particle::spawn (\fBEmitter\fP * e, int how_many, float scale, const \fBVec2D::Vec2D\fP * pos, const \fBVec2D::Vec2D\fP * initial_vel, const \fBVec2D::Vec2D\fP * force_min, const \fBVec2D::Vec2D\fP * force_max, int min_life, int max_life, unsigned int current_time)"
+
+.SS "void Particle::update_Pos (\fBEmitter\fP * e, unsigned int current_time, float dt)"
+
+.SS "void Particle::update_Vel_and_Life (\fBEmitter\fP * e, unsigned int current_time, float dt)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

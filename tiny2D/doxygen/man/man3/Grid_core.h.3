@@ -1,0 +1,59 @@
+.TH "include/Grid_core.h" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/Grid_core.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <assert\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include 'Grid_data\&.h'\fP
+.br
+\fC#include 'Table_File_core\&.h'\fP
+.br
+\fC#include 'Shape_data\&.h'\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBGrid\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBGrid::init\fP (Grid *g, int n_rows, int n_cols)"
+.br
+.ti -1c
+.RI "void \fBGrid::Vec2D_to_Grid\fP (Point *gp, \fBVec2D::Vec2D\fP *p)"
+.br
+.ti -1c
+.RI "void \fBGrid::get_Region_Under_Shape\fP (Region *g, const \fBShape::Rect::Data\fP *r)"
+.br
+.ti -1c
+.RI "int \fBGrid::tile\fP (int x, int y, Grid *g)"
+.br
+.ti -1c
+.RI "int \fBGrid::tile\fP (Point *p, Grid *g)"
+.br
+.ti -1c
+.RI "int \fBGrid::tile\fP (\fBVec2D::Vec2D\fP *p, Grid *g)"
+.br
+.ti -1c
+.RI "void \fBGrid::clip_Grid_Region\fP (Region *r, int n_cols, int n_rows)"
+.br
+.ti -1c
+.RI "void \fBGrid::load\fP (Grid *g, const char *filename)"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

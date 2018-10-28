@@ -11,6 +11,16 @@
 #include <time.h>
 #include <cfloat>
 #include "Table_File_data.h"
+
+namespace Table_File
+{
+
+	void read(const char *filename, Table_File *t);
+
+	void clean(Table_File *t);
+
+}
+
 namespace Table_File
 {
 

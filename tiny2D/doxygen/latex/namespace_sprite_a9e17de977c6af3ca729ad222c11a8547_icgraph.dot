@@ -1,0 +1,11 @@
+digraph "Sprite::update"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node13 [label="Sprite::update",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node13 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid"];
+  Node14 [label="Actor::draw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_actor.html#a5e098b8721cbebeb27de076a98107368"];
+  Node13 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid"];
+  Node15 [label="Particle::draw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_particle.html#aee79b4d9aa717789373fbb4ee87fe062"];
+}

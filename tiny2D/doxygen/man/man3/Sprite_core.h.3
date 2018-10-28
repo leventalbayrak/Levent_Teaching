@@ -1,0 +1,56 @@
+.TH "include/Sprite_core.h" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/Sprite_core.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'Sprite_data\&.h'\fP
+.br
+\fC#include 'Texture_core\&.h'\fP
+.br
+\fC#include 'SDL2\-2\&.0\&.8/include/SDL\&.h'\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBSprite\fP"
+.br
+.ti -1c
+.RI " \fBSprite::Instance\fP"
+.br
+.ti -1c
+.RI " \fBSprite::File\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBSprite::Instance::init\fP (Instance *s, int array_size)"
+.br
+.ti -1c
+.RI "void \fBSprite::Instance::resize\fP (Instance *s)"
+.br
+.ti -1c
+.RI "int \fBSprite::make_Instance\fP (Factory *d)"
+.br
+.ti -1c
+.RI "void \fBSprite::modify\fP (int instance_index, Factory *d, int frame_duration)"
+.br
+.ti -1c
+.RI "void \fBSprite::update\fP (int instance_index, Factory *d, unsigned int current_time)"
+.br
+.ti -1c
+.RI "void \fBSprite::draw\fP (int instance_index, Factory *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer, int flip, unsigned char r, unsigned char g, unsigned char b, unsigned char a)"
+.br
+.ti -1c
+.RI "void \fBSprite::File::add\fP (Factory *sprite_database, const char *filename, SDL_Renderer *renderer)"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

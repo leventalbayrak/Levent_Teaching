@@ -8,6 +8,22 @@
 namespace Particle
 {
 
+	void init(Emitter *e, const char *filename, int array_size, SDL_Renderer *renderer);
+
+	int spawn(Emitter *e, int how_many, float scale, const Vec2D::Vec2D *pos, const Vec2D::Vec2D *initial_vel, const Vec2D::Vec2D *force_min, const Vec2D::Vec2D *force_max, int min_life, int max_life, unsigned int current_time);
+
+	void update_Vel_and_Life(Emitter *e, unsigned int current_time, float dt);
+
+	void apply_Force(Emitter *e, const Vec2D::Vec2D *force);
+
+	void update_Pos(Emitter *e, unsigned int current_time, float dt);
+
+	int draw(Emitter *e, const Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer);
+}
+
+namespace Particle
+{
+
 	void init(Emitter *e, const char *filename, int array_size, SDL_Renderer *renderer)
 	{
 		e->array_size = array_size;

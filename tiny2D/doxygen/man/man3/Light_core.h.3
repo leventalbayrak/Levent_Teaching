@@ -1,0 +1,63 @@
+.TH "include/Light_core.h" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/Light_core.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'Light_data\&.h'\fP
+.br
+\fC#include 'Grid_Camera_core\&.h'\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <algorithm>\fP
+.br
+\fC#include <math\&.h>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBLight\fP"
+.br
+.ti -1c
+.RI " \fBLight::System\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBLight::System::init\fP (int screen_w, int screen_h, SDL_Renderer *renderer)"
+.br
+.ti -1c
+.RI "void \fBLight::init\fP (Factory *f, int array_size)"
+.br
+.ti -1c
+.RI "void \fBLight::resize\fP (Factory *f)"
+.br
+.ti -1c
+.RI "int \fBLight::make_Instance\fP (Factory *f)"
+.br
+.ti -1c
+.RI "void \fBLight::draw\fP (Factory *l, \fBGrid_Camera::Grid_Camera\fP *cam, SDL_Renderer *renderer)"
+.br
+.ti -1c
+.RI "void \fBLight::set_Color\fP (int which_light, \fBRGB::RGB\fP *rgb, Factory *l)"
+.br
+.ti -1c
+.RI "void \fBLight::set_Pos\fP (int which_light, \fBVec2D::Vec2D\fP *pos, Factory *l)"
+.br
+.ti -1c
+.RI "void \fBLight::set_Z_Height\fP (int which_light, float z_height, Factory *l)"
+.br
+.ti -1c
+.RI "void \fBLight::set_Intensity\fP (int which_light, float intensity, Factory *l)"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

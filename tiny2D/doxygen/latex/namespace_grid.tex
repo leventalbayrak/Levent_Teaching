@@ -1,0 +1,85 @@
+\hypertarget{namespace_grid}{}\section{Grid Namespace Reference}
+\label{namespace_grid}\index{Grid@{Grid}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_grid_1_1_grid}{Grid}}
+\item 
+struct \mbox{\hyperlink{struct_grid_1_1_point}{Point}}
+\item 
+struct \mbox{\hyperlink{struct_grid_1_1_region}{Region}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{namespace_grid_a381a9dd7e313111348df0dd65b5e6b4c}{init}} (\mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$g, int n\+\_\+rows, int n\+\_\+cols)
+\item 
+void \mbox{\hyperlink{namespace_grid_a07bf38e1a6daf3be9ad0d8b1527fcab2}{Vec2\+D\+\_\+to\+\_\+\+Grid}} (\mbox{\hyperlink{struct_grid_1_1_point}{Point}} $\ast$gp, \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$p)
+\item 
+void \mbox{\hyperlink{namespace_grid_ab92654ff6a03a22f84957055fbde567c}{get\+\_\+\+Region\+\_\+\+Under\+\_\+\+Shape}} (\mbox{\hyperlink{struct_grid_1_1_region}{Region}} $\ast$g, const \mbox{\hyperlink{struct_shape_1_1_rect_1_1_data}{Shape\+::\+Rect\+::\+Data}} $\ast$r)
+\item 
+int \mbox{\hyperlink{namespace_grid_ac334e1bf10e373e75d6bb9777d400712}{tile}} (int x, int y, \mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$g)
+\item 
+int \mbox{\hyperlink{namespace_grid_ac13cc066a37157453105c616d466a6d5}{tile}} (\mbox{\hyperlink{struct_grid_1_1_point}{Point}} $\ast$p, \mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$g)
+\item 
+int \mbox{\hyperlink{namespace_grid_a90730af11e3c4c1272d81ce712c29625}{tile}} (\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$p, \mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$g)
+\item 
+void \mbox{\hyperlink{namespace_grid_a964327026e6d0cdadf17407401d96df7}{clip\+\_\+\+Grid\+\_\+\+Region}} (\mbox{\hyperlink{struct_grid_1_1_region}{Region}} $\ast$r, int n\+\_\+cols, int n\+\_\+rows)
+\item 
+void \mbox{\hyperlink{namespace_grid_a3c9db382b0e0989888ec78831164c4be}{load}} (\mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$g, const char $\ast$filename)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespace_grid_a964327026e6d0cdadf17407401d96df7}\label{namespace_grid_a964327026e6d0cdadf17407401d96df7}} 
+\index{Grid@{Grid}!clip\+\_\+\+Grid\+\_\+\+Region@{clip\+\_\+\+Grid\+\_\+\+Region}}
+\index{clip\+\_\+\+Grid\+\_\+\+Region@{clip\+\_\+\+Grid\+\_\+\+Region}!Grid@{Grid}}
+\subsubsection{\texorpdfstring{clip\+\_\+\+Grid\+\_\+\+Region()}{clip\_Grid\_Region()}}
+{\footnotesize\ttfamily void Grid\+::clip\+\_\+\+Grid\+\_\+\+Region (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_grid_1_1_region}{Region}} $\ast$}]{r,  }\item[{int}]{n\+\_\+cols,  }\item[{int}]{n\+\_\+rows }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_grid_ab92654ff6a03a22f84957055fbde567c}\label{namespace_grid_ab92654ff6a03a22f84957055fbde567c}} 
+\index{Grid@{Grid}!get\+\_\+\+Region\+\_\+\+Under\+\_\+\+Shape@{get\+\_\+\+Region\+\_\+\+Under\+\_\+\+Shape}}
+\index{get\+\_\+\+Region\+\_\+\+Under\+\_\+\+Shape@{get\+\_\+\+Region\+\_\+\+Under\+\_\+\+Shape}!Grid@{Grid}}
+\subsubsection{\texorpdfstring{get\+\_\+\+Region\+\_\+\+Under\+\_\+\+Shape()}{get\_Region\_Under\_Shape()}}
+{\footnotesize\ttfamily void Grid\+::get\+\_\+\+Region\+\_\+\+Under\+\_\+\+Shape (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_grid_1_1_region}{Region}} $\ast$}]{g,  }\item[{const \mbox{\hyperlink{struct_shape_1_1_rect_1_1_data}{Shape\+::\+Rect\+::\+Data}} $\ast$}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{namespace_grid_a381a9dd7e313111348df0dd65b5e6b4c}\label{namespace_grid_a381a9dd7e313111348df0dd65b5e6b4c}} 
+\index{Grid@{Grid}!init@{init}}
+\index{init@{init}!Grid@{Grid}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily void Grid\+::init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$}]{g,  }\item[{int}]{n\+\_\+rows,  }\item[{int}]{n\+\_\+cols }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+% FIG 0
+\mbox{\Hypertarget{namespace_grid_a3c9db382b0e0989888ec78831164c4be}\label{namespace_grid_a3c9db382b0e0989888ec78831164c4be}} 
+\index{Grid@{Grid}!load@{load}}
+\index{load@{load}!Grid@{Grid}}
+\subsubsection{\texorpdfstring{load()}{load()}}
+{\footnotesize\ttfamily void Grid\+::load (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$}]{g,  }\item[{const char $\ast$}]{filename }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 1
+\mbox{\Hypertarget{namespace_grid_ac334e1bf10e373e75d6bb9777d400712}\label{namespace_grid_ac334e1bf10e373e75d6bb9777d400712}} 
+\index{Grid@{Grid}!tile@{tile}}
+\index{tile@{tile}!Grid@{Grid}}
+\subsubsection{\texorpdfstring{tile()}{tile()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily int Grid\+::tile (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y,  }\item[{\mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$}]{g }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{namespace_grid_ac13cc066a37157453105c616d466a6d5}\label{namespace_grid_ac13cc066a37157453105c616d466a6d5}} 
+\index{Grid@{Grid}!tile@{tile}}
+\index{tile@{tile}!Grid@{Grid}}
+\subsubsection{\texorpdfstring{tile()}{tile()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily int Grid\+::tile (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_grid_1_1_point}{Point}} $\ast$}]{p,  }\item[{\mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$}]{g }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{namespace_grid_a90730af11e3c4c1272d81ce712c29625}\label{namespace_grid_a90730af11e3c4c1272d81ce712c29625}} 
+\index{Grid@{Grid}!tile@{tile}}
+\index{tile@{tile}!Grid@{Grid}}
+\subsubsection{\texorpdfstring{tile()}{tile()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily int Grid\+::tile (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{p,  }\item[{\mbox{\hyperlink{struct_grid_1_1_grid}{Grid}} $\ast$}]{g }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{namespace_grid_a07bf38e1a6daf3be9ad0d8b1527fcab2}\label{namespace_grid_a07bf38e1a6daf3be9ad0d8b1527fcab2}} 
+\index{Grid@{Grid}!Vec2\+D\+\_\+to\+\_\+\+Grid@{Vec2\+D\+\_\+to\+\_\+\+Grid}}
+\index{Vec2\+D\+\_\+to\+\_\+\+Grid@{Vec2\+D\+\_\+to\+\_\+\+Grid}!Grid@{Grid}}
+\subsubsection{\texorpdfstring{Vec2\+D\+\_\+to\+\_\+\+Grid()}{Vec2D\_to\_Grid()}}
+{\footnotesize\ttfamily void Grid\+::\+Vec2\+D\+\_\+to\+\_\+\+Grid (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_grid_1_1_point}{Point}} $\ast$}]{gp,  }\item[{\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+

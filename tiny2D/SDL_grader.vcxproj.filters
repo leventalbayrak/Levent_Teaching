@@ -125,5 +125,8 @@
     <ClInclude Include="include\Input_core.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\Audio_data.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

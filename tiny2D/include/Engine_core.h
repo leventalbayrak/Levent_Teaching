@@ -45,6 +45,16 @@ using namespace std;
 
 namespace Engine
 {
+	unsigned int time();
+
+	void init(const char*window_title, int _screen_width, int _screen_height);
+
+	void event_Loop();
+
+}
+
+namespace Engine
+{
 	unsigned int time()
 	{
 		return SDL_GetTicks();

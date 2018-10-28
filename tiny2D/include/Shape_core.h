@@ -1,6 +1,26 @@
 #pragma once
 #include "Shape_data.h"
 
+
+namespace Shape
+{
+	namespace Rect
+	{
+		void init(Factory *f, int array_size);
+
+		void resize(Factory *f);
+
+		int make_Instance(Factory *f);
+
+		int collision(const Data *pa, const Rect::Data *pb);
+
+		//minkowski sum
+		//if collision direction is important, use this
+		int collision_with_Dir(const Data *a, const Rect::Data *b);
+	}
+
+}
+
 namespace Shape
 {
 	namespace Rect

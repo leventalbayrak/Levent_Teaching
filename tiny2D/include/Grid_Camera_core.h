@@ -3,6 +3,18 @@
 #include "Grid_Camera_data.h"
 #include "Grid_core.h"
 
+namespace Grid_Camera
+{
+	void init(Grid_Camera *c, int screen_width, int screen_height);
+
+	void grid_to_Screen(Shape::Rect::Data *screen_coord, const Shape::Rect::Data *world_coord, const Grid_Camera *cam);
+
+	void screen_to_Grid(Vec2D::Vec2D *grid_point, Vec2D::Vec2D *screen_point, const Grid_Camera *c);
+
+	//must perform this if camera width or height changes
+	//given a grid region that the camera grid_coord covers, recalculate tile data
+	void calibrate(Grid_Camera *cam);
+}
 
 namespace Grid_Camera
 {

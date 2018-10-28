@@ -1,6 +1,40 @@
 #pragma once
 #include "Vec_data.h"
 #include <math.h>
+
+namespace Vec2D
+{
+	inline void add(Vec2D *a, const Vec2D *b);
+
+	inline void sub(Vec2D *a, const Vec2D *b);
+
+	inline float dot(const Vec2D *a, const Vec2D *b);
+
+	inline float dist_Squared(const Vec2D *a, const Vec2D *b);
+
+	inline float mag(const Vec2D *a);
+
+	inline float norm(Vec2D *a);
+
+	void clip(Vec2D *a, float min_x, float max_x, float min_y, float max_y);
+}
+
+namespace Vec3D
+{
+
+	inline void add(Vec3D *a, const Vec3D *b);
+
+	inline void sub(Vec3D *a, const Vec3D *b);
+
+	inline float dot(const Vec3D *a, const Vec3D *b);
+
+	inline float dist_Squared(const Vec3D *a, const Vec3D *b);
+
+	inline float mag(const Vec3D *a);
+
+	inline float norm(Vec3D *a);
+}
+
 namespace Vec2D
 {
 	inline void add(Vec2D *a, const Vec2D *b)

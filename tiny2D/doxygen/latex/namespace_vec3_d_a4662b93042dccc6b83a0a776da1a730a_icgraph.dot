@@ -1,0 +1,11 @@
+digraph "Vec3D::mag"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node8 [label="Vec3D::mag",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node8 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid"];
+  Node9 [label="Vec3D::norm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_vec3_d.html#af43d6bfde0087b0e924826cffdd5f299"];
+  Node9 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid"];
+  Node10 [label="Light::draw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_light.html#ae13a56b5d4533eefae380ac74c16bf16"];
+}

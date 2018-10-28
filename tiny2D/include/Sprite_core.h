@@ -6,6 +6,31 @@ use custom allocator
 #include "Sprite_data.h"
 #include "Texture_core.h"
 #include "SDL2-2.0.8/include/SDL.h"
+
+
+namespace Sprite
+{
+	namespace Instance
+	{
+		void init(Instance *s, int array_size);
+
+		void resize(Instance *s);
+	}
+
+	int make_Instance(Factory *d);
+
+	void modify(int instance_index, Factory *d, int frame_duration);
+
+	void update(int instance_index, Factory *d, unsigned int current_time);
+
+	void draw(int instance_index, Factory *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer, int flip, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
+	namespace File
+	{
+		void add(Factory *sprite_database, const char *filename, SDL_Renderer *renderer);
+	}
+}
+
 namespace Sprite
 {
 	namespace Instance

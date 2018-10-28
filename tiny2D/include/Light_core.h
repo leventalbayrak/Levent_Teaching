@@ -9,6 +9,30 @@ namespace Light
 {
 	namespace System
 	{
+		void init(int screen_w, int screen_h, SDL_Renderer *renderer);
+	}
+
+	void init(Factory *f, int array_size);
+
+	void resize(Factory *f);
+
+	int make_Instance(Factory *f);
+
+	void draw(Factory *l, Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer);
+
+	void set_Color(int which_light, RGB::RGB *rgb, Factory *l);
+
+	void set_Pos(int which_light, Vec2D::Vec2D *pos, Factory *l);
+
+	void set_Z_Height(int which_light, float z_height, Factory *l);
+
+	void set_Intensity(int which_light, float intensity, Factory *l);
+}
+
+namespace Light
+{
+	namespace System
+	{
 		void init(int screen_w, int screen_h, SDL_Renderer *renderer)
 		{
 			internal::lightmap = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, screen_w, screen_h);
@@ -54,7 +78,7 @@ namespace Light
 		SDL_LockTexture(internal::lightmap, NULL, (void**)&pixels, &pitch);
 
 		int buffer_size = pitch * internal::h;
-#pragma omp parallel for num_threads(4)
+
 		for (int index = 0; index < buffer_size; index += 4)
 		{
 			int x = (index % pitch) / 4;

@@ -8,6 +8,28 @@
 
 namespace Body
 {
+	void init(Factory *a, int array_size);
+
+	void resize(Factory *a);
+
+	void clear_Forces(Factory *a);
+
+	int make_Instance(Factory *a);
+
+	void modify(int index, Factory *a, Vec2D::Vec2D *pos, float mass);
+
+	void add_Force(int index, Factory *a, const Vec2D::Vec2D *f);
+
+	void update_Vel(int index, Factory *a, float dt);
+
+	void update_Pos(int index, Factory *a, float dt);
+
+	void apply_Friction(int index, const Vec2D::Vec2D *friction, Factory *a);
+
+}
+
+namespace Body
+{
 	void init(Factory *a, int array_size)
 	{
 		a->array_size = array_size;

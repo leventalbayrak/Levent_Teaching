@@ -1,0 +1,49 @@
+\hypertarget{namespace_grid___camera}{}\section{Grid\+\_\+\+Camera Namespace Reference}
+\label{namespace_grid___camera}\index{Grid\+\_\+\+Camera@{Grid\+\_\+\+Camera}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{namespace_grid___camera_af5f52d39f4bcbd92342e1ffd74883184}{init}} (\mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera}} $\ast$c, int screen\+\_\+width, int screen\+\_\+height)
+\item 
+void \mbox{\hyperlink{namespace_grid___camera_a081f5cda2f2c730879879bbb0ae895a9}{grid\+\_\+to\+\_\+\+Screen}} (\mbox{\hyperlink{struct_shape_1_1_rect_1_1_data}{Shape\+::\+Rect\+::\+Data}} $\ast$screen\+\_\+coord, const \mbox{\hyperlink{struct_shape_1_1_rect_1_1_data}{Shape\+::\+Rect\+::\+Data}} $\ast$world\+\_\+coord, const \mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera}} $\ast$cam)
+\item 
+void \mbox{\hyperlink{namespace_grid___camera_af25668fea8e588c3bebb6841bb3ec4c8}{screen\+\_\+to\+\_\+\+Grid}} (\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$grid\+\_\+point, \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$screen\+\_\+point, const \mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera}} $\ast$c)
+\item 
+void \mbox{\hyperlink{namespace_grid___camera_a2e18721620d9810d83113b4ef0e6b390}{calibrate}} (\mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera}} $\ast$cam)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespace_grid___camera_a2e18721620d9810d83113b4ef0e6b390}\label{namespace_grid___camera_a2e18721620d9810d83113b4ef0e6b390}} 
+\index{Grid\+\_\+\+Camera@{Grid\+\_\+\+Camera}!calibrate@{calibrate}}
+\index{calibrate@{calibrate}!Grid\+\_\+\+Camera@{Grid\+\_\+\+Camera}}
+\subsubsection{\texorpdfstring{calibrate()}{calibrate()}}
+{\footnotesize\ttfamily void Grid\+\_\+\+Camera\+::calibrate (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera}} $\ast$}]{cam }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_grid___camera_a081f5cda2f2c730879879bbb0ae895a9}\label{namespace_grid___camera_a081f5cda2f2c730879879bbb0ae895a9}} 
+\index{Grid\+\_\+\+Camera@{Grid\+\_\+\+Camera}!grid\+\_\+to\+\_\+\+Screen@{grid\+\_\+to\+\_\+\+Screen}}
+\index{grid\+\_\+to\+\_\+\+Screen@{grid\+\_\+to\+\_\+\+Screen}!Grid\+\_\+\+Camera@{Grid\+\_\+\+Camera}}
+\subsubsection{\texorpdfstring{grid\+\_\+to\+\_\+\+Screen()}{grid\_to\_Screen()}}
+{\footnotesize\ttfamily void Grid\+\_\+\+Camera\+::grid\+\_\+to\+\_\+\+Screen (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_shape_1_1_rect_1_1_data}{Shape\+::\+Rect\+::\+Data}} $\ast$}]{screen\+\_\+coord,  }\item[{const \mbox{\hyperlink{struct_shape_1_1_rect_1_1_data}{Shape\+::\+Rect\+::\+Data}} $\ast$}]{world\+\_\+coord,  }\item[{const \mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera}} $\ast$}]{cam }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+% FIG 0
+\mbox{\Hypertarget{namespace_grid___camera_af5f52d39f4bcbd92342e1ffd74883184}\label{namespace_grid___camera_af5f52d39f4bcbd92342e1ffd74883184}} 
+\index{Grid\+\_\+\+Camera@{Grid\+\_\+\+Camera}!init@{init}}
+\index{init@{init}!Grid\+\_\+\+Camera@{Grid\+\_\+\+Camera}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily void Grid\+\_\+\+Camera\+::init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera}} $\ast$}]{c,  }\item[{int}]{screen\+\_\+width,  }\item[{int}]{screen\+\_\+height }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_grid___camera_af25668fea8e588c3bebb6841bb3ec4c8}\label{namespace_grid___camera_af25668fea8e588c3bebb6841bb3ec4c8}} 
+\index{Grid\+\_\+\+Camera@{Grid\+\_\+\+Camera}!screen\+\_\+to\+\_\+\+Grid@{screen\+\_\+to\+\_\+\+Grid}}
+\index{screen\+\_\+to\+\_\+\+Grid@{screen\+\_\+to\+\_\+\+Grid}!Grid\+\_\+\+Camera@{Grid\+\_\+\+Camera}}
+\subsubsection{\texorpdfstring{screen\+\_\+to\+\_\+\+Grid()}{screen\_to\_Grid()}}
+{\footnotesize\ttfamily void Grid\+\_\+\+Camera\+::screen\+\_\+to\+\_\+\+Grid (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{grid\+\_\+point,  }\item[{\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{screen\+\_\+point,  }\item[{const \mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera}} $\ast$}]{c }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+% FIG 1

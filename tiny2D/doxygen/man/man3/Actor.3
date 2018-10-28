@@ -1,0 +1,116 @@
+.TH "Actor" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Actor
+.SH SYNOPSIS
+.br
+.PP
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBinternal\fP"
+.br
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBFactory\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinit\fP (\fBFactory\fP *f, int array_size)"
+.br
+.ti -1c
+.RI "void \fBadd_Sprite\fP (\fBFactory\fP *f, const char *filename, SDL_Renderer *renderer)"
+.br
+.ti -1c
+.RI "void \fBadd_Force\fP (int which_actor, \fBFactory\fP *f, \fBVec2D::Vec2D\fP *force)"
+.br
+.ti -1c
+.RI "void \fBupdate_Vel\fP (int which_actor, \fBFactory\fP *f, float dt)"
+.br
+.ti -1c
+.RI "void \fBupdate_Pos\fP (int which_actor, \fBFactory\fP *f, float dt)"
+.br
+.ti -1c
+.RI "void \fBundo_Pos_Update\fP (int which_actor, \fBFactory\fP *f)"
+.br
+.ti -1c
+.RI "void \fBapply_Friction\fP (int which_actor, const \fBVec2D::Vec2D\fP *friction, \fBFactory\fP *f)"
+.br
+.ti -1c
+.RI "void \fBset_Sprite\fP (int which_actor, int which_sprite, \fBFactory\fP *f)"
+.br
+.ti -1c
+.RI "void \fBset_Pos\fP (int which_actor, float x, float y, \fBFactory\fP *f)"
+.br
+.ti -1c
+.RI "void \fBset_Vel\fP (int which_actor, const \fBVec2D::Vec2D\fP *vel, \fBFactory\fP *f)"
+.br
+.ti -1c
+.RI "\fBVec2D::Vec2D\fP * \fBget_Vel\fP (int which_actor, \fBFactory\fP *f)"
+.br
+.ti -1c
+.RI "\fBVec2D::Vec2D\fP * \fBget_Pos\fP (int which_actor, \fBFactory\fP *f)"
+.br
+.ti -1c
+.RI "\fBVec2D::Vec2D\fP * \fBget_Last_Pos\fP (int which_actor, \fBFactory\fP *f)"
+.br
+.ti -1c
+.RI "void \fBset_Size\fP (int which_actor, float w, float h, \fBFactory\fP *f)"
+.br
+.ti -1c
+.RI "void \fBset_Scale\fP (int which_actor, \fBFactory\fP *f, float scale)"
+.br
+.ti -1c
+.RI "int \fBspawn\fP (\fBFactory\fP *f, float scale, unsigned int current_time)"
+.br
+.ti -1c
+.RI "int \fBdraw\fP (const \fBFactory\fP *f, \fBGrid_Camera::Grid_Camera\fP *cam, unsigned int current_time, SDL_Renderer *renderer)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void Actor::add_Force (int which_actor, \fBFactory\fP * f, \fBVec2D::Vec2D\fP * force)"
+
+.SS "void Actor::add_Sprite (\fBFactory\fP * f, const char * filename, SDL_Renderer * renderer)"
+
+.SS "void Actor::apply_Friction (int which_actor, const \fBVec2D::Vec2D\fP * friction, \fBFactory\fP * f)"
+
+.SS "int Actor::draw (const \fBFactory\fP * f, \fBGrid_Camera::Grid_Camera\fP * cam, unsigned int current_time, SDL_Renderer * renderer)"
+
+.SS "\fBVec2D::Vec2D\fP * Actor::get_Last_Pos (int which_actor, \fBFactory\fP * f)"
+
+.SS "\fBVec2D::Vec2D\fP * Actor::get_Pos (int which_actor, \fBFactory\fP * f)"
+
+.SS "\fBVec2D::Vec2D\fP * Actor::get_Vel (int which_actor, \fBFactory\fP * f)"
+
+.SS "void Actor::init (\fBFactory\fP * f, int array_size)"
+
+.SS "void Actor::set_Pos (int which_actor, float x, float y, \fBFactory\fP * f)"
+
+.SS "void Actor::set_Scale (int which_actor, \fBFactory\fP * f, float scale)"
+
+.SS "void Actor::set_Size (int which_actor, float w, float h, \fBFactory\fP * f)"
+
+.SS "void Actor::set_Sprite (int which_actor, int which_sprite, \fBFactory\fP * f)"
+
+.SS "void Actor::set_Vel (int which_actor, const \fBVec2D::Vec2D\fP * vel, \fBFactory\fP * f)"
+
+.SS "int Actor::spawn (\fBFactory\fP * f, float scale, unsigned int current_time)"
+
+.SS "void Actor::undo_Pos_Update (int which_actor, \fBFactory\fP * f)"
+
+.SS "void Actor::update_Pos (int which_actor, \fBFactory\fP * f, float dt)"
+
+.SS "void Actor::update_Vel (int which_actor, \fBFactory\fP * f, float dt)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

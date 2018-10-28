@@ -121,6 +121,7 @@
     <ClInclude Include="include\Actor_core.h" />
     <ClInclude Include="include\Actor_data.h" />
     <ClInclude Include="include\Audio_core.h" />
+    <ClInclude Include="include\Audio_data.h" />
     <ClInclude Include="include\Body_core.h" />
     <ClInclude Include="include\Body_data.h" />
     <ClInclude Include="include\Collision_core.h" />

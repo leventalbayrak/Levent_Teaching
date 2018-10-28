@@ -1,0 +1,152 @@
+\hypertarget{namespace_audio}{}\section{Audio Namespace Reference}
+\label{namespace_audio}\index{Audio@{Audio}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{namespace_audio_ace2497ef479633bcdaa8239458a4f3e9}{init}} (int buffer\+\_\+size)
+\item 
+int \mbox{\hyperlink{namespace_audio_a2be55422c7a9a1eed7d50918d9a8ab91}{add\+\_\+\+Music}} (const char $\ast$music\+\_\+filename)
+\item 
+void \mbox{\hyperlink{namespace_audio_aecf70d4a84be264b86d756ba19debecb}{play\+\_\+\+Music}} (int index, int loop)
+\item 
+void \mbox{\hyperlink{namespace_audio_a4ce3b7bd257437e473a5e08cb0caa618}{pause\+\_\+\+Music}} ()
+\item 
+void \mbox{\hyperlink{namespace_audio_a63494250332225f4242346bf5ad61bd8}{resume\+\_\+\+Music}} ()
+\item 
+int \mbox{\hyperlink{namespace_audio_a74272f7cb6f9113f1ab6308c82bda0f5}{add\+\_\+\+FX}} (const char $\ast$fx\+\_\+filename)
+\item 
+int \mbox{\hyperlink{namespace_audio_a1e761e7a5934993a65f5b446aa8bd78f}{set\+\_\+\+F\+X\+\_\+\+Volume}} (int index, int volume)
+\item 
+int \mbox{\hyperlink{namespace_audio_af4d828b08d1d7c214a67c65af34f54ee}{set\+\_\+\+Music\+\_\+\+Volume}} (int volume)
+\item 
+void \mbox{\hyperlink{namespace_audio_a8efc389bdd994d729c09970f87c9f707}{play\+\_\+\+FX}} (unsigned char index)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{namespace_audio_a72f0021eb0e6702063affe3dd2dd0d7d}{n\+\_\+sounds}} = 0
+\item 
+const int \mbox{\hyperlink{namespace_audio_a0f535450e240117fb4fcaa86c1cc99c7}{max\+\_\+n\+\_\+sounds}} = 256
+\item 
+const int \mbox{\hyperlink{namespace_audio_aec2041a2957ceb8f8646d1e56a504898}{n\+\_\+channel\+\_\+per\+\_\+sound}} = 4
+\item 
+Mix\+\_\+\+Chunk $\ast$ \mbox{\hyperlink{namespace_audio_ae3973e12013a4dc43241f0200d559890}{sound\+\_\+fx}} \mbox{[}\mbox{\hyperlink{namespace_audio_a0f535450e240117fb4fcaa86c1cc99c7}{max\+\_\+n\+\_\+sounds}} $\ast$\mbox{\hyperlink{namespace_audio_aec2041a2957ceb8f8646d1e56a504898}{n\+\_\+channel\+\_\+per\+\_\+sound}}\mbox{]}
+\item 
+int \mbox{\hyperlink{namespace_audio_a71cdec3ecb580136aec8edc6a9024c66}{ring}} \mbox{[}\mbox{\hyperlink{namespace_audio_a0f535450e240117fb4fcaa86c1cc99c7}{max\+\_\+n\+\_\+sounds}}\mbox{]}
+\item 
+int \mbox{\hyperlink{namespace_audio_aeeef9c9e2deb568319c142902194ea74}{n\+\_\+music}} = 0
+\item 
+const int \mbox{\hyperlink{namespace_audio_aa91efb37b561b15ba9999f2e7e4dce8f}{max\+\_\+n\+\_\+music}} = 256
+\item 
+Mix\+\_\+\+Music $\ast$ \mbox{\hyperlink{namespace_audio_adffea44d4332af6d5b77e977b0012bfc}{music}} \mbox{[}\mbox{\hyperlink{namespace_audio_aa91efb37b561b15ba9999f2e7e4dce8f}{max\+\_\+n\+\_\+music}}\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespace_audio_a74272f7cb6f9113f1ab6308c82bda0f5}\label{namespace_audio_a74272f7cb6f9113f1ab6308c82bda0f5}} 
+\index{Audio@{Audio}!add\+\_\+\+FX@{add\+\_\+\+FX}}
+\index{add\+\_\+\+FX@{add\+\_\+\+FX}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{add\+\_\+\+F\+X()}{add\_FX()}}
+{\footnotesize\ttfamily int Audio\+::add\+\_\+\+FX (\begin{DoxyParamCaption}\item[{const char $\ast$}]{fx\+\_\+filename }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_audio_a2be55422c7a9a1eed7d50918d9a8ab91}\label{namespace_audio_a2be55422c7a9a1eed7d50918d9a8ab91}} 
+\index{Audio@{Audio}!add\+\_\+\+Music@{add\+\_\+\+Music}}
+\index{add\+\_\+\+Music@{add\+\_\+\+Music}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{add\+\_\+\+Music()}{add\_Music()}}
+{\footnotesize\ttfamily int Audio\+::add\+\_\+\+Music (\begin{DoxyParamCaption}\item[{const char $\ast$}]{music\+\_\+filename }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_audio_ace2497ef479633bcdaa8239458a4f3e9}\label{namespace_audio_ace2497ef479633bcdaa8239458a4f3e9}} 
+\index{Audio@{Audio}!init@{init}}
+\index{init@{init}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily void Audio\+::init (\begin{DoxyParamCaption}\item[{int}]{buffer\+\_\+size }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+% FIG 0
+\mbox{\Hypertarget{namespace_audio_a4ce3b7bd257437e473a5e08cb0caa618}\label{namespace_audio_a4ce3b7bd257437e473a5e08cb0caa618}} 
+\index{Audio@{Audio}!pause\+\_\+\+Music@{pause\+\_\+\+Music}}
+\index{pause\+\_\+\+Music@{pause\+\_\+\+Music}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{pause\+\_\+\+Music()}{pause\_Music()}}
+{\footnotesize\ttfamily void Audio\+::pause\+\_\+\+Music (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_audio_a8efc389bdd994d729c09970f87c9f707}\label{namespace_audio_a8efc389bdd994d729c09970f87c9f707}} 
+\index{Audio@{Audio}!play\+\_\+\+FX@{play\+\_\+\+FX}}
+\index{play\+\_\+\+FX@{play\+\_\+\+FX}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{play\+\_\+\+F\+X()}{play\_FX()}}
+{\footnotesize\ttfamily void Audio\+::play\+\_\+\+FX (\begin{DoxyParamCaption}\item[{unsigned char}]{index }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_audio_aecf70d4a84be264b86d756ba19debecb}\label{namespace_audio_aecf70d4a84be264b86d756ba19debecb}} 
+\index{Audio@{Audio}!play\+\_\+\+Music@{play\+\_\+\+Music}}
+\index{play\+\_\+\+Music@{play\+\_\+\+Music}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{play\+\_\+\+Music()}{play\_Music()}}
+{\footnotesize\ttfamily void Audio\+::play\+\_\+\+Music (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{int}]{loop }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_audio_a63494250332225f4242346bf5ad61bd8}\label{namespace_audio_a63494250332225f4242346bf5ad61bd8}} 
+\index{Audio@{Audio}!resume\+\_\+\+Music@{resume\+\_\+\+Music}}
+\index{resume\+\_\+\+Music@{resume\+\_\+\+Music}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{resume\+\_\+\+Music()}{resume\_Music()}}
+{\footnotesize\ttfamily void Audio\+::resume\+\_\+\+Music (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_audio_a1e761e7a5934993a65f5b446aa8bd78f}\label{namespace_audio_a1e761e7a5934993a65f5b446aa8bd78f}} 
+\index{Audio@{Audio}!set\+\_\+\+F\+X\+\_\+\+Volume@{set\+\_\+\+F\+X\+\_\+\+Volume}}
+\index{set\+\_\+\+F\+X\+\_\+\+Volume@{set\+\_\+\+F\+X\+\_\+\+Volume}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{set\+\_\+\+F\+X\+\_\+\+Volume()}{set\_FX\_Volume()}}
+{\footnotesize\ttfamily int Audio\+::set\+\_\+\+F\+X\+\_\+\+Volume (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{int}]{volume }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_audio_af4d828b08d1d7c214a67c65af34f54ee}\label{namespace_audio_af4d828b08d1d7c214a67c65af34f54ee}} 
+\index{Audio@{Audio}!set\+\_\+\+Music\+\_\+\+Volume@{set\+\_\+\+Music\+\_\+\+Volume}}
+\index{set\+\_\+\+Music\+\_\+\+Volume@{set\+\_\+\+Music\+\_\+\+Volume}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{set\+\_\+\+Music\+\_\+\+Volume()}{set\_Music\_Volume()}}
+{\footnotesize\ttfamily int Audio\+::set\+\_\+\+Music\+\_\+\+Volume (\begin{DoxyParamCaption}\item[{int}]{volume }\end{DoxyParamCaption})}
+
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{namespace_audio_aa91efb37b561b15ba9999f2e7e4dce8f}\label{namespace_audio_aa91efb37b561b15ba9999f2e7e4dce8f}} 
+\index{Audio@{Audio}!max\+\_\+n\+\_\+music@{max\+\_\+n\+\_\+music}}
+\index{max\+\_\+n\+\_\+music@{max\+\_\+n\+\_\+music}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{max\+\_\+n\+\_\+music}{max\_n\_music}}
+{\footnotesize\ttfamily const int Audio\+::max\+\_\+n\+\_\+music = 256}
+
+\mbox{\Hypertarget{namespace_audio_a0f535450e240117fb4fcaa86c1cc99c7}\label{namespace_audio_a0f535450e240117fb4fcaa86c1cc99c7}} 
+\index{Audio@{Audio}!max\+\_\+n\+\_\+sounds@{max\+\_\+n\+\_\+sounds}}
+\index{max\+\_\+n\+\_\+sounds@{max\+\_\+n\+\_\+sounds}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{max\+\_\+n\+\_\+sounds}{max\_n\_sounds}}
+{\footnotesize\ttfamily const int Audio\+::max\+\_\+n\+\_\+sounds = 256}
+
+\mbox{\Hypertarget{namespace_audio_adffea44d4332af6d5b77e977b0012bfc}\label{namespace_audio_adffea44d4332af6d5b77e977b0012bfc}} 
+\index{Audio@{Audio}!music@{music}}
+\index{music@{music}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{music}{music}}
+{\footnotesize\ttfamily Mix\+\_\+\+Music$\ast$ Audio\+::music\mbox{[}\mbox{\hyperlink{namespace_audio_aa91efb37b561b15ba9999f2e7e4dce8f}{max\+\_\+n\+\_\+music}}\mbox{]}}
+
+\mbox{\Hypertarget{namespace_audio_aec2041a2957ceb8f8646d1e56a504898}\label{namespace_audio_aec2041a2957ceb8f8646d1e56a504898}} 
+\index{Audio@{Audio}!n\+\_\+channel\+\_\+per\+\_\+sound@{n\+\_\+channel\+\_\+per\+\_\+sound}}
+\index{n\+\_\+channel\+\_\+per\+\_\+sound@{n\+\_\+channel\+\_\+per\+\_\+sound}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{n\+\_\+channel\+\_\+per\+\_\+sound}{n\_channel\_per\_sound}}
+{\footnotesize\ttfamily const int Audio\+::n\+\_\+channel\+\_\+per\+\_\+sound = 4}
+
+\mbox{\Hypertarget{namespace_audio_aeeef9c9e2deb568319c142902194ea74}\label{namespace_audio_aeeef9c9e2deb568319c142902194ea74}} 
+\index{Audio@{Audio}!n\+\_\+music@{n\+\_\+music}}
+\index{n\+\_\+music@{n\+\_\+music}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{n\+\_\+music}{n\_music}}
+{\footnotesize\ttfamily int Audio\+::n\+\_\+music = 0}
+
+\mbox{\Hypertarget{namespace_audio_a72f0021eb0e6702063affe3dd2dd0d7d}\label{namespace_audio_a72f0021eb0e6702063affe3dd2dd0d7d}} 
+\index{Audio@{Audio}!n\+\_\+sounds@{n\+\_\+sounds}}
+\index{n\+\_\+sounds@{n\+\_\+sounds}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{n\+\_\+sounds}{n\_sounds}}
+{\footnotesize\ttfamily int Audio\+::n\+\_\+sounds = 0}
+
+\mbox{\Hypertarget{namespace_audio_a71cdec3ecb580136aec8edc6a9024c66}\label{namespace_audio_a71cdec3ecb580136aec8edc6a9024c66}} 
+\index{Audio@{Audio}!ring@{ring}}
+\index{ring@{ring}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{ring}{ring}}
+{\footnotesize\ttfamily int Audio\+::ring\mbox{[}\mbox{\hyperlink{namespace_audio_a0f535450e240117fb4fcaa86c1cc99c7}{max\+\_\+n\+\_\+sounds}}\mbox{]}}
+
+\mbox{\Hypertarget{namespace_audio_ae3973e12013a4dc43241f0200d559890}\label{namespace_audio_ae3973e12013a4dc43241f0200d559890}} 
+\index{Audio@{Audio}!sound\+\_\+fx@{sound\+\_\+fx}}
+\index{sound\+\_\+fx@{sound\+\_\+fx}!Audio@{Audio}}
+\subsubsection{\texorpdfstring{sound\+\_\+fx}{sound\_fx}}
+{\footnotesize\ttfamily Mix\+\_\+\+Chunk$\ast$ Audio\+::sound\+\_\+fx\mbox{[}\mbox{\hyperlink{namespace_audio_a0f535450e240117fb4fcaa86c1cc99c7}{max\+\_\+n\+\_\+sounds}} $\ast$\mbox{\hyperlink{namespace_audio_aec2041a2957ceb8f8646d1e56a504898}{n\+\_\+channel\+\_\+per\+\_\+sound}}\mbox{]}}
+

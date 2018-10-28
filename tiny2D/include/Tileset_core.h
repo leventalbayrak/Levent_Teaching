@@ -7,6 +7,17 @@
 
 namespace Tileset
 {
+	void init(Tileset *tileset, const char *filename, const SDL_Renderer *renderer);
+
+	void draw_Single(int tile_row, int tile_col, const Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, const SDL_Renderer *renderer);
+
+	void draw_Grid(const Tileset *tileset, const Grid_Camera::Grid_Camera *cam, const Grid::Grid *g, SDL_Renderer *renderer);
+
+
+}
+
+namespace Tileset
+{
 	void init(Tileset *tileset, const char *filename, const SDL_Renderer *renderer)
 	{
 		*tileset = {};

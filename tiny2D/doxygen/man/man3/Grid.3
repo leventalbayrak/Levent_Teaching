@@ -1,0 +1,70 @@
+.TH "Grid" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Grid
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBGrid\fP"
+.br
+.ti -1c
+.RI "struct \fBPoint\fP"
+.br
+.ti -1c
+.RI "struct \fBRegion\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinit\fP (\fBGrid\fP *g, int n_rows, int n_cols)"
+.br
+.ti -1c
+.RI "void \fBVec2D_to_Grid\fP (\fBPoint\fP *gp, \fBVec2D::Vec2D\fP *p)"
+.br
+.ti -1c
+.RI "void \fBget_Region_Under_Shape\fP (\fBRegion\fP *g, const \fBShape::Rect::Data\fP *r)"
+.br
+.ti -1c
+.RI "int \fBtile\fP (int x, int y, \fBGrid\fP *g)"
+.br
+.ti -1c
+.RI "int \fBtile\fP (\fBPoint\fP *p, \fBGrid\fP *g)"
+.br
+.ti -1c
+.RI "int \fBtile\fP (\fBVec2D::Vec2D\fP *p, \fBGrid\fP *g)"
+.br
+.ti -1c
+.RI "void \fBclip_Grid_Region\fP (\fBRegion\fP *r, int n_cols, int n_rows)"
+.br
+.ti -1c
+.RI "void \fBload\fP (\fBGrid\fP *g, const char *filename)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void Grid::clip_Grid_Region (\fBRegion\fP * r, int n_cols, int n_rows)"
+
+.SS "void Grid::get_Region_Under_Shape (\fBRegion\fP * g, const \fBShape::Rect::Data\fP * r)\fC [inline]\fP"
+
+.SS "void Grid::init (\fBGrid\fP * g, int n_rows, int n_cols)"
+
+.SS "void Grid::load (\fBGrid\fP * g, const char * filename)"
+
+.SS "int Grid::tile (int x, int y, \fBGrid\fP * g)\fC [inline]\fP"
+
+.SS "int Grid::tile (\fBPoint\fP * p, \fBGrid\fP * g)\fC [inline]\fP"
+
+.SS "int Grid::tile (\fBVec2D::Vec2D\fP * p, \fBGrid\fP * g)\fC [inline]\fP"
+
+.SS "void Grid::Vec2D_to_Grid (\fBPoint\fP * gp, \fBVec2D::Vec2D\fP * p)\fC [inline]\fP"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

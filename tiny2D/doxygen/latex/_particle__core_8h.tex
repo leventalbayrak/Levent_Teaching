@@ -1,0 +1,29 @@
+\hypertarget{_particle__core_8h}{}\section{include/\+Particle\+\_\+core.h File Reference}
+\label{_particle__core_8h}\index{include/\+Particle\+\_\+core.\+h@{include/\+Particle\+\_\+core.\+h}}
+{\ttfamily \#include \char`\"{}Particle\+\_\+data.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Body\+\_\+core.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Shape\+\_\+core.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Sprite\+\_\+core.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Grid\+\_\+\+Camera\+\_\+core.\+h\char`\"{}}\newline
+Include dependency graph for Particle\+\_\+core.\+h\+:
+% FIG 0
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespace_particle}{Particle}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{namespace_particle_adc41f88d0e886694850badfb2a50c914}{Particle\+::init}} (Emitter $\ast$e, const char $\ast$filename, int array\+\_\+size, S\+D\+L\+\_\+\+Renderer $\ast$renderer)
+\item 
+int \mbox{\hyperlink{namespace_particle_a103065e1716a2f7c3667cba5df9ebb0e}{Particle\+::spawn}} (Emitter $\ast$e, int how\+\_\+many, float scale, const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$pos, const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$initial\+\_\+vel, const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$force\+\_\+min, const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$force\+\_\+max, int min\+\_\+life, int max\+\_\+life, unsigned int current\+\_\+time)
+\item 
+void \mbox{\hyperlink{namespace_particle_a2d4aa3c262a1ff4635de500febe51eff}{Particle\+::update\+\_\+\+Vel\+\_\+and\+\_\+\+Life}} (Emitter $\ast$e, unsigned int current\+\_\+time, float dt)
+\item 
+void \mbox{\hyperlink{namespace_particle_a6798a62b449214a798708e7e05855933}{Particle\+::apply\+\_\+\+Force}} (Emitter $\ast$e, const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$force)
+\item 
+void \mbox{\hyperlink{namespace_particle_adb11ca202f3946f0bd5def1590db3e49}{Particle\+::update\+\_\+\+Pos}} (Emitter $\ast$e, unsigned int current\+\_\+time, float dt)
+\item 
+int \mbox{\hyperlink{namespace_particle_aee79b4d9aa717789373fbb4ee87fe062}{Particle\+::draw}} (Emitter $\ast$e, const \mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera\+::\+Grid\+\_\+\+Camera}} $\ast$cam, unsigned int current\+\_\+time, S\+D\+L\+\_\+\+Renderer $\ast$renderer)
+\end{DoxyCompactItemize}

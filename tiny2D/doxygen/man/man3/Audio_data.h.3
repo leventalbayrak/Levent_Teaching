@@ -1,0 +1,49 @@
+.TH "include/Audio_data.h" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/Audio_data.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'SDL2\-2\&.0\&.8\\include\\SDL_mixer\&.h'\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBAudio\fP"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "int \fBAudio::n_sounds\fP = 0"
+.br
+.ti -1c
+.RI "const int \fBAudio::max_n_sounds\fP = 256"
+.br
+.ti -1c
+.RI "const int \fBAudio::n_channel_per_sound\fP = 4"
+.br
+.ti -1c
+.RI "Mix_Chunk * \fBAudio::sound_fx\fP [max_n_sounds *n_channel_per_sound]"
+.br
+.ti -1c
+.RI "int \fBAudio::ring\fP [max_n_sounds]"
+.br
+.ti -1c
+.RI "int \fBAudio::n_music\fP = 0"
+.br
+.ti -1c
+.RI "const int \fBAudio::max_n_music\fP = 256"
+.br
+.ti -1c
+.RI "Mix_Music * \fBAudio::music\fP [max_n_music]"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

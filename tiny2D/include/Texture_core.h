@@ -4,6 +4,11 @@
 
 namespace Texture
 {
+	SDL_Texture *load(const char *filename, const SDL_Renderer *renderer);
+}
+
+namespace Texture
+{
 	SDL_Texture *load(const char *filename,const SDL_Renderer *renderer)
 	{
 		SDL_Surface *sprite_surface = IMG_Load(filename);

@@ -4,6 +4,16 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <math.h>
+
+namespace Input
+{
+	void init();
+
+	void prepare();
+
+	void update();
+}
+
 namespace Input
 {
 	void init()

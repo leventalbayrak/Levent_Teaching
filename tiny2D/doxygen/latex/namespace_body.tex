@@ -1,0 +1,107 @@
+\hypertarget{namespace_body}{}\section{Body Namespace Reference}
+\label{namespace_body}\index{Body@{Body}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_body_1_1_factory}{Factory}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{namespace_body_a2d62ef72580eb5883ebaee936b1105c7}{init}} (\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$a, int array\+\_\+size)
+\item 
+void \mbox{\hyperlink{namespace_body_ade37e2bc965edf7226ec2876383eb266}{resize}} (\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$a)
+\item 
+void \mbox{\hyperlink{namespace_body_a58172e4bc16d9c5117b5625f6918132c}{clear\+\_\+\+Forces}} (\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$a)
+\item 
+int \mbox{\hyperlink{namespace_body_aa1f1401ef15a1eed126c67a080b2506c}{make\+\_\+\+Instance}} (\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$a)
+\item 
+void \mbox{\hyperlink{namespace_body_ad033221a98d2de393b77352eddf1a7bb}{modify}} (int index, \mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$a, \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$pos, float mass)
+\item 
+void \mbox{\hyperlink{namespace_body_af3ba929a43f9efd909bb113b39740a84}{add\+\_\+\+Force}} (int index, \mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$a, const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$f)
+\item 
+void \mbox{\hyperlink{namespace_body_a93be1c44dee756c2e3f94603f526bed2}{update\+\_\+\+Vel}} (int index, \mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$a, float dt)
+\item 
+void \mbox{\hyperlink{namespace_body_a021a17c895acfea05e10a1fdb2c20b51}{update\+\_\+\+Pos}} (int index, \mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$a, float dt)
+\item 
+void \mbox{\hyperlink{namespace_body_aad381674a5614ab2d8801dd3d9d718ea}{apply\+\_\+\+Friction}} (int index, const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$friction, \mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$a)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespace_body_af3ba929a43f9efd909bb113b39740a84}\label{namespace_body_af3ba929a43f9efd909bb113b39740a84}} 
+\index{Body@{Body}!add\+\_\+\+Force@{add\+\_\+\+Force}}
+\index{add\+\_\+\+Force@{add\+\_\+\+Force}!Body@{Body}}
+\subsubsection{\texorpdfstring{add\+\_\+\+Force()}{add\_Force()}}
+{\footnotesize\ttfamily void Body\+::add\+\_\+\+Force (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$}]{a,  }\item[{const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 0
+Here is the caller graph for this function\+:
+% FIG 1
+\mbox{\Hypertarget{namespace_body_aad381674a5614ab2d8801dd3d9d718ea}\label{namespace_body_aad381674a5614ab2d8801dd3d9d718ea}} 
+\index{Body@{Body}!apply\+\_\+\+Friction@{apply\+\_\+\+Friction}}
+\index{apply\+\_\+\+Friction@{apply\+\_\+\+Friction}!Body@{Body}}
+\subsubsection{\texorpdfstring{apply\+\_\+\+Friction()}{apply\_Friction()}}
+{\footnotesize\ttfamily void Body\+::apply\+\_\+\+Friction (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{friction,  }\item[{\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$}]{a }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+% FIG 2
+\mbox{\Hypertarget{namespace_body_a58172e4bc16d9c5117b5625f6918132c}\label{namespace_body_a58172e4bc16d9c5117b5625f6918132c}} 
+\index{Body@{Body}!clear\+\_\+\+Forces@{clear\+\_\+\+Forces}}
+\index{clear\+\_\+\+Forces@{clear\+\_\+\+Forces}!Body@{Body}}
+\subsubsection{\texorpdfstring{clear\+\_\+\+Forces()}{clear\_Forces()}}
+{\footnotesize\ttfamily void Body\+::clear\+\_\+\+Forces (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$}]{a }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_body_a2d62ef72580eb5883ebaee936b1105c7}\label{namespace_body_a2d62ef72580eb5883ebaee936b1105c7}} 
+\index{Body@{Body}!init@{init}}
+\index{init@{init}!Body@{Body}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily void Body\+::init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$}]{a,  }\item[{int}]{array\+\_\+size }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+% FIG 3
+\mbox{\Hypertarget{namespace_body_aa1f1401ef15a1eed126c67a080b2506c}\label{namespace_body_aa1f1401ef15a1eed126c67a080b2506c}} 
+\index{Body@{Body}!make\+\_\+\+Instance@{make\+\_\+\+Instance}}
+\index{make\+\_\+\+Instance@{make\+\_\+\+Instance}!Body@{Body}}
+\subsubsection{\texorpdfstring{make\+\_\+\+Instance()}{make\_Instance()}}
+{\footnotesize\ttfamily int Body\+::make\+\_\+\+Instance (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$}]{a }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 4
+Here is the caller graph for this function\+:
+% FIG 5
+\mbox{\Hypertarget{namespace_body_ad033221a98d2de393b77352eddf1a7bb}\label{namespace_body_ad033221a98d2de393b77352eddf1a7bb}} 
+\index{Body@{Body}!modify@{modify}}
+\index{modify@{modify}!Body@{Body}}
+\subsubsection{\texorpdfstring{modify()}{modify()}}
+{\footnotesize\ttfamily void Body\+::modify (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$}]{a,  }\item[{\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{pos,  }\item[{float}]{mass }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_body_ade37e2bc965edf7226ec2876383eb266}\label{namespace_body_ade37e2bc965edf7226ec2876383eb266}} 
+\index{Body@{Body}!resize@{resize}}
+\index{resize@{resize}!Body@{Body}}
+\subsubsection{\texorpdfstring{resize()}{resize()}}
+{\footnotesize\ttfamily void Body\+::resize (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$}]{a }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+% FIG 6
+\mbox{\Hypertarget{namespace_body_a021a17c895acfea05e10a1fdb2c20b51}\label{namespace_body_a021a17c895acfea05e10a1fdb2c20b51}} 
+\index{Body@{Body}!update\+\_\+\+Pos@{update\+\_\+\+Pos}}
+\index{update\+\_\+\+Pos@{update\+\_\+\+Pos}!Body@{Body}}
+\subsubsection{\texorpdfstring{update\+\_\+\+Pos()}{update\_Pos()}}
+{\footnotesize\ttfamily void Body\+::update\+\_\+\+Pos (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$}]{a,  }\item[{float}]{dt }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 7
+Here is the caller graph for this function\+:
+% FIG 8
+\mbox{\Hypertarget{namespace_body_a93be1c44dee756c2e3f94603f526bed2}\label{namespace_body_a93be1c44dee756c2e3f94603f526bed2}} 
+\index{Body@{Body}!update\+\_\+\+Vel@{update\+\_\+\+Vel}}
+\index{update\+\_\+\+Vel@{update\+\_\+\+Vel}!Body@{Body}}
+\subsubsection{\texorpdfstring{update\+\_\+\+Vel()}{update\_Vel()}}
+{\footnotesize\ttfamily void Body\+::update\+\_\+\+Vel (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{\mbox{\hyperlink{struct_body_1_1_factory}{Factory}} $\ast$}]{a,  }\item[{float}]{dt }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 9
+Here is the caller graph for this function\+:
+% FIG 10
