@@ -139,8 +139,8 @@
     <ClInclude Include="include\Texture_core.h" />
     <ClInclude Include="include\Tileset_core.h" />
     <ClInclude Include="include\Tileset_data.h" />
-    <ClInclude Include="include\Vec2D_core.h" />
-    <ClInclude Include="include\Vec2D_data.h" />
+    <ClInclude Include="include\Vec_core.h" />
+    <ClInclude Include="include\Vec_data.h" />
     <ClInclude Include="My_Game.h" />
     <ClInclude Include="RGBA_data.h" />
   </ItemGroup>

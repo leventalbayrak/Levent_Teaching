@@ -117,6 +117,9 @@ namespace My_Game
 	void draw()
 	{
 
+		SDL_Texture *texRedraw = SDL_CreateTexture(Engine::renderer, SDL_PIXELFORMAT_RGBA8888,
+			SDL_TEXTUREACCESS_STREAMING, Engine::screen_width, Engine::screen_height);
+		
 		SDL_RenderClear(Engine::renderer);
 
 		World::camera.world_coord.x = 0;
@@ -130,10 +133,61 @@ namespace My_Game
 		{
 			Actor::draw(i, &World::saitama, 0, &RGBA::default,&World::camera, Engine::renderer);
 		}
+
+		//modify texture
+		
+		int pitch;
+		unsigned char* pixels;
+		SDL_LockTexture(texRedraw, NULL, (void**)&pixels, &pitch);
+
+		RGBA::RGBA light_color = { rand() % 256,rand()%256,rand() % 256,255 };
+		Vec2D::Vec2D light_pos = { Engine::Input::mouse_x,Engine::Input::mouse_y };
+		float light_intensity = 5;
+		float light_z = 1.2;
+
+		Vec2D::Vec2D light_pos_grid;
+		Grid_Camera::screen_to_Grid(&light_pos_grid, &light_pos, &World::camera);
+
+		// set pixels to solid white
+		for (int y = 0; y < Engine::screen_height; y++) 
+		{
+			for (int x = 0; x < Engine::screen_width; x++)
+			{
+				int pixelPosition = y * pitch + x*4;
+
+				//convert texture coord to world coord
+				Vec2D::Vec2D screen_pixel = { x,y };
+				Vec2D::Vec2D grid_pixel;
+				Grid_Camera::screen_to_Grid(&grid_pixel, &screen_pixel, &World::camera);
+
+				double dist = Vec2D::dist_Squared(&light_pos_grid, &grid_pixel) + light_z*light_z;
+				if (dist != 0.0) dist = (1.0 / dist);
+
+				pixels[pixelPosition + 0] = 0;// min((int)(255 * light_intensity * dist), 255);
+				pixels[pixelPosition + 1] = min((int)(light_color.r * light_intensity * dist), 255);
+				pixels[pixelPosition + 2] = min((int)(light_color.g * light_intensity * dist), 255);
+				pixels[pixelPosition + 3] = min((int)(light_color.b * light_intensity * dist), 255);
+			
+				//pixels[pixelPosition + 3] = 255;
+			}
+		}
+		
+		SDL_UnlockTexture(texRedraw);
+
+		//SDL_SetRenderDrawBlendMode(Engine::renderer, SDL_BLENDMODE_BLEND);
+		SDL_SetTextureBlendMode(texRedraw, SDL_BLENDMODE_MOD);
+		SDL_RenderCopy(Engine::renderer, texRedraw, NULL, NULL);
 		
 		
+		//set screen as target
+		//SDL_SetRenderTarget(Engine::renderer, NULL);
+		//copy targettexture to screen
+		//SDL_RenderCopy(Engine::renderer, texTarget, NULL, NULL);
+
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
+
+		SDL_DestroyTexture(texRedraw);
 
 	}
 }

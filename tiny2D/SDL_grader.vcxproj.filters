@@ -89,12 +89,6 @@
     <ClInclude Include="include\Tileset_data.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Vec2D_core.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Vec2D_data.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
     <ClInclude Include="My_Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -108,6 +102,12 @@
       <Filter>Header Files\include</Filter>
     </ClInclude>
     <ClInclude Include="include\Actor_data.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Vec_data.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Vec_core.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
   </ItemGroup>

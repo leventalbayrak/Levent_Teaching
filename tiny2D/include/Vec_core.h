@@ -1,5 +1,5 @@
 #pragma once
-#include "Vec2D_data.h"
+#include "Vec_data.h"
 #include <math.h>
 namespace Vec2D
 {
@@ -41,5 +41,13 @@ namespace Vec2D
 		if (a->x > max_x) a->x = max_x;
 		if (a->y < min_y) a->y = min_y;
 		if (a->y > max_y) a->y = max_y;
+	}
+}
+
+namespace Vec3D
+{
+	inline float dist_Squared(Vec3D *a, Vec3D *b)
+	{
+		return (a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y) + (a->z - b->z)*(a->z - b->z);
 	}
 }

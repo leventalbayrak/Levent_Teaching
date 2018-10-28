@@ -2,7 +2,7 @@
 #include "Collision_data.h"
 #include "Shape_core.h"
 #include "Grid_core.h"
-#include "Vec2D_core.h"
+#include "Vec_core.h"
 namespace Collision
 {
 	void box(Shape::Rect::Data *out, const Shape::Rect::Data *in, float shrink)
