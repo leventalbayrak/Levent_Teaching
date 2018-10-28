@@ -72,14 +72,17 @@ namespace My_Game
 
 	void begin_Play()
 	{
-
-		Light::ambient = 0.0;
-		int l1 = Light::make_Instance(&World::lights);
-		RGB::RGB light_color1 = { 255,255,255 };
-		Light::set_Color(l1, &light_color1, &World::lights);
-		Light::set_Intensity(l1, 12, &World::lights);
-		Light::set_Z_Height(l1, 2, &World::lights);
-
+		for (int i = 0; i < 2; i++)
+		{
+			Light::ambient = 0.0;
+			int l1 = Light::make_Instance(&World::lights);
+			RGB::RGB light_color1 = { 255,255,255 };
+			Vec2D::Vec2D light_pos = { 0,0 };
+			Light::set_Pos(l1, &light_pos, &World::lights);
+			Light::set_Color(l1, &light_color1, &World::lights);
+			Light::set_Intensity(l1, 12, &World::lights);
+			Light::set_Z_Height(l1, 2, &World::lights);
+		}
 		for (int i = 0; i < 100; i++)
 		{
 			int k = Actor::make_Instance(&World::saitama);
