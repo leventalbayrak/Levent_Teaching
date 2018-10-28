@@ -2,6 +2,8 @@
 #include "Shape_data.h"
 #include "Sprite_data.h"
 #include "Body_data.h"
+#include "RGBA_data.h"
+
 namespace Actor
 {
 
@@ -15,7 +17,10 @@ namespace Actor
 		Shape::Rect::Factory world_coords;
 
 		int *current_sprite;
-		int n_actors;
+		int *state;
+		unsigned int *creation_time;
+		RGBA::RGBA *color;
+		int *sprite_flip;
 		int array_size;
 	};
 

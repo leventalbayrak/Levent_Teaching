@@ -1,0 +1,2 @@
+img=bullet.png
+frame_x=0 frame_y=0 frame_w=24 frame_h=8 n_frames=1 

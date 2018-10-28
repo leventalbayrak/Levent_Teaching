@@ -7,6 +7,7 @@
 
 namespace Particle
 {
+
 	void init(Emitter *e, const char *filename, int array_size, SDL_Renderer *renderer)
 	{
 		e->array_size = array_size;
@@ -50,7 +51,8 @@ namespace Particle
 				e->world_coords.rect[i].x = e->emitter_world_coords.x;
 				e->world_coords.rect[i].y = e->emitter_world_coords.y;
 				e->world_coords.rect[i].w = 1.0;
-				e->world_coords.rect[i].h = 1.0;
+				//TODO: WATCH THIS
+				e->world_coords.rect[i].h = (float)e->sprites.texture_info.frame_h / e->sprites.texture_info.frame_w;
 				e->bodies.pos[i].x = e->emitter_world_coords.x;
 				e->bodies.pos[i].y = e->emitter_world_coords.y;
 				e->bodies.force[i].x = force_min->x + (force_max->x - force_min->x)*(double)rand() / RAND_MAX;

@@ -16,6 +16,15 @@ namespace Actor
 			f->sprites = (Sprite::Factory*)realloc(f->sprites, sizeof(Sprite::Factory)*f->sprite_array_size);
 			for (int i = f->n_sprites; i < f->sprite_array_size; i++) Sprite::Instance::init(&f->sprites[i].instances, f->sprites[0].instances.array_size);
 		}
+
+		int find_New(Factory *f)
+		{
+			for (int i = 0; i < f->array_size; i++)
+			{
+				if (f->state[i] == -1) return i;
+			}
+			return -1;
+		}
 	}
 
 	void init(Factory *f, int array_size)
@@ -25,16 +34,29 @@ namespace Actor
 		Shape::Rect::init(&f->world_coords, array_size);
 
 		f->array_size = array_size;
-		f->n_actors = 0;
 		f->n_sprites = 0;
 		f->sprite_array_size = 16;
 		f->sprites = (Sprite::Factory*)malloc(sizeof(Sprite::Factory)*f->sprite_array_size);
 		f->current_sprite = (int*)malloc(sizeof(int)*array_size);
-		
+		f->creation_time = (unsigned int*)malloc(sizeof(unsigned int)*array_size);
+		f->state = (int*)malloc(sizeof(int)*array_size);
+		f->sprite_flip = (int*)malloc(sizeof(int)*array_size);
+		f->color = (RGBA::RGBA*)malloc(sizeof(RGBA::RGBA)*array_size);
+
 		for (int i = 0; i < f->sprite_array_size; i++) Sprite::Instance::init(&f->sprites[i].instances, array_size);
+
+		for (int i = 0; i < array_size; i++)
+		{
+			f->current_sprite[i] = 0;
+			f->creation_time[i] = 0;
+			f->sprite_flip[i] = 0;
+			f->state[i] = -1;
+			f->color[i] = { 255,255,255,255 };
+		}
+		
 	}
 
-	void add(Factory *f, const char *filename, SDL_Renderer *renderer)
+	void add_Sprite(Factory *f, const char *filename, SDL_Renderer *renderer)
 	{
 		if (f->n_sprites >= f->sprite_array_size)
 		{
@@ -44,59 +66,66 @@ namespace Actor
 		f->n_sprites++;
 	}
 
-	void add_Force(int which_instance, Factory *f, Vec2D::Vec2D *force)
+	void add_Force(int which_actor, Factory *f, Vec2D::Vec2D *force)
 	{
-		Body::add_Force(which_instance, &f->bodies, force);
+		Body::add_Force(which_actor, &f->bodies, force);
 	}
 
-	void update_Vel(int which_instance, Factory *f, float dt)
+	void update_Vel(int which_actor, Factory *f, float dt)
 	{
-		Body::update_Vel(which_instance, &f->bodies, dt);
+		Body::update_Vel(which_actor, &f->bodies, dt);
+		f->bodies.force[which_actor] = {};
 	}
 
-	void update_Pos(int which_instance, Factory *f, float dt)
+	void update_Pos(int which_actor, Factory *f, float dt)
 	{
-		Body::update_Pos(which_instance, &f->bodies, dt);
+		Body::update_Pos(which_actor, &f->bodies, dt);
 		//copy physics body position to world coord
-		f->world_coords.rect[which_instance].x = f->bodies.pos[which_instance].x;
-		f->world_coords.rect[which_instance].y = f->bodies.pos[which_instance].y;
+		f->world_coords.rect[which_actor].x = f->bodies.pos[which_actor].x;
+		f->world_coords.rect[which_actor].y = f->bodies.pos[which_actor].y;
 	}
 
-	void set_Sprite(int which_instance, int which_sprite, Factory *f)
+	void set_Sprite(int which_actor, int which_sprite, Factory *f)
 	{
-		f->current_sprite[which_instance] = which_sprite;
+		f->current_sprite[which_actor] = which_sprite;
 	}
 	
-	void set_Pos(int which_instance,float x, float y, Factory *f)
+	void set_Pos(int which_actor,float x, float y, Factory *f)
 	{
-		f->world_coords.rect[which_instance].x = x;
-		f->world_coords.rect[which_instance].y = y;
-		f->bodies.pos[which_instance].x = x;
-		f->bodies.pos[which_instance].y = y;
+		f->world_coords.rect[which_actor].x = x;
+		f->world_coords.rect[which_actor].y = y;
+		f->bodies.pos[which_actor].x = x;
+		f->bodies.pos[which_actor].y = y;
 	}
 
-	void set_Size(int which_instance, float w, float h, Factory *f)
+	void set_Size(int which_actor, float w, float h, Factory *f)
 	{
-		f->world_coords.rect[which_instance].w = w;
-		f->world_coords.rect[which_instance].h = h;
+		f->world_coords.rect[which_actor].w = w;
+		f->world_coords.rect[which_actor].h = h;
 	}
 
-	int make_Instance(Factory *f)
+	void set_Scale(int which_actor, Factory *f, float scale)
 	{
+		f->world_coords.rect[which_actor].w *= scale;
+		f->world_coords.rect[which_actor].h *= scale;
+	}
 
-		if (f->n_actors >= f->array_size)
-		{
-			f->array_size += f->array_size >> 1;
-			f->current_sprite = (int*)realloc(f->current_sprite, sizeof(int)*f->array_size);
-		}
+	int spawn(Factory *f, unsigned int current_time)
+	{
+		int k = internal::find_New(f);
+		if (k == -1) return -1;
 
-		f->current_sprite[f->n_actors] = 0;
+		f->state[k] = 0;
+
+		f->creation_time[k] = current_time;
+
+		f->current_sprite[k] = 0;
 
 		int k0 = 0;
-		for (int i = 0; i < f->n_sprites; i++)
+		for (int j = 0; j < f->n_sprites; j++)
 		{
-			k0 = Sprite::make_Instance(&f->sprites[i]);
-			Sprite::modify(k0, &f->sprites[i], 120);
+			k0 = Sprite::make_Instance(&f->sprites[j]);
+			Sprite::modify(k0, &f->sprites[j], 120);
 		}
 
 		int k1 = Body::make_Instance(&f->bodies);
@@ -106,38 +135,38 @@ namespace Actor
 		f->bodies.vel[k1] = {};
 
 		int k2 = Shape::Rect::make_Instance(&f->world_coords);
-		f->world_coords.rect[k2] = { 0,0,1.0,1.0 };
+		
+
 		f->world_coords.rect[k2].x = 0;
 		f->world_coords.rect[k2].y = 0;
-		
-		
-		assert(k0 == k1);
-		assert(k0 == k2);
-		assert(f->n_actors == k0);
-	
-		++f->n_actors;
-		return f->n_actors - 1;
+		f->world_coords.rect[k2].w = 1.0;
+		//TODO: WATCH THIS
+		f->world_coords.rect[k2].h = (float)f->sprites[0].texture_info.frame_h / f->sprites[0].texture_info.frame_w;
+
+		return k;
 	}
 
-	void update_Sprite_Frame(int which_instance, const Factory *f, unsigned int current_time)
+	void draw(const Factory *f, Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer)
 	{
-		Sprite::update(which_instance, &f->sprites[f->current_sprite[which_instance]], current_time);
+		for (int i = 0; i < f->array_size; i++)
+		{
+			if (f->state[i] != -1)
+			{
+				Sprite::update(i, &f->sprites[f->current_sprite[i]], current_time);
 
-	}
+				Shape::Rect::Data screen_rect;
+				Grid_Camera::grid_to_Screen(&screen_rect, &f->world_coords.rect[i], cam);
 
-	void draw(int which_instance, const Factory *f,int flip, RGBA::RGBA *rgba,Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer)
-	{
-		Shape::Rect::Data screen_rect;
-		Grid_Camera::grid_to_Screen(&screen_rect, &f->world_coords.rect[which_instance], cam);
-
-		Sprite::draw(which_instance, &f->sprites[f->current_sprite[which_instance]],
-			screen_rect.x,
-			screen_rect.y,
-			screen_rect.w,
-			screen_rect.h,
-			renderer,
-			flip,
-			rgba->r, rgba->g, rgba->b, rgba->a);
+				Sprite::draw(i, &f->sprites[f->current_sprite[i]],
+					screen_rect.x,
+					screen_rect.y,
+					screen_rect.w,
+					screen_rect.h,
+					renderer,
+					f->sprite_flip[i],
+					f->color[i].r, f->color[i].g, f->color[i].b, f->color[i].a);
+			}
+		}
 	}
 
 }

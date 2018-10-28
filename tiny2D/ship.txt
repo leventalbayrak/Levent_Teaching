@@ -1,0 +1,2 @@
+img=ship.png
+frame_x=0 frame_y=0 frame_w=64 frame_h=16 n_frames=8 
