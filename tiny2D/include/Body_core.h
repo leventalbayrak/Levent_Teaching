@@ -51,7 +51,7 @@ namespace Body
 		a->mass[index] = mass;
 	}
 
-	void add_Force(int index, Factory *a, Vec2D::Vec2D *f)
+	void add_Force(int index, Factory *a, const Vec2D::Vec2D *f)
 	{
 		Vec2D::add(&a->force[index], f);
 	}

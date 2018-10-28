@@ -5,21 +5,18 @@
 namespace Particle
 {
 
-	struct Particle_Factory
+	struct Emitter
 	{
+		Vec2D::Vec2D emitter_world_coords;
+
 		Sprite::Factory sprites;
 		Body::Factory bodies;
 		Shape::Rect::Factory world_coords;
 
-		int *life;
-		int n_particles;
+		int *state;
+		unsigned int *creation_time;
+		int *life_span;//in milliseconds
 		int array_size;
 	};
 
-	struct Emitter_Factory
-	{
-		Body::Factory bodies;
-		Shape::Rect::Factory world_coords;
-		Particle_Factory particles;
-	};
 }

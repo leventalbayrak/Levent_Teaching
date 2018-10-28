@@ -136,6 +136,7 @@
     <ClInclude Include="include\Grid_data.h" />
     <ClInclude Include="include\Light_core.h" />
     <ClInclude Include="include\Light_data.h" />
+    <ClInclude Include="include\Particle_core.h" />
     <ClInclude Include="include\Particle_data.h" />
     <ClInclude Include="include\RGBA_data.h" />
     <ClInclude Include="include\Shape_core.h" />
