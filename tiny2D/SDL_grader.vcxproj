@@ -118,7 +118,6 @@
     <ClCompile Include="main_my_game.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Heap_Example.h" />
     <ClInclude Include="include\Actor_core.h" />
     <ClInclude Include="include\Actor_data.h" />
     <ClInclude Include="include\Audio_core.h" />
