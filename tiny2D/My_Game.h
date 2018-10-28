@@ -84,14 +84,6 @@ namespace My_Game
 		{
 			int k = Actor::make_Instance(&World::saitama);
 			Actor::set_Pos(k, 0, World::camera.world_coord.h-1, &World::saitama);
-
-			/*int l = Light::make_Instance(&World::lights);
-			RGB::RGB light_color = { 255,255,255 };
-			Light::set_Color(l, &light_color, &World::lights);
-			Light::set_Intensity(l, 6, &World::lights);
-			Light::set_Z_Height(l, 0.5, &World::lights);
-
-			Light::set_Pos(l, &World::saitama.bodies.pos[i], &World::lights);*/
 		}
 		printf("n_actors = %d\n", World::saitama.n_actors);
 	}
