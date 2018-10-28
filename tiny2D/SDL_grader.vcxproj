@@ -133,6 +133,8 @@
     <ClInclude Include="include\Grid_Camera_data.h" />
     <ClInclude Include="include\Grid_core.h" />
     <ClInclude Include="include\Grid_data.h" />
+    <ClInclude Include="include\Input_core.h" />
+    <ClInclude Include="include\Input_data.h" />
     <ClInclude Include="include\Light_core.h" />
     <ClInclude Include="include\Light_data.h" />
     <ClInclude Include="include\Particle_core.h" />

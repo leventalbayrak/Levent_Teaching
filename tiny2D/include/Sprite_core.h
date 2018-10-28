@@ -92,7 +92,7 @@ namespace Sprite
 			char img_filename[128];
 			FILE *f = fopen(filename, "r");
 			int r = fscanf(f, 
-					"img=%s frame_x=%d frame_y=%d frame_w=%d frame_h=%d n_frames=%d\n", 
+					"img=%s frame_x=%d frame_y=%d frame_w=%d frame_h=%d n_frames=%d scale=%f\n", 
 					img_filename,
 					&sprite_database->texture_info.frame_pos_x, 
 					&sprite_database->texture_info.frame_pos_y, 

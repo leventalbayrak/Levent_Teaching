@@ -19,3 +19,6 @@ tiny2D/.vs/SDL_grader/v15/.suo
 *.obj
 *.iobj
 *.log
+tiny2D/.vs/SDL_grader/v15/.suo
+*.pdb
+*.tlog

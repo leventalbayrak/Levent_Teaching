@@ -35,7 +35,7 @@ namespace Particle
 
 	}
 
-	int spawn(Emitter *e, int how_many, const Vec2D::Vec2D *pos, const Vec2D::Vec2D *force_min, const Vec2D::Vec2D *force_max,int min_life, int max_life, unsigned int current_time)
+	int spawn(Emitter *e, int how_many, float scale, const Vec2D::Vec2D *pos, const Vec2D::Vec2D *initial_vel, const Vec2D::Vec2D *force_min, const Vec2D::Vec2D *force_max,int min_life, int max_life, unsigned int current_time)
 	{
 		int spawned_count = 0;
 		e->emitter_world_coords = *pos;
@@ -50,14 +50,14 @@ namespace Particle
 				e->creation_time[i] = current_time;
 				e->world_coords.rect[i].x = e->emitter_world_coords.x;
 				e->world_coords.rect[i].y = e->emitter_world_coords.y;
-				e->world_coords.rect[i].w = 1.0;
+				e->world_coords.rect[i].w = scale;
 				//TODO: WATCH THIS
-				e->world_coords.rect[i].h = (float)e->sprites.texture_info.frame_h / e->sprites.texture_info.frame_w;
+				e->world_coords.rect[i].h = scale*(float)e->sprites.texture_info.frame_h / e->sprites.texture_info.frame_w;
 				e->bodies.pos[i].x = e->emitter_world_coords.x;
 				e->bodies.pos[i].y = e->emitter_world_coords.y;
 				e->bodies.force[i].x = force_min->x + (force_max->x - force_min->x)*(double)rand() / RAND_MAX;
 				e->bodies.force[i].y = force_min->y + (force_max->y - force_min->y)*(double)rand() / RAND_MAX;
-				e->bodies.vel[i] = {};
+				e->bodies.vel[i] = *initial_vel;
 				e->bodies.mass[i] = 1.0;
 
 				e->sprites.instances.current_frame[i] = 0;
@@ -113,8 +113,9 @@ namespace Particle
 		}
 	}
 
-	void draw(Emitter *e, const Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer)
+	int draw(Emitter *e, const Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer)
 	{
+		int n_drawn = 0;
 		for (int i = 0; i < e->array_size; i++)
 		{
 			if (e->state[i] == 1)
@@ -134,7 +135,11 @@ namespace Particle
 					renderer,
 					0,
 					255, 255, 255, alpha*255);
+
+				n_drawn++;
 			}
 		}
+
+		return n_drawn;
 	}
 }
