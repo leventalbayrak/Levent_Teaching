@@ -1,6 +1,6 @@
 #pragma once
 #include "Shape_data.h"
-
+#include "Spawn_Stack_core.h"
 
 namespace Shape
 {
@@ -8,15 +8,13 @@ namespace Shape
 	{
 		void init(Factory *f, int array_size);
 
-		void resize(Factory *f);
-
 		int make_Instance(Factory *f);
 
-		int collision(const Data *pa, const Rect::Data *pb);
+		int collision(const Data *pa, const Data *pb);
 
 		//minkowski sum
 		//if collision direction is important, use this
-		int collision_with_Dir(const Data *a, const Rect::Data *b);
+		int collision_with_Dir(const Data *a, const Data *b);
 	}
 
 }
@@ -28,24 +26,17 @@ namespace Shape
 		void init(Factory *f, int array_size)
 		{
 			f->array_size = array_size;
-			f->n_rect = 0;
 			f->rect = (Data*)malloc(sizeof(Data)*f->array_size);
-		}
 
-		void resize(Factory *f)
-		{
-			f->array_size += f->array_size >> 1;
-			f->rect = (Data*)realloc(f->rect,sizeof(Data)*f->array_size);
+			Spawn_Stack::init(&f->spawn_stack, array_size);
 		}
 
 		int make_Instance(Factory *f)
 		{
-			if (f->n_rect >= f->array_size) resize(f);
-			++f->n_rect;
-			return f->n_rect - 1;
+			return Spawn_Stack::make(&f->spawn_stack);
 		}
 
-		int collision(const Data *pa, const Rect::Data *pb)
+		int collision(const Data *pa, const Data *pb)
 		{
 			if (pa->x + pa->w < pb->x) return 0;
 			if (pa->x > pb->x + pb->w) return 0;
@@ -56,7 +47,7 @@ namespace Shape
 
 		//minkowski sum
 		//if collision direction is important, use this
-		int collision_with_Dir(const Data *a, const Rect::Data *b)
+		int collision_with_Dir(const Data *a, const Data *b)
 		{
 			//                           1        2           3             4
 			enum { NO_COLLISION = 0, TOP_OF_B, RIGHT_OF_B, BOTTOM_OF_B, LEFT_OF_B };

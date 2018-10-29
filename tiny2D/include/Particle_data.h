@@ -14,7 +14,6 @@ namespace Particle
 		Body::Factory bodies;
 		Shape::Rect::Factory world_coords;
 
-		int *state;
 		unsigned int *creation_time;
 		int *life_span;//in milliseconds
 		int array_size;

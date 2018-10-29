@@ -3,7 +3,7 @@
 #include "Sprite_data.h"
 #include "Body_data.h"
 #include "RGBA_data.h"
-
+#include "Spawn_Stack_data.h"
 namespace Actor
 {
 
@@ -17,13 +17,11 @@ namespace Actor
 		Shape::Rect::Factory world_coords;
 
 		int *current_sprite;
-		int *state;
 		unsigned int *creation_time;
 		RGBA::RGBA *color;
 		int *sprite_flip;
 		int array_size;
+
+		Spawn_Stack::Spawn_Stack spawn_stack;
 	};
-
-	
-
 }

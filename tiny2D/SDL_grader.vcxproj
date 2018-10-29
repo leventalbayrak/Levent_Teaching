@@ -143,6 +143,8 @@
     <ClInclude Include="include\RGBA_data.h" />
     <ClInclude Include="include\Shape_core.h" />
     <ClInclude Include="include\Shape_data.h" />
+    <ClInclude Include="include\Spawn_Stack_core.h" />
+    <ClInclude Include="include\Spawn_Stack_data.h" />
     <ClInclude Include="include\Sprite_core.h" />
     <ClInclude Include="include\Sprite_data.h" />
     <ClInclude Include="include\Table_File_core.h" />

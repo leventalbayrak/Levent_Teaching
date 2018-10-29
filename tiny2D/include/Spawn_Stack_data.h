@@ -5,9 +5,8 @@ namespace Spawn_Stack
 {
 	struct Spawn_Stack
 	{
-		int *spawned;
+		unsigned char *spawned;//0 or 1 for spawned/unspawned
 		int *unspawned;
-		int n_spawned;
 		int n_unspawned;
 		int array_size;
 	};

@@ -1,7 +1,8 @@
 #pragma once
+#include "SDL2-2.0.8/include/SDL.h"
 #include "Vec_data.h"
 #include "RGBA_data.h"
-#include "SDL2-2.0.8/include/SDL.h"
+#include "Spawn_Stack_data.h"
 namespace Light
 {
 
@@ -20,7 +21,8 @@ namespace Light
 		float *intensity;
 		RGB::RGB *color;
 		int array_size;
-		int n_lights;
+		
+		Spawn_Stack::Spawn_Stack spawn_stack;
 	};
 
 }

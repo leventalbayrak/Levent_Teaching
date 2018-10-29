@@ -5,6 +5,7 @@
 #include "Body_core.h"
 #include "Shape_core.h"
 #include "RGBA_data.h"
+#include "Spawn_Stack_core.h"
 
 namespace Actor
 {
@@ -50,16 +51,10 @@ namespace Actor
 		{
 			f->sprite_array_size += f->sprite_array_size >> 1;
 			f->sprites = (Sprite::Factory*)realloc(f->sprites, sizeof(Sprite::Factory)*f->sprite_array_size);
-			for (int i = f->n_sprites; i < f->sprite_array_size; i++) Sprite::Instance::init(&f->sprites[i].instances, f->sprites[0].instances.array_size);
-		}
-
-		int find_New(Factory *f)
-		{
-			for (int i = 0; i < f->array_size; i++)
+			for (int i = f->n_sprites; i < f->sprite_array_size; i++)
 			{
-				if (f->state[i] == -1) return i;
+				Sprite::Instance::init(&f->sprites[i].instances, f->sprites[0].instances.array_size);
 			}
-			return -1;
 		}
 	}
 
@@ -75,21 +70,24 @@ namespace Actor
 		f->sprites = (Sprite::Factory*)malloc(sizeof(Sprite::Factory)*f->sprite_array_size);
 		f->current_sprite = (int*)malloc(sizeof(int)*array_size);
 		f->creation_time = (unsigned int*)malloc(sizeof(unsigned int)*array_size);
-		f->state = (int*)malloc(sizeof(int)*array_size);
+		
 		f->sprite_flip = (int*)malloc(sizeof(int)*array_size);
 		f->color = (RGBA::RGBA*)malloc(sizeof(RGBA::RGBA)*array_size);
 
-		for (int i = 0; i < f->sprite_array_size; i++) Sprite::Instance::init(&f->sprites[i].instances, array_size);
+		for (int i = 0; i < f->sprite_array_size; i++)
+		{
+			Sprite::Instance::init(&f->sprites[i].instances, array_size);
+		}
 
 		for (int i = 0; i < array_size; i++)
 		{
 			f->current_sprite[i] = 0;
 			f->creation_time[i] = 0;
 			f->sprite_flip[i] = 0;
-			f->state[i] = -1;
 			f->color[i] = { 255,255,255,255 };
 		}
 		
+		Spawn_Stack::init(&f->spawn_stack, array_size);
 	}
 
 	void add_Sprite(Factory *f, const char *filename, SDL_Renderer *renderer)
@@ -98,7 +96,7 @@ namespace Actor
 		{
 			internal::resize_Sprites(f);
 		}
-		Sprite::File::add(&f->sprites[f->n_sprites], filename, renderer);
+		Sprite::add(&f->sprites[f->n_sprites], filename, renderer);
 		f->n_sprites++;
 	}
 
@@ -180,65 +178,71 @@ namespace Actor
 		f->world_coords.rect[which_actor].h *= scale;
 	}
 
+	void destroy(int which_actor, Factory *f)
+	{
+		f->spawn_stack.spawned[which_actor] = 0;
+		f->bodies.spawn_stack.spawned[which_actor] = 0;
+		f->sprites->instances.spawn_stack.spawned[which_actor] = 0;
+		f->world_coords.spawn_stack.spawned[which_actor] = 0;
+	}
+
 	int spawn(Factory *f, float scale, unsigned int current_time)
 	{
-		int k = internal::find_New(f);
-		if (k == -1) return -1;
-
-		f->state[k] = 0;
-
-		f->creation_time[k] = current_time;
-
-		f->current_sprite[k] = 0;
-
-		int k0 = 0;
-		for (int j = 0; j < f->n_sprites; j++)
+		for (int k = 0; k < f->spawn_stack.array_size; k++)
 		{
-			k0 = Sprite::make_Instance(&f->sprites[j]);
-			Sprite::modify(k0, &f->sprites[j], 120);
+			if (f->spawn_stack.spawned[k] == 1) continue;
+
+			f->spawn_stack.spawned[k] = 1;
+			f->bodies.spawn_stack.spawned[k] = 1;
+			f->world_coords.spawn_stack.spawned[k] = 1;
+			for (int j = 0; j < f->n_sprites; j++)
+			{
+				f->sprites[j].instances.spawn_stack.spawned[k] = 1;
+				Sprite::modify(k, &f->sprites[j], 120);
+			}
+
+			f->creation_time[k] = current_time;
+			f->current_sprite[k] = 0;
+
+			f->bodies.pos[k] = { 0,0 };
+			f->bodies.mass[k] = 1.0;
+			f->bodies.force[k] = {};
+			f->bodies.vel[k] = {};
+
+			f->world_coords.rect[k].x = 0;
+			f->world_coords.rect[k].y = 0;
+			f->world_coords.rect[k].w = scale;
+			//TODO: WATCH THIS
+			f->world_coords.rect[k].h = scale * (float)f->sprites[0].texture_info.frame_h / f->sprites[0].texture_info.frame_w;
+
+			return k;
 		}
-
-		int k1 = Body::make_Instance(&f->bodies);
-		f->bodies.pos[k1] = { 0,0 };
-		f->bodies.mass[k1] = 1.0;
-		f->bodies.force[k1] = {};
-		f->bodies.vel[k1] = {};
-
-		int k2 = Shape::Rect::make_Instance(&f->world_coords);
-		
-
-		f->world_coords.rect[k2].x = 0;
-		f->world_coords.rect[k2].y = 0;
-		f->world_coords.rect[k2].w = scale;
-		//TODO: WATCH THIS
-		f->world_coords.rect[k2].h = scale*(float)f->sprites[0].texture_info.frame_h / f->sprites[0].texture_info.frame_w;
-
-		return k;
+		return -1;
 	}
 
 	int draw(const Factory *f, Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer)
 	{
 		int n_drawn = 0;
-		for (int i = 0; i < f->array_size; i++)
+		for (int i = 0; i < f->spawn_stack.array_size; i++)
 		{
-			if (f->state[i] != -1)
-			{
-				Sprite::update(i, &f->sprites[f->current_sprite[i]], current_time);
+			if (f->spawn_stack.spawned[i] == 0) continue;
 
-				Shape::Rect::Data screen_rect;
-				Grid_Camera::grid_to_Screen(&screen_rect, &f->world_coords.rect[i], cam);
+			Sprite::update(i, &f->sprites[f->current_sprite[i]], current_time);
 
-				Sprite::draw(i, &f->sprites[f->current_sprite[i]],
-					screen_rect.x,
-					screen_rect.y,
-					screen_rect.w,
-					screen_rect.h,
-					renderer,
-					f->sprite_flip[i],
-					f->color[i].r, f->color[i].g, f->color[i].b, f->color[i].a);
+			Shape::Rect::Data screen_rect;
+			Grid_Camera::grid_to_Screen(&screen_rect, &f->world_coords.rect[i], cam);
 
-				n_drawn++;
-			}
+			Sprite::draw(i, &f->sprites[f->current_sprite[i]],
+				screen_rect.x,
+				screen_rect.y,
+				screen_rect.w,
+				screen_rect.h,
+				renderer,
+				f->sprite_flip[i],
+				f->color[i].r, f->color[i].g, f->color[i].b, f->color[i].a);
+
+			n_drawn++;
+
 		}
 
 		return n_drawn;

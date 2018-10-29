@@ -1,6 +1,7 @@
 #pragma once
 #include "Body_data.h"
 #include "Vec_core.h"
+#include "Spawn_Stack_core.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,8 +10,6 @@
 namespace Body
 {
 	void init(Factory *a, int array_size);
-
-	void resize(Factory *a);
 
 	void clear_Forces(Factory *a);
 
@@ -33,38 +32,25 @@ namespace Body
 	void init(Factory *a, int array_size)
 	{
 		a->array_size = array_size;
-		a->n_bodies = 0;
 
 		a->vel = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->force = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->pos = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->last_pos = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->mass = (float*)malloc(sizeof(float)*a->array_size);
-	}
 
-	void resize(Factory *a)
-	{
-		a->array_size += a->array_size >> 1;
-		a->vel = (Vec2D::Vec2D*)realloc(a->vel, sizeof(Vec2D::Vec2D)*a->array_size);
-		a->force = (Vec2D::Vec2D*)realloc(a->force, sizeof(Vec2D::Vec2D)*a->array_size);
-		a->pos = (Vec2D::Vec2D*)realloc(a->pos, sizeof(Vec2D::Vec2D)*a->array_size);
-		a->last_pos = (Vec2D::Vec2D*)realloc(a->pos, sizeof(Vec2D::Vec2D)*a->array_size);
-		a->mass = (float*)realloc(a->mass, sizeof(float)*a->array_size);
+		Spawn_Stack::init(&a->spawn_stack, array_size);
 	}
 
 	void clear_Forces(Factory *a)
 	{
-		memset(a->force, 0, sizeof(Vec2D::Vec2D)*a->n_bodies);
+		//possibly fix this...
+		memset(a->force, 0, sizeof(Vec2D::Vec2D)*a->array_size);
 	}
 
 	int make_Instance(Factory *a)
 	{
-		if (a->n_bodies >= a->array_size)
-		{
-			resize(a);
-		}
-		++a->n_bodies;
-		return a->n_bodies - 1;
+		return Spawn_Stack::make(&a->spawn_stack);
 	}
 
 	void modify(int index, Factory *a, Vec2D::Vec2D *pos, float mass)

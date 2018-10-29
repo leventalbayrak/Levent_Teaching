@@ -32,6 +32,8 @@ namespace My_Game
 			float f_player_move_mag = 1000;
 			float friction_player = 0.5;
 			Vec2D::Vec2D player_max_vel = { 12,12 };
+
+			int n_enemies = 100;
 		}
 
 		Tileset::Tileset tileset;
@@ -41,6 +43,8 @@ namespace My_Game
 		Particle::Emitter emitter;
 		Actor::Factory player;
 		int player_actor_id;
+
+		Actor::Factory enemy;
 		Actor::Factory bullet;
 
 		Grid_Camera::Grid_Camera camera;
@@ -66,6 +70,9 @@ namespace My_Game
 		Actor::init(&World::bullet, 512);
 		Actor::add_Sprite(&World::bullet, "bullet.txt", Engine::renderer);
 
+		Actor::init(&World::enemy, 512);
+		Actor::add_Sprite(&World::enemy, "ship.txt", Engine::renderer);
+
 		Font::init(&World::text, "font_tileset.txt", Engine::renderer);
 
 		Grid::load(&World::tile_map, "bear_run_tilemap_tilemap.csv");
@@ -86,6 +93,13 @@ namespace My_Game
 		Font::set_Screen_Size(&World::text, 16, 16);
 
 		Actor::set_Pos(World::player_actor_id, 5, 5, &World::player);
+
+		for (int i = 0; i < World::Parameters::n_enemies; i++)
+		{
+			int k = Actor::spawn(&World::enemy, 2.0, current_time);
+			Actor::set_Pos(k, 2 + rand() % 10, 2 + rand() % 10, &World::enemy);
+		}
+
 	}
 
 	void update(unsigned int current_time, float dt)
@@ -115,8 +129,10 @@ namespace My_Game
 				f_max.x = 80;
 				f_min.y = -400;
 				f_max.y = -420;
+				
 				Vec2D::Vec2D pos = { World::player.world_coords.rect[World::player_actor_id].x + 0.1*World::player.world_coords.rect[World::player_actor_id].w,
 					World::player.world_coords.rect[World::player_actor_id].y };
+
 				Particle::spawn(&World::emitter, 1, 0.25, &pos, Actor::get_Vel(World::player_actor_id,&World::player) ,&f_min, &f_max, 2000, 5000, current_time);
 
 				World::last_time_bullet_spawned = current_time;
@@ -162,19 +178,62 @@ namespace My_Game
 		//collision checks here
 		//if there is a collision call Actor::undo_Pos_Update()
 
-
-		for (int i = 0; i < World::bullet.array_size; i++)
+		for (int i = 0; i < World::bullet.spawn_stack.array_size; i++)
 		{
-			if (World::bullet.state[i] != -1)
+			if (World::bullet.spawn_stack.spawned[i] == 1)
 			{
+				if (current_time - World::bullet.creation_time[i] > 5000)
+				{
+					Actor::destroy(i, &World::bullet);
+					continue;
+				}
+
 				Actor::update_Vel(i, &World::bullet,dt);
 				Actor::update_Pos(i, &World::bullet,dt);
+				//collision checks here
+				//if there is a collision call Actor::undo_Pos_Update()
+			}
+		}
+
+		for (int i = 0; i < World::enemy.spawn_stack.array_size; i++)
+		{
+			if (World::enemy.spawn_stack.spawned[i] == 1)
+			{
+				Actor::update_Vel(i, &World::enemy, dt);
+				Actor::update_Pos(i, &World::enemy, dt);
 
 				//collision checks here
 				//if there is a collision call Actor::undo_Pos_Update()
 			}
 		}
 
+		//collision
+		for (int i = 0; i < World::bullet.spawn_stack.array_size; i++)
+		{
+			if (World::bullet.spawn_stack.spawned[i] == 0) continue;
+			
+			for (int j = 0; j < World::enemy.spawn_stack.array_size; j++)
+			{
+				if (World::enemy.spawn_stack.spawned[j] == 0) continue;
+
+				int r = Shape::Rect::collision(&World::bullet.world_coords.rect[i], &World::enemy.world_coords.rect[j]);
+				if (r)
+				{
+					Actor::add_Force(j, &World::enemy, &World::bullet.bodies.vel[i]);
+
+					Vec2D::Vec2D def = {};
+					Vec2D::Vec2D f_min = {-300,-300};
+					Vec2D::Vec2D f_max = {200,200};
+					Particle::spawn(&World::emitter, 8, 0.1,
+						Actor::get_Pos(i,&World::bullet),
+						&def,&f_min,&f_max,500,2000,current_time);
+
+					Actor::destroy(i, &World::bullet);
+				}
+
+			}
+		}
+		
 		Vec2D::Vec2D gravity = { 0, 20 };
 		Particle::apply_Force(&World::emitter, &gravity);
 
@@ -197,12 +256,13 @@ namespace My_Game
 		
 		int active_player_count = Actor::draw(&World::player, &World::camera, current_time, Engine::renderer);
 		int active_bullet_count = Actor::draw(&World::bullet, &World::camera, current_time, Engine::renderer);
+		int active_enemy_count = Actor::draw(&World::enemy, &World::camera, current_time, Engine::renderer);
 
 		int active_particle_count = Particle::draw(&World::emitter, &World::camera, current_time, Engine::renderer);
 	
 		static char str_stats[512];
 
-		sprintf(str_stats, "n_player_actors %d\nn_bullet_actors %d\nn_particles %d\n", active_player_count, active_bullet_count, active_particle_count);
+		sprintf(str_stats, "n_player_actors %d\nn_bullet_actors %d\nn_particles %d\nn_enemies %d\n", active_player_count, active_bullet_count, active_particle_count, active_enemy_count);
 		Font::set_Screen_Pos(&World::text, 5, 5);
 		Font::draw(&World::text, str_stats, strlen(str_stats), &World::camera, Engine::renderer);
 	
