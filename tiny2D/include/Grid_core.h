@@ -73,6 +73,40 @@ namespace Grid
 		if (r->y1 >= n_rows) r->y1 = n_rows - 1;
 	}
 
+	void imprint_Set(Grid *g, int value, const Shape::Rect::Data *r)
+	{
+		int x0 = r->x;
+		int y0 = r->y;
+		int x1 = r->x + r->w;
+		int y1 = r->y + r->h;
+		
+		for (int y = y0; y <= y1; y++)
+		{
+			for (int x = x0; x <= x1; x++)
+			{
+				int index = y * g->n_cols + x;
+				g->data[index] = value;
+			}
+		}
+	}
+
+	void imprint_Add(Grid *g, int value, const Shape::Rect::Data *r)
+	{
+		int x0 = r->x;
+		int y0 = r->y;
+		int x1 = r->x + r->w;
+		int y1 = r->y + r->h;
+
+		for (int y = y0; y <= y1; y++)
+		{
+			for (int x = x0; x <= x1; x++)
+			{
+				int index = y * g->n_cols + x;
+				g->data[index] += value;
+			}
+		}
+	}
+
 	//returns rightmost or bottommost collision tile coords
 //0 bottom 1 top
 

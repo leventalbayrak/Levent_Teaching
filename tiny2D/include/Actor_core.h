@@ -153,6 +153,11 @@ namespace Actor
 		f->bodies.vel[which_actor] = *vel;
 	}
 
+	Shape::Rect::Data *get_World_Coord(int which_actor, Factory *f)
+	{
+		return &f->world_coords.rect[which_actor];
+	}
+
 	Vec2D::Vec2D *get_Vel(int which_actor, Factory *f)
 	{
 		return &f->bodies.vel[which_actor];

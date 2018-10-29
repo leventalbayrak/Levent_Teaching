@@ -50,6 +50,7 @@ namespace My_Game
 		Grid_Camera::Grid_Camera camera;
 		Grid::Grid tile_map;
 		Grid::Grid background_map;
+		Grid::Grid collision_imprint;
 
 		
 		unsigned int last_time_bullet_spawned;
@@ -77,6 +78,8 @@ namespace My_Game
 
 		Grid::load(&World::tile_map, "bear_run_tilemap_tilemap.csv");
 		Grid::load(&World::background_map, "bear_run_tilemap_background.csv");
+
+		Grid::init(&World::collision_imprint, World::tile_map.n_rows, World::tile_map.n_cols);
 
 		Grid_Camera::init(&World::camera, Engine::screen_width, Engine::screen_height);
 		World::camera.world_coord.x = 0;
@@ -201,9 +204,9 @@ namespace My_Game
 			{
 				Actor::update_Vel(i, &World::enemy, dt);
 				Actor::update_Pos(i, &World::enemy, dt);
-
+				Grid::imprint_Set(&World::collision_imprint, i, Actor::get_World_Coord(i, &World::enemy));
 				//collision checks here
-				//if there is a collision call Actor::undo_Pos_Update()
+				//if there is a collision you want to avoid call Actor::undo_Pos_Update()
 			}
 		}
 
@@ -211,27 +214,44 @@ namespace My_Game
 		for (int i = 0; i < World::bullet.spawn_stack.array_size; i++)
 		{
 			if (World::bullet.spawn_stack.spawned[i] == 0) continue;
+
+			Grid::Region bullet_region;
+			Grid::get_Region_Under_Shape(&bullet_region, Actor::get_World_Coord(i, &World::bullet));
 			
-			for (int j = 0; j < World::enemy.spawn_stack.array_size; j++)
+			int collision_value = -1;
+			for (int y = bullet_region.y0; y <= bullet_region.y1; y++)
 			{
-				if (World::enemy.spawn_stack.spawned[j] == 0) continue;
-
-				int r = Shape::Rect::collision(&World::bullet.world_coords.rect[i], &World::enemy.world_coords.rect[j]);
-				if (r)
+				for (int x = bullet_region.x0; x <= bullet_region.x1; x++)
 				{
-					Actor::add_Force(j, &World::enemy, &World::bullet.bodies.vel[i]);
-
-					Vec2D::Vec2D def = {};
-					Vec2D::Vec2D f_min = {-300,-300};
-					Vec2D::Vec2D f_max = {200,200};
-					Particle::spawn(&World::emitter, 8, 0.1,
-						Actor::get_Pos(i,&World::bullet),
-						&def,&f_min,&f_max,500,2000,current_time);
-
-					Actor::destroy(i, &World::bullet);
+					int index = y * World::collision_imprint.n_cols + x;
+					if(World::collision_imprint.data[index] != -1)
+					{
+						collision_value = World::collision_imprint.data[index];
+						break;
+					}
 				}
 
+				if (collision_value != -1) break;
 			}
+
+			if (collision_value == -1) continue;
+
+			int r = Shape::Rect::collision(&World::bullet.world_coords.rect[i], &World::enemy.world_coords.rect[collision_value]);
+			if (r)
+			{
+				Actor::add_Force(collision_value, &World::enemy, &World::bullet.bodies.vel[i]);
+
+				Vec2D::Vec2D def = {};
+				Vec2D::Vec2D f_min = { -300,-300 };
+				Vec2D::Vec2D f_max = { 200,200 };
+				Particle::spawn(&World::emitter, 8, 0.1,
+					Actor::get_Pos(i, &World::bullet),
+					&def, &f_min, &f_max, 500, 2000, current_time);
+
+				Actor::destroy(i, &World::bullet);
+			}
+
+
 		}
 		
 		Vec2D::Vec2D gravity = { 0, 20 };
