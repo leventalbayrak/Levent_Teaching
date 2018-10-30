@@ -63,7 +63,7 @@ namespace My_Game
 
 		Tileset::init(&World::tileset, "map_tileset.txt", Engine::renderer);
 
-		Particle::init(&World::emitter, "bullet_casing.txt", 500000, Engine::renderer);
+		Particle::init(&World::emitter, "bullet_casing.txt", 512, Engine::renderer);
 
 		Actor::init(&World::player, 1);
 		Actor::add_Sprite(&World::player, "ship.txt", Engine::renderer);
@@ -136,7 +136,7 @@ namespace My_Game
 				Vec2D::Vec2D pos = { World::player.world_coords.rect[World::player_actor_id].x + 0.1*World::player.world_coords.rect[World::player_actor_id].w,
 					World::player.world_coords.rect[World::player_actor_id].y };
 
-				Particle::spawn(&World::emitter, 5000, 0.25, &pos, Actor::get_Vel(World::player_actor_id,&World::player) ,&f_min, &f_max, 2000, 5000, current_time);
+				Particle::spawn(&World::emitter, 1, 0.25, &pos, Actor::get_Vel(World::player_actor_id,&World::player) ,&f_min, &f_max, 2000, 5000, current_time);
 
 				World::last_time_bullet_spawned = current_time;
 			}
