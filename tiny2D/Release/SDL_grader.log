@@ -1,67 +1,68 @@
 ﻿  main_my_game.cpp
-c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(27): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(30): warning C4244: 'argument': conversion from '__int64' to 'size_t', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(60): warning C4244: '=': conversion from '__int64' to 'unsigned int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(92): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(106): warning C4244: '=': conversion from '__int64' to 'unsigned int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(21): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(22): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(27): warning C4244: '=': conversion from 'const float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(28): warning C4244: '=': conversion from 'const float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(29): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(63): warning C4018: '<': signed/unsigned mismatch
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(72): warning C4018: '<': signed/unsigned mismatch
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(74): warning C4018: '<': signed/unsigned mismatch
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(36): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(37): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(39): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(40): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(41): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(42): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(44): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(45): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(46): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(47): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(78): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(79): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(80): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(81): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\font_core.h(53): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\collision_core.h(12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\collision_core.h(13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\sprite_core.h(52): warning C4018: '>=': signed/unsigned mismatch
-c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(68): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(68): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(137): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(136): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(135): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(134): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(46): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(53): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(70): warning C4018: '>=': signed/unsigned mismatch
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(107): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(116): warning C4244: 'argument': conversion from 'float' to 'unsigned char', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(113): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(112): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(111): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(110): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(32): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(33): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(71): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(72): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(107): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(107): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(135): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(135): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(171): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(171): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(37): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(40): warning C4244: 'argument': conversion from '__int64' to 'size_t', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(70): warning C4244: '=': conversion from '__int64' to 'unsigned int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(102): warning C4244: 'initializing': conversion from '__int64' to 'unsigned int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\table_file_core.h(116): warning C4244: '=': conversion from '__int64' to 'unsigned int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(41): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(42): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(47): warning C4244: '=': conversion from 'const float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(48): warning C4244: '=': conversion from 'const float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(49): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(50): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(83): warning C4018: '<': signed/unsigned mismatch
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(92): warning C4018: '<': signed/unsigned mismatch
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_core.h(94): warning C4018: '<': signed/unsigned mismatch
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(48): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(49): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(51): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(52): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(53): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\grid_camera_core.h(54): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(64): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(65): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(66): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(67): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(69): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(70): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(71): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(72): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\font_core.h(89): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\collision_core.h(21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\collision_core.h(22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\sprite_core.h(77): warning C4018: '>=': signed/unsigned mismatch
+c:\users\levent\documents\github\levent_development\tiny2d\include\sprite_core.h(120): warning C4473: 'fscanf' : not enough arguments passed for format string
+  c:\users\levent\documents\github\levent_development\tiny2d\include\sprite_core.h(120): note: placeholders and their parameters expect 7 variadic arguments, but 6 were provided
+  c:\users\levent\documents\github\levent_development\tiny2d\include\sprite_core.h(120): note: the missing variadic argument 7 is required by format string '%f'
+c:\users\levent\documents\github\levent_development\tiny2d\include\body_core.h(102): warning C4244: '*=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\body_core.h(103): warning C4244: '*=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(92): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(92): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(235): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(234): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(233): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(232): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(72): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(82): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(83): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(98): warning C4018: '>=': signed/unsigned mismatch
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(140): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(149): warning C4244: 'argument': conversion from 'float' to 'unsigned char', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(146): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(145): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(144): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(143): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(77): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(78): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(107): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(106): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(119): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(118): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Generating code
-  3 of 80 functions ( 3.8%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  2 of 81 functions ( 2.5%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SDL_grader.vcxproj -> C:\Users\levent\Documents\GitHub\Levent_Development\tiny2D\Release\SDL_grader.exe

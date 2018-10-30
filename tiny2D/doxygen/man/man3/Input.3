@@ -1,0 +1,113 @@
+.TH "Input" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Input
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinit\fP ()"
+.br
+.ti -1c
+.RI "void \fBprepare\fP ()"
+.br
+.ti -1c
+.RI "void \fBupdate\fP ()"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "unsigned char \fBprev_key_state\fP [256]"
+.br
+.ti -1c
+.RI "unsigned char * \fBkeys\fP = NULL"
+.br
+.ti -1c
+.RI "int \fBmouse_x\fP"
+.br
+.ti -1c
+.RI "int \fBmouse_y\fP"
+.br
+.ti -1c
+.RI "int \fBmouse_left\fP"
+.br
+.ti -1c
+.RI "int \fBprev_mouse_left\fP"
+.br
+.ti -1c
+.RI "int \fBmouse_right\fP"
+.br
+.ti -1c
+.RI "int \fBprev_mouse_right\fP"
+.br
+.ti -1c
+.RI "const int \fBmax_n_game_controllers\fP = 4"
+.br
+.ti -1c
+.RI "SDL_GameController * \fBgame_controller\fP [\fBmax_n_game_controllers\fP]"
+.br
+.ti -1c
+.RI "int \fBprev_game_controller_sticks\fP [\fBmax_n_game_controllers\fP][6]"
+.br
+.ti -1c
+.RI "int \fBgame_controller_sticks\fP [\fBmax_n_game_controllers\fP][6]"
+.br
+.ti -1c
+.RI "int \fBprev_game_controller_buttons\fP [\fBmax_n_game_controllers\fP][15]"
+.br
+.ti -1c
+.RI "int \fBgame_controller_buttons\fP [\fBmax_n_game_controllers\fP][15]"
+.br
+.ti -1c
+.RI "int \fBn_game_controllers\fP = 0"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void Input::init ()"
+
+.SS "void Input::prepare ()"
+
+.SS "void Input::update ()"
+
+.SH "Variable Documentation"
+.PP 
+.SS "SDL_GameController* Input::game_controller[\fBmax_n_game_controllers\fP]"
+
+.SS "int Input::game_controller_buttons[\fBmax_n_game_controllers\fP][15]"
+
+.SS "int Input::game_controller_sticks[\fBmax_n_game_controllers\fP][6]"
+
+.SS "unsigned char* Input::keys = NULL"
+
+.SS "const int Input::max_n_game_controllers = 4"
+
+.SS "int Input::mouse_left"
+
+.SS "int Input::mouse_right"
+
+.SS "int Input::mouse_x"
+
+.SS "int Input::mouse_y"
+
+.SS "int Input::n_game_controllers = 0"
+
+.SS "int Input::prev_game_controller_buttons[\fBmax_n_game_controllers\fP][15]"
+
+.SS "int Input::prev_game_controller_sticks[\fBmax_n_game_controllers\fP][6]"
+
+.SS "unsigned char Input::prev_key_state[256]"
+
+.SS "int Input::prev_mouse_left"
+
+.SS "int Input::prev_mouse_right"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

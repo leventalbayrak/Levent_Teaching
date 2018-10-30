@@ -1,0 +1,69 @@
+.TH "Body" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Body
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBFactory\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinit\fP (\fBFactory\fP *a, int array_size)"
+.br
+.ti -1c
+.RI "void \fBresize\fP (\fBFactory\fP *a)"
+.br
+.ti -1c
+.RI "void \fBclear_Forces\fP (\fBFactory\fP *a)"
+.br
+.ti -1c
+.RI "int \fBmake_Instance\fP (\fBFactory\fP *a)"
+.br
+.ti -1c
+.RI "void \fBmodify\fP (int index, \fBFactory\fP *a, \fBVec2D::Vec2D\fP *pos, float mass)"
+.br
+.ti -1c
+.RI "void \fBadd_Force\fP (int index, \fBFactory\fP *a, const \fBVec2D::Vec2D\fP *f)"
+.br
+.ti -1c
+.RI "void \fBupdate_Vel\fP (int index, \fBFactory\fP *a, float dt)"
+.br
+.ti -1c
+.RI "void \fBupdate_Pos\fP (int index, \fBFactory\fP *a, float dt)"
+.br
+.ti -1c
+.RI "void \fBapply_Friction\fP (int index, const \fBVec2D::Vec2D\fP *friction, \fBFactory\fP *a)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void Body::add_Force (int index, \fBFactory\fP * a, const \fBVec2D::Vec2D\fP * f)"
+
+.SS "void Body::apply_Friction (int index, const \fBVec2D::Vec2D\fP * friction, \fBFactory\fP * a)"
+
+.SS "void Body::clear_Forces (\fBFactory\fP * a)"
+
+.SS "void Body::init (\fBFactory\fP * a, int array_size)"
+
+.SS "int Body::make_Instance (\fBFactory\fP * a)"
+
+.SS "void Body::modify (int index, \fBFactory\fP * a, \fBVec2D::Vec2D\fP * pos, float mass)"
+
+.SS "void Body::resize (\fBFactory\fP * a)"
+
+.SS "void Body::update_Pos (int index, \fBFactory\fP * a, float dt)"
+
+.SS "void Body::update_Vel (int index, \fBFactory\fP * a, float dt)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

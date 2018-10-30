@@ -1,18 +1,29 @@
 #pragma once
 #include "SDL2-2.0.8\include\SDL_mixer.h"
+#include "Audio_data.h"
+namespace Audio
+{
+	void init(int buffer_size);
+
+	int add_Music(const char *music_filename);
+
+	void play_Music(int index, int loop);
+
+	void pause_Music();
+	void resume_Music();
+
+	int add_FX(const char *fx_filename);
+
+	//0 to 128
+	//returns previous volume
+	int set_FX_Volume(int index, int volume);
+
+	int set_Music_Volume(int volume);
+	void play_FX(unsigned char index);
+}
 
 namespace Audio
 {
-	int n_sounds = 0;
-	const int max_n_sounds = 256;
-	const int n_channel_per_sound = 4;
-	Mix_Chunk *sound_fx[max_n_sounds*n_channel_per_sound];
-	int ring[max_n_sounds];
-
-	int n_music = 0;
-	const int max_n_music = 256;
-	Mix_Music *music[max_n_music];
-
 	void init(int buffer_size)
 	{
 		int audio_buffer_size = buffer_size;

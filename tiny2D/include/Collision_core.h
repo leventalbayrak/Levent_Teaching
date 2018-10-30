@@ -3,6 +3,15 @@
 #include "Shape_core.h"
 #include "Grid_core.h"
 #include "Vec_core.h"
+
+namespace Collision
+{
+	void box(Shape::Rect::Data *out, const Shape::Rect::Data *in, float shrink);
+
+	void point_Feeler_Pos(Point_Feeler *p, const Shape::Rect::Data *r, float t_margin, float x_margin);
+
+}
+
 namespace Collision
 {
 	void box(Shape::Rect::Data *out, const Shape::Rect::Data *in, float shrink)

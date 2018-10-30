@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Spawn_Stack_data.h"
 namespace Shape
 {
 	namespace Rect
@@ -12,8 +12,8 @@ namespace Shape
 		struct Factory
 		{
 			Data *rect;
-			int n_rect;
 			int array_size;
+			Spawn_Stack::Spawn_Stack spawn_stack;
 		};
 	}
 }

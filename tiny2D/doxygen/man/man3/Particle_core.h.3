@@ -1,0 +1,51 @@
+.TH "include/Particle_core.h" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/Particle_core.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'Particle_data\&.h'\fP
+.br
+\fC#include 'Body_core\&.h'\fP
+.br
+\fC#include 'Shape_core\&.h'\fP
+.br
+\fC#include 'Sprite_core\&.h'\fP
+.br
+\fC#include 'Grid_Camera_core\&.h'\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBParticle\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBParticle::init\fP (Emitter *e, const char *filename, int array_size, SDL_Renderer *renderer)"
+.br
+.ti -1c
+.RI "int \fBParticle::spawn\fP (Emitter *e, int how_many, float scale, const \fBVec2D::Vec2D\fP *pos, const \fBVec2D::Vec2D\fP *initial_vel, const \fBVec2D::Vec2D\fP *force_min, const \fBVec2D::Vec2D\fP *force_max, int min_life, int max_life, unsigned int current_time)"
+.br
+.ti -1c
+.RI "void \fBParticle::update_Vel_and_Life\fP (Emitter *e, unsigned int current_time, float dt)"
+.br
+.ti -1c
+.RI "void \fBParticle::apply_Force\fP (Emitter *e, const \fBVec2D::Vec2D\fP *force)"
+.br
+.ti -1c
+.RI "void \fBParticle::update_Pos\fP (Emitter *e, unsigned int current_time, float dt)"
+.br
+.ti -1c
+.RI "int \fBParticle::draw\fP (Emitter *e, const \fBGrid_Camera::Grid_Camera\fP *cam, unsigned int current_time, SDL_Renderer *renderer)"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

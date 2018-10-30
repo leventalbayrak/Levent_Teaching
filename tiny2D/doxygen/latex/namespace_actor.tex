@@ -1,0 +1,170 @@
+\hypertarget{namespace_actor}{}\section{Actor Namespace Reference}
+\label{namespace_actor}\index{Actor@{Actor}}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespace_actor_1_1internal}{internal}}
+\end{DoxyCompactItemize}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{namespace_actor_a66160c0692dd16998f8d7dd47ef575c1}{init}} (\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f, int array\+\_\+size)
+\item 
+void \mbox{\hyperlink{namespace_actor_ac479244aa3bada035abc9548ba604bfb}{add\+\_\+\+Sprite}} (\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f, const char $\ast$filename, S\+D\+L\+\_\+\+Renderer $\ast$renderer)
+\item 
+void \mbox{\hyperlink{namespace_actor_aa499e89c5134fa9a58be884101247d60}{add\+\_\+\+Force}} (int which\+\_\+actor, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f, \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$force)
+\item 
+void \mbox{\hyperlink{namespace_actor_a820206ab30a4a0fb3f37d78669598fdb}{update\+\_\+\+Vel}} (int which\+\_\+actor, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f, float dt)
+\item 
+void \mbox{\hyperlink{namespace_actor_af6f7f45737ca4f6e33584d352d0e542c}{update\+\_\+\+Pos}} (int which\+\_\+actor, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f, float dt)
+\item 
+void \mbox{\hyperlink{namespace_actor_aa3ad0815b411b389fc1fef70ece978e9}{undo\+\_\+\+Pos\+\_\+\+Update}} (int which\+\_\+actor, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f)
+\item 
+void \mbox{\hyperlink{namespace_actor_aed5de159bbc7075229cbf6e187d906c7}{apply\+\_\+\+Friction}} (int which\+\_\+actor, const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$friction, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f)
+\item 
+void \mbox{\hyperlink{namespace_actor_a62906af5de2990ca58baae369a2912fc}{set\+\_\+\+Sprite}} (int which\+\_\+actor, int which\+\_\+sprite, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f)
+\item 
+void \mbox{\hyperlink{namespace_actor_af9c730185b601f67cc9aa44beb2b3e2a}{set\+\_\+\+Pos}} (int which\+\_\+actor, float x, float y, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f)
+\item 
+void \mbox{\hyperlink{namespace_actor_a6cbf0e6df03f13dda762a664c4b8170d}{set\+\_\+\+Vel}} (int which\+\_\+actor, const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$vel, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f)
+\item 
+\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$ \mbox{\hyperlink{namespace_actor_ab6c8bbeea8014b7b90d8902527961e2d}{get\+\_\+\+Vel}} (int which\+\_\+actor, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f)
+\item 
+\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$ \mbox{\hyperlink{namespace_actor_a7594fa0d4d2edd3dd8a2f5aeebe70f97}{get\+\_\+\+Pos}} (int which\+\_\+actor, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f)
+\item 
+\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$ \mbox{\hyperlink{namespace_actor_a3b1e7a688fd053cc585b45fcfac99e8e}{get\+\_\+\+Last\+\_\+\+Pos}} (int which\+\_\+actor, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f)
+\item 
+void \mbox{\hyperlink{namespace_actor_a4a9e57d332e039598f1acfb74da419a5}{set\+\_\+\+Size}} (int which\+\_\+actor, float w, float h, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f)
+\item 
+void \mbox{\hyperlink{namespace_actor_a9a863bda46c95e2330f6c0d6e4a3cc42}{set\+\_\+\+Scale}} (int which\+\_\+actor, \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f, float scale)
+\item 
+int \mbox{\hyperlink{namespace_actor_ab5468479b7705db60362fb26340d0c7b}{spawn}} (\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f, float scale, unsigned int current\+\_\+time)
+\item 
+int \mbox{\hyperlink{namespace_actor_a5e098b8721cbebeb27de076a98107368}{draw}} (const \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$f, \mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera\+::\+Grid\+\_\+\+Camera}} $\ast$cam, unsigned int current\+\_\+time, S\+D\+L\+\_\+\+Renderer $\ast$renderer)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespace_actor_aa499e89c5134fa9a58be884101247d60}\label{namespace_actor_aa499e89c5134fa9a58be884101247d60}} 
+\index{Actor@{Actor}!add\+\_\+\+Force@{add\+\_\+\+Force}}
+\index{add\+\_\+\+Force@{add\+\_\+\+Force}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{add\+\_\+\+Force()}{add\_Force()}}
+{\footnotesize\ttfamily void Actor\+::add\+\_\+\+Force (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f,  }\item[{\mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{force }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 0
+\mbox{\Hypertarget{namespace_actor_ac479244aa3bada035abc9548ba604bfb}\label{namespace_actor_ac479244aa3bada035abc9548ba604bfb}} 
+\index{Actor@{Actor}!add\+\_\+\+Sprite@{add\+\_\+\+Sprite}}
+\index{add\+\_\+\+Sprite@{add\+\_\+\+Sprite}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{add\+\_\+\+Sprite()}{add\_Sprite()}}
+{\footnotesize\ttfamily void Actor\+::add\+\_\+\+Sprite (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f,  }\item[{const char $\ast$}]{filename,  }\item[{S\+D\+L\+\_\+\+Renderer $\ast$}]{renderer }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 1
+\mbox{\Hypertarget{namespace_actor_aed5de159bbc7075229cbf6e187d906c7}\label{namespace_actor_aed5de159bbc7075229cbf6e187d906c7}} 
+\index{Actor@{Actor}!apply\+\_\+\+Friction@{apply\+\_\+\+Friction}}
+\index{apply\+\_\+\+Friction@{apply\+\_\+\+Friction}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{apply\+\_\+\+Friction()}{apply\_Friction()}}
+{\footnotesize\ttfamily void Actor\+::apply\+\_\+\+Friction (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{friction,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 2
+\mbox{\Hypertarget{namespace_actor_a5e098b8721cbebeb27de076a98107368}\label{namespace_actor_a5e098b8721cbebeb27de076a98107368}} 
+\index{Actor@{Actor}!draw@{draw}}
+\index{draw@{draw}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily int Actor\+::draw (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f,  }\item[{\mbox{\hyperlink{struct_grid___camera_1_1_grid___camera}{Grid\+\_\+\+Camera\+::\+Grid\+\_\+\+Camera}} $\ast$}]{cam,  }\item[{unsigned int}]{current\+\_\+time,  }\item[{S\+D\+L\+\_\+\+Renderer $\ast$}]{renderer }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 3
+\mbox{\Hypertarget{namespace_actor_a3b1e7a688fd053cc585b45fcfac99e8e}\label{namespace_actor_a3b1e7a688fd053cc585b45fcfac99e8e}} 
+\index{Actor@{Actor}!get\+\_\+\+Last\+\_\+\+Pos@{get\+\_\+\+Last\+\_\+\+Pos}}
+\index{get\+\_\+\+Last\+\_\+\+Pos@{get\+\_\+\+Last\+\_\+\+Pos}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{get\+\_\+\+Last\+\_\+\+Pos()}{get\_Last\_Pos()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$ Actor\+::get\+\_\+\+Last\+\_\+\+Pos (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_actor_a7594fa0d4d2edd3dd8a2f5aeebe70f97}\label{namespace_actor_a7594fa0d4d2edd3dd8a2f5aeebe70f97}} 
+\index{Actor@{Actor}!get\+\_\+\+Pos@{get\+\_\+\+Pos}}
+\index{get\+\_\+\+Pos@{get\+\_\+\+Pos}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{get\+\_\+\+Pos()}{get\_Pos()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$ Actor\+::get\+\_\+\+Pos (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_actor_ab6c8bbeea8014b7b90d8902527961e2d}\label{namespace_actor_ab6c8bbeea8014b7b90d8902527961e2d}} 
+\index{Actor@{Actor}!get\+\_\+\+Vel@{get\+\_\+\+Vel}}
+\index{get\+\_\+\+Vel@{get\+\_\+\+Vel}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{get\+\_\+\+Vel()}{get\_Vel()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$ Actor\+::get\+\_\+\+Vel (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_actor_a66160c0692dd16998f8d7dd47ef575c1}\label{namespace_actor_a66160c0692dd16998f8d7dd47ef575c1}} 
+\index{Actor@{Actor}!init@{init}}
+\index{init@{init}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily void Actor\+::init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f,  }\item[{int}]{array\+\_\+size }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 4
+\mbox{\Hypertarget{namespace_actor_af9c730185b601f67cc9aa44beb2b3e2a}\label{namespace_actor_af9c730185b601f67cc9aa44beb2b3e2a}} 
+\index{Actor@{Actor}!set\+\_\+\+Pos@{set\+\_\+\+Pos}}
+\index{set\+\_\+\+Pos@{set\+\_\+\+Pos}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{set\+\_\+\+Pos()}{set\_Pos()}}
+{\footnotesize\ttfamily void Actor\+::set\+\_\+\+Pos (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_actor_a9a863bda46c95e2330f6c0d6e4a3cc42}\label{namespace_actor_a9a863bda46c95e2330f6c0d6e4a3cc42}} 
+\index{Actor@{Actor}!set\+\_\+\+Scale@{set\+\_\+\+Scale}}
+\index{set\+\_\+\+Scale@{set\+\_\+\+Scale}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{set\+\_\+\+Scale()}{set\_Scale()}}
+{\footnotesize\ttfamily void Actor\+::set\+\_\+\+Scale (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f,  }\item[{float}]{scale }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_actor_a4a9e57d332e039598f1acfb74da419a5}\label{namespace_actor_a4a9e57d332e039598f1acfb74da419a5}} 
+\index{Actor@{Actor}!set\+\_\+\+Size@{set\+\_\+\+Size}}
+\index{set\+\_\+\+Size@{set\+\_\+\+Size}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{set\+\_\+\+Size()}{set\_Size()}}
+{\footnotesize\ttfamily void Actor\+::set\+\_\+\+Size (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{float}]{w,  }\item[{float}]{h,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_actor_a62906af5de2990ca58baae369a2912fc}\label{namespace_actor_a62906af5de2990ca58baae369a2912fc}} 
+\index{Actor@{Actor}!set\+\_\+\+Sprite@{set\+\_\+\+Sprite}}
+\index{set\+\_\+\+Sprite@{set\+\_\+\+Sprite}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{set\+\_\+\+Sprite()}{set\_Sprite()}}
+{\footnotesize\ttfamily void Actor\+::set\+\_\+\+Sprite (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{int}]{which\+\_\+sprite,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_actor_a6cbf0e6df03f13dda762a664c4b8170d}\label{namespace_actor_a6cbf0e6df03f13dda762a664c4b8170d}} 
+\index{Actor@{Actor}!set\+\_\+\+Vel@{set\+\_\+\+Vel}}
+\index{set\+\_\+\+Vel@{set\+\_\+\+Vel}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{set\+\_\+\+Vel()}{set\_Vel()}}
+{\footnotesize\ttfamily void Actor\+::set\+\_\+\+Vel (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{const \mbox{\hyperlink{struct_vec2_d_1_1_vec2_d}{Vec2\+D\+::\+Vec2D}} $\ast$}]{vel,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_actor_ab5468479b7705db60362fb26340d0c7b}\label{namespace_actor_ab5468479b7705db60362fb26340d0c7b}} 
+\index{Actor@{Actor}!spawn@{spawn}}
+\index{spawn@{spawn}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{spawn()}{spawn()}}
+{\footnotesize\ttfamily int Actor\+::spawn (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f,  }\item[{float}]{scale,  }\item[{unsigned int}]{current\+\_\+time }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 5
+\mbox{\Hypertarget{namespace_actor_aa3ad0815b411b389fc1fef70ece978e9}\label{namespace_actor_aa3ad0815b411b389fc1fef70ece978e9}} 
+\index{Actor@{Actor}!undo\+\_\+\+Pos\+\_\+\+Update@{undo\+\_\+\+Pos\+\_\+\+Update}}
+\index{undo\+\_\+\+Pos\+\_\+\+Update@{undo\+\_\+\+Pos\+\_\+\+Update}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{undo\+\_\+\+Pos\+\_\+\+Update()}{undo\_Pos\_Update()}}
+{\footnotesize\ttfamily void Actor\+::undo\+\_\+\+Pos\+\_\+\+Update (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_actor_af6f7f45737ca4f6e33584d352d0e542c}\label{namespace_actor_af6f7f45737ca4f6e33584d352d0e542c}} 
+\index{Actor@{Actor}!update\+\_\+\+Pos@{update\+\_\+\+Pos}}
+\index{update\+\_\+\+Pos@{update\+\_\+\+Pos}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{update\+\_\+\+Pos()}{update\_Pos()}}
+{\footnotesize\ttfamily void Actor\+::update\+\_\+\+Pos (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f,  }\item[{float}]{dt }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 6
+\mbox{\Hypertarget{namespace_actor_a820206ab30a4a0fb3f37d78669598fdb}\label{namespace_actor_a820206ab30a4a0fb3f37d78669598fdb}} 
+\index{Actor@{Actor}!update\+\_\+\+Vel@{update\+\_\+\+Vel}}
+\index{update\+\_\+\+Vel@{update\+\_\+\+Vel}!Actor@{Actor}}
+\subsubsection{\texorpdfstring{update\+\_\+\+Vel()}{update\_Vel()}}
+{\footnotesize\ttfamily void Actor\+::update\+\_\+\+Vel (\begin{DoxyParamCaption}\item[{int}]{which\+\_\+actor,  }\item[{\mbox{\hyperlink{struct_actor_1_1_factory}{Factory}} $\ast$}]{f,  }\item[{float}]{dt }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+% FIG 7

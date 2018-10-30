@@ -1,5 +1,6 @@
 #pragma once
 #include "SDL2-2.0.8/include/SDL.h"
+#include "Spawn_Stack_data.h"
 namespace Sprite
 {
 	namespace Instance
@@ -10,9 +11,10 @@ namespace Sprite
 			int *frame_duration;
 
 			int *current_frame;
-
-			int n_instances;
 			int array_size;
+
+			Spawn_Stack::Spawn_Stack spawn_stack;
+			
 		};
 	}
 

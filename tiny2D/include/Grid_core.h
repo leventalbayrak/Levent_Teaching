@@ -5,6 +5,26 @@
 #include "Grid_data.h"
 #include "Table_File_core.h"
 #include "Shape_data.h"
+
+namespace Grid
+{
+	void init(Grid *g, int n_rows, int n_cols);
+
+	inline void Vec2D_to_Grid(Point *gp, Vec2D::Vec2D *p);
+
+	inline void get_Region_Under_Shape(Region *g, const Shape::Rect::Data *r);
+
+	inline int tile(int x, int y, Grid *g);
+
+	inline int tile(Point *p, Grid *g);
+
+	inline int tile(Vec2D::Vec2D *p, Grid *g);
+
+	void clip_Grid_Region(Region *r, int n_cols, int n_rows);
+
+	void load(Grid *g, const char *filename);
+}
+
 namespace Grid
 {
 	void init(Grid *g, int n_rows, int n_cols)
@@ -51,6 +71,40 @@ namespace Grid
 		if (r->y0 < 0) r->y0 = 0;
 		if (r->x1 >= n_cols) r->x1 = n_cols - 1;
 		if (r->y1 >= n_rows) r->y1 = n_rows - 1;
+	}
+
+	void imprint_Set(Grid *g, int value, const Shape::Rect::Data *r)
+	{
+		int x0 = r->x;
+		int y0 = r->y;
+		int x1 = r->x + r->w;
+		int y1 = r->y + r->h;
+		
+		for (int y = y0; y <= y1; y++)
+		{
+			for (int x = x0; x <= x1; x++)
+			{
+				int index = y * g->n_cols + x;
+				g->data[index] = value;
+			}
+		}
+	}
+
+	void imprint_Add(Grid *g, int value, const Shape::Rect::Data *r)
+	{
+		int x0 = r->x;
+		int y0 = r->y;
+		int x1 = r->x + r->w;
+		int y1 = r->y + r->h;
+
+		for (int y = y0; y <= y1; y++)
+		{
+			for (int x = x0; x <= x1; x++)
+			{
+				int index = y * g->n_cols + x;
+				g->data[index] += value;
+			}
+		}
 	}
 
 	//returns rightmost or bottommost collision tile coords

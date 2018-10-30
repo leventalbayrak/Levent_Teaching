@@ -92,9 +92,6 @@
     <ClInclude Include="My_Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Heap_Example.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Actor_core.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
@@ -120,6 +117,21 @@
       <Filter>Header Files\include</Filter>
     </ClInclude>
     <ClInclude Include="include\Particle_core.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input_data.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input_core.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Audio_data.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Spawn_Stack_data.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Spawn_Stack_core.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
   </ItemGroup>

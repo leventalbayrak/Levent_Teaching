@@ -1,0 +1,54 @@
+.TH "Sprite" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Sprite
+.SH SYNOPSIS
+.br
+.PP
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBFile\fP"
+.br
+.ti -1c
+.RI " \fBInstance\fP"
+.br
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBFactory\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBmake_Instance\fP (\fBFactory\fP *d)"
+.br
+.ti -1c
+.RI "void \fBmodify\fP (int instance_index, \fBFactory\fP *d, int frame_duration)"
+.br
+.ti -1c
+.RI "void \fBupdate\fP (int instance_index, \fBFactory\fP *d, unsigned int current_time)"
+.br
+.ti -1c
+.RI "void \fBdraw\fP (int instance_index, \fBFactory\fP *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer, int flip, unsigned char r, unsigned char g, unsigned char b, unsigned char a)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void Sprite::draw (int instance_index, \fBFactory\fP * d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer * renderer, int flip, unsigned char r, unsigned char g, unsigned char b, unsigned char a)"
+
+.SS "int Sprite::make_Instance (\fBFactory\fP * d)"
+
+.SS "void Sprite::modify (int instance_index, \fBFactory\fP * d, int frame_duration)"
+
+.SS "void Sprite::update (int instance_index, \fBFactory\fP * d, unsigned int current_time)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

@@ -1,0 +1,62 @@
+.TH "include/Body_core.h" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/Body_core.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'Body_data\&.h'\fP
+.br
+\fC#include 'Vec_core\&.h'\fP
+.br
+\fC#include <assert\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <math\&.h>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBBody\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBBody::init\fP (Factory *a, int array_size)"
+.br
+.ti -1c
+.RI "void \fBBody::resize\fP (Factory *a)"
+.br
+.ti -1c
+.RI "void \fBBody::clear_Forces\fP (Factory *a)"
+.br
+.ti -1c
+.RI "int \fBBody::make_Instance\fP (Factory *a)"
+.br
+.ti -1c
+.RI "void \fBBody::modify\fP (int index, Factory *a, \fBVec2D::Vec2D\fP *pos, float mass)"
+.br
+.ti -1c
+.RI "void \fBBody::add_Force\fP (int index, Factory *a, const \fBVec2D::Vec2D\fP *f)"
+.br
+.ti -1c
+.RI "void \fBBody::update_Vel\fP (int index, Factory *a, float dt)"
+.br
+.ti -1c
+.RI "void \fBBody::update_Pos\fP (int index, Factory *a, float dt)"
+.br
+.ti -1c
+.RI "void \fBBody::apply_Friction\fP (int index, const \fBVec2D::Vec2D\fP *friction, Factory *a)"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

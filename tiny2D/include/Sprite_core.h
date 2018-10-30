@@ -6,6 +6,26 @@ use custom allocator
 #include "Sprite_data.h"
 #include "Texture_core.h"
 #include "SDL2-2.0.8/include/SDL.h"
+
+
+namespace Sprite
+{
+	namespace Instance
+	{
+		void init(Instance *s, int array_size);
+	}
+
+	int make_Instance(Factory *d);
+
+	void modify(int instance_index, Factory *d, int frame_duration);
+
+	void update(int instance_index, Factory *d, unsigned int current_time);
+
+	void draw(int instance_index, Factory *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer, int flip, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
+	void add(Factory *sprite_database, const char *filename, SDL_Renderer *renderer);
+}
+
 namespace Sprite
 {
 	namespace Instance
@@ -13,30 +33,17 @@ namespace Sprite
 		void init(Instance *s, int array_size)
 		{
 			s->array_size = array_size;
-			s->n_instances = 0;
 			s->current_frame = (int*)malloc(sizeof(int)*s->array_size);
 			s->frame_duration = (int*)malloc(sizeof(int)*s->array_size);
 			s->last_frame_change_time = (unsigned int*)malloc(sizeof(unsigned int)*s->array_size);
-		}
 
-		void resize(Instance *s)
-		{
-			s->array_size += s->array_size >> 1;
-
-			s->current_frame = (int*)realloc(s->current_frame, sizeof(int)*s->array_size);
-			s->frame_duration = (int*)realloc(s->frame_duration, sizeof(int)*s->array_size);
-			s->last_frame_change_time = (unsigned int*)realloc(s->last_frame_change_time, sizeof(unsigned int)*s->array_size);
+			Spawn_Stack::init(&s->spawn_stack, array_size);
 		}
 	}
 
 	int make_Instance(Factory *d)
 	{
-		if (d->instances.n_instances >= d->instances.array_size)
-		{
-			resize(&d->instances);
-		}
-		++d->instances.n_instances;
-		return d->instances.n_instances - 1;
+		return Spawn_Stack::make(&d->instances.spawn_stack);
 	}
 
 	void modify(int instance_index, Factory *d, int frame_duration)
@@ -48,12 +55,15 @@ namespace Sprite
 
 	void update(int instance_index, Factory *d, unsigned int current_time)
 	{
-		unsigned int elapsed = current_time - d->instances.last_frame_change_time[instance_index];
-		if (elapsed >= d->instances.frame_duration[instance_index])
+		for (int i = 0; i < d->instances.spawn_stack.array_size; i++)
 		{
-			d->instances.current_frame[instance_index] = (d->instances.current_frame[instance_index] + elapsed / d->instances.frame_duration[instance_index]) % d->texture_info.n_frames;
-			d->instances.last_frame_change_time[instance_index] = current_time;
-		}	
+			unsigned int elapsed = current_time - d->instances.last_frame_change_time[instance_index];
+			if (elapsed >= d->instances.frame_duration[instance_index])
+			{
+				d->instances.current_frame[instance_index] = (d->instances.current_frame[instance_index] + elapsed / d->instances.frame_duration[instance_index]) % d->texture_info.n_frames;
+				d->instances.last_frame_change_time[instance_index] = current_time;
+			}
+		}
 	}
 
 	void draw(int instance_index, Factory *d, int dest_x, int dest_y, int dest_w, int dest_h, SDL_Renderer *renderer, int flip, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
@@ -83,25 +93,23 @@ namespace Sprite
 		}
 	}
 
-	namespace File
+	void add(Factory *sprite_database, const char *filename, SDL_Renderer *renderer)
 	{
-		void add(Factory *sprite_database, const char *filename, SDL_Renderer *renderer)
-		{
-			sprite_database->texture_info.texture = NULL;
-			
-			char img_filename[128];
-			FILE *f = fopen(filename, "r");
-			int r = fscanf(f, 
-					"img=%s frame_x=%d frame_y=%d frame_w=%d frame_h=%d n_frames=%d\n", 
-					img_filename,
-					&sprite_database->texture_info.frame_pos_x, 
-					&sprite_database->texture_info.frame_pos_y, 
-					&sprite_database->texture_info.frame_w, 
-					&sprite_database->texture_info.frame_h, 
-					&sprite_database->texture_info.n_frames);
-			if (r != 6) return;
+		sprite_database->texture_info.texture = NULL;
 
-			sprite_database->texture_info.texture = Texture::load(img_filename, renderer);
-		}
+		char img_filename[128];
+		FILE *f = fopen(filename, "r");
+		int r = fscanf(f,
+			"img=%s frame_x=%d frame_y=%d frame_w=%d frame_h=%d n_frames=%d scale=%f\n",
+			img_filename,
+			&sprite_database->texture_info.frame_pos_x,
+			&sprite_database->texture_info.frame_pos_y,
+			&sprite_database->texture_info.frame_w,
+			&sprite_database->texture_info.frame_h,
+			&sprite_database->texture_info.n_frames);
+		if (r != 6) return;
+
+		sprite_database->texture_info.texture = Texture::load(img_filename, renderer);
 	}
+
 }

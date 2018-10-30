@@ -1,0 +1,95 @@
+.TH "include/Actor_core.h" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/Actor_core.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'SDL2\-2\&.0\&.8/include/SDL\&.h'\fP
+.br
+\fC#include 'Actor_data\&.h'\fP
+.br
+\fC#include 'Sprite_core\&.h'\fP
+.br
+\fC#include 'Body_core\&.h'\fP
+.br
+\fC#include 'Shape_core\&.h'\fP
+.br
+\fC#include 'RGBA_data\&.h'\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBActor\fP"
+.br
+.ti -1c
+.RI " \fBActor::internal\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBActor::init\fP (Factory *f, int array_size)"
+.br
+.ti -1c
+.RI "void \fBActor::add_Sprite\fP (Factory *f, const char *filename, SDL_Renderer *renderer)"
+.br
+.ti -1c
+.RI "void \fBActor::add_Force\fP (int which_actor, Factory *f, \fBVec2D::Vec2D\fP *force)"
+.br
+.ti -1c
+.RI "void \fBActor::update_Vel\fP (int which_actor, Factory *f, float dt)"
+.br
+.ti -1c
+.RI "void \fBActor::update_Pos\fP (int which_actor, Factory *f, float dt)"
+.br
+.ti -1c
+.RI "void \fBActor::undo_Pos_Update\fP (int which_actor, Factory *f)"
+.br
+.ti -1c
+.RI "void \fBActor::apply_Friction\fP (int which_actor, const \fBVec2D::Vec2D\fP *friction, Factory *f)"
+.br
+.ti -1c
+.RI "void \fBActor::set_Sprite\fP (int which_actor, int which_sprite, Factory *f)"
+.br
+.ti -1c
+.RI "void \fBActor::set_Pos\fP (int which_actor, float x, float y, Factory *f)"
+.br
+.ti -1c
+.RI "void \fBActor::set_Vel\fP (int which_actor, const \fBVec2D::Vec2D\fP *vel, Factory *f)"
+.br
+.ti -1c
+.RI "\fBVec2D::Vec2D\fP * \fBActor::get_Vel\fP (int which_actor, Factory *f)"
+.br
+.ti -1c
+.RI "\fBVec2D::Vec2D\fP * \fBActor::get_Pos\fP (int which_actor, Factory *f)"
+.br
+.ti -1c
+.RI "\fBVec2D::Vec2D\fP * \fBActor::get_Last_Pos\fP (int which_actor, Factory *f)"
+.br
+.ti -1c
+.RI "void \fBActor::set_Size\fP (int which_actor, float w, float h, Factory *f)"
+.br
+.ti -1c
+.RI "void \fBActor::set_Scale\fP (int which_actor, Factory *f, float scale)"
+.br
+.ti -1c
+.RI "int \fBActor::spawn\fP (Factory *f, float scale, unsigned int current_time)"
+.br
+.ti -1c
+.RI "int \fBActor::draw\fP (const Factory *f, \fBGrid_Camera::Grid_Camera\fP *cam, unsigned int current_time, SDL_Renderer *renderer)"
+.br
+.ti -1c
+.RI "void \fBActor::internal::resize_Sprites\fP (Factory *f)"
+.br
+.ti -1c
+.RI "int \fBActor::internal::find_New\fP (Factory *f)"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

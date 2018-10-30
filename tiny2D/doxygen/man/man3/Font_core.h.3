@@ -1,0 +1,45 @@
+.TH "include/Font_core.h" 3 "Sun Oct 28 2018" "tiny2D alpha" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+include/Font_core.h
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'Font_data\&.h'\fP
+.br
+\fC#include 'Tileset_core\&.h'\fP
+.br
+\fC#include 'Grid_Camera_core\&.h'\fP
+.br
+\fC#include 'Shape_core\&.h'\fP
+.br
+\fC#include 'SDL2\-2\&.0\&.8/include/SDL\&.h'\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI " \fBFont\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBFont::init\fP (Font *f, const char *font_image_filename, const SDL_Renderer *renderer)"
+.br
+.ti -1c
+.RI "void \fBFont::set_Screen_Pos\fP (Font *f, float x, float y)"
+.br
+.ti -1c
+.RI "void \fBFont::set_Screen_Size\fP (Font *f, float w, float h)"
+.br
+.ti -1c
+.RI "void \fBFont::draw\fP (Font *f, const char *str, int length, const \fBGrid_Camera::Grid_Camera\fP *c, const SDL_Renderer *renderer)"
+.br
+.in -1c
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for tiny2D alpha from the source code\&.

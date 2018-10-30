@@ -1,0 +1,13 @@
+digraph "Shape::Rect::resize"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node14 [label="Shape::Rect::resize",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node14 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid"];
+  Node15 [label="Shape::Rect::make_Instance",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_shape_1_1_rect.html#aea84bb9ed2eff065d6e0e7f902ef8ff4"];
+  Node15 -> Node16 [dir="back",color="midnightblue",fontsize="10",style="solid"];
+  Node16 [label="Actor::spawn",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_actor.html#ab5468479b7705db60362fb26340d0c7b"];
+  Node15 -> Node17 [dir="back",color="midnightblue",fontsize="10",style="solid"];
+  Node17 [label="Particle::init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespace_particle.html#adc41f88d0e886694850badfb2a50c914"];
+}

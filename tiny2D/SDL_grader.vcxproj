@@ -118,10 +118,10 @@
     <ClCompile Include="main_my_game.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Heap_Example.h" />
     <ClInclude Include="include\Actor_core.h" />
     <ClInclude Include="include\Actor_data.h" />
     <ClInclude Include="include\Audio_core.h" />
+    <ClInclude Include="include\Audio_data.h" />
     <ClInclude Include="include\Body_core.h" />
     <ClInclude Include="include\Body_data.h" />
     <ClInclude Include="include\Collision_core.h" />
@@ -134,6 +134,8 @@
     <ClInclude Include="include\Grid_Camera_data.h" />
     <ClInclude Include="include\Grid_core.h" />
     <ClInclude Include="include\Grid_data.h" />
+    <ClInclude Include="include\Input_core.h" />
+    <ClInclude Include="include\Input_data.h" />
     <ClInclude Include="include\Light_core.h" />
     <ClInclude Include="include\Light_data.h" />
     <ClInclude Include="include\Particle_core.h" />
@@ -141,6 +143,8 @@
     <ClInclude Include="include\RGBA_data.h" />
     <ClInclude Include="include\Shape_core.h" />
     <ClInclude Include="include\Shape_data.h" />
+    <ClInclude Include="include\Spawn_Stack_core.h" />
+    <ClInclude Include="include\Spawn_Stack_data.h" />
     <ClInclude Include="include\Sprite_core.h" />
     <ClInclude Include="include\Sprite_data.h" />
     <ClInclude Include="include\Table_File_core.h" />

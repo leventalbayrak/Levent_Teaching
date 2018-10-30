@@ -4,6 +4,23 @@
 #include "Shape_core.h"
 #include "Sprite_core.h"
 #include "Grid_Camera_core.h"
+#include "Spawn_Stack_core.h"
+
+namespace Particle
+{
+
+	void init(Emitter *e, const char *filename, int array_size, SDL_Renderer *renderer);
+
+	int spawn(Emitter *e, int how_many, float scale, const Vec2D::Vec2D *pos, const Vec2D::Vec2D *initial_vel, const Vec2D::Vec2D *force_min, const Vec2D::Vec2D *force_max, int min_life, int max_life, unsigned int current_time);
+
+	void update_Vel_and_Life(Emitter *e, unsigned int current_time, float dt);
+
+	void apply_Force(Emitter *e, const Vec2D::Vec2D *force);
+
+	void update_Pos(Emitter *e, unsigned int current_time, float dt);
+
+	int draw(Emitter *e, const Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer);
+}
 
 namespace Particle
 {
@@ -12,59 +29,63 @@ namespace Particle
 	{
 		e->array_size = array_size;
 
+		Spawn_Stack::init(&e->spawn_stack, array_size);
+
 		Body::init(&e->bodies, array_size);
 		
 		Sprite::Instance::init(&e->sprites.instances, array_size);
-		Sprite::File::add(&e->sprites, filename, renderer);
+		Sprite::add(&e->sprites, filename, renderer);
+
 		Shape::Rect::init(&e->world_coords, array_size);
+		
 		e->creation_time = (unsigned int*)malloc(sizeof(unsigned int)*array_size);
 		memset(e->creation_time, 0, sizeof(unsigned int)*array_size);
+		
 		e->life_span = (int*)malloc(sizeof(int)*array_size);
 		memset(e->life_span, 0, sizeof(int)*array_size);
-		e->state = (int*)malloc(sizeof(int)*array_size);
-		memset(e->state, 0, sizeof(int)*array_size);
+		
 		e->emitter_world_coords = {};
+		
 		for (int i = 0; i < array_size; i++)
 		{
 			Body::make_Instance(&e->bodies);
 			Sprite::make_Instance(&e->sprites);
 			Shape::Rect::make_Instance(&e->world_coords);
-			e->state[i] = 0;
 			e->creation_time[i] = 0;
 		}
 
 	}
 
-	int spawn(Emitter *e, int how_many, const Vec2D::Vec2D *pos, const Vec2D::Vec2D *force_min, const Vec2D::Vec2D *force_max,int min_life, int max_life, unsigned int current_time)
+	int spawn(Emitter *e, int how_many, float scale, const Vec2D::Vec2D *pos, const Vec2D::Vec2D *initial_vel, const Vec2D::Vec2D *force_min, const Vec2D::Vec2D *force_max,int min_life, int max_life, unsigned int current_time)
 	{
 		int spawned_count = 0;
+
 		e->emitter_world_coords = *pos;
-		for (int i = 0; i < e->array_size; i++)
+		for (int i = 0; i < how_many; i++)
 		{
-			if (e->state[i] == 0)
-			{
-				e->state[i] = 1;
+			int k = Spawn_Stack::make(&e->spawn_stack);
+			
+			if (k < 0) break;
 
-				e->life_span[i] = min_life + (max_life - min_life) * (double)rand() / RAND_MAX;
+			spawned_count++;
 
-				e->creation_time[i] = current_time;
-				e->world_coords.rect[i].x = e->emitter_world_coords.x;
-				e->world_coords.rect[i].y = e->emitter_world_coords.y;
-				e->world_coords.rect[i].w = 1.0;
-				//TODO: WATCH THIS
-				e->world_coords.rect[i].h = (float)e->sprites.texture_info.frame_h / e->sprites.texture_info.frame_w;
-				e->bodies.pos[i].x = e->emitter_world_coords.x;
-				e->bodies.pos[i].y = e->emitter_world_coords.y;
-				e->bodies.force[i].x = force_min->x + (force_max->x - force_min->x)*(double)rand() / RAND_MAX;
-				e->bodies.force[i].y = force_min->y + (force_max->y - force_min->y)*(double)rand() / RAND_MAX;
-				e->bodies.vel[i] = {};
-				e->bodies.mass[i] = 1.0;
+			e->life_span[k] = min_life + (max_life - min_life) * (double)rand() / RAND_MAX;
 
-				e->sprites.instances.current_frame[i] = 0;
-				e->sprites.instances.frame_duration[i] = 100;
+			e->creation_time[k] = current_time;
+			e->world_coords.rect[k].x = e->emitter_world_coords.x;
+			e->world_coords.rect[k].y = e->emitter_world_coords.y;
+			e->world_coords.rect[k].w = scale;
+			//TODO: WATCH THIS
+			e->world_coords.rect[k].h = scale * (float)e->sprites.texture_info.frame_h / e->sprites.texture_info.frame_w;
+			e->bodies.pos[k].x = e->emitter_world_coords.x;
+			e->bodies.pos[k].y = e->emitter_world_coords.y;
+			e->bodies.force[k].x = force_min->x + (force_max->x - force_min->x)*(double)rand() / RAND_MAX;
+			e->bodies.force[k].y = force_min->y + (force_max->y - force_min->y)*(double)rand() / RAND_MAX;
+			e->bodies.vel[k] = *initial_vel;
+			e->bodies.mass[k] = 1.0;
 
-				if (++spawned_count >= how_many) break;
-			}
+			e->sprites.instances.current_frame[k] = 0;
+			e->sprites.instances.frame_duration[k] = 100;
 		}
 
 		return spawned_count;
@@ -72,69 +93,77 @@ namespace Particle
 
 	void update_Vel_and_Life(Emitter *e, unsigned int current_time, float dt)
 	{
-		for (int i = 0; i < e->array_size; i++)
+		for (int k = 0; k < e->spawn_stack.array_size; k++)
 		{
-			if (current_time - e->creation_time[i] >= e->life_span[i])
+			if (e->spawn_stack.spawned[k] == 1)
 			{
-				e->state[i] = 0;
-			}
-
-			if (e->state[i] == 1)
-			{				
-				Body::update_Vel(i, &e->bodies, dt);		
-				//clear forces
-				e->bodies.force[i] = {};
+				if (current_time - e->creation_time[k] >= e->life_span[k])
+				{
+					Spawn_Stack::destroy(k, &e->spawn_stack);
+				}
+				else
+				{
+					Body::update_Vel(k, &e->bodies, dt);
+					//clear forces
+					e->bodies.force[k] = {};
+				}
 			}
 		}
 	}
 
 	void apply_Force(Emitter *e, const Vec2D::Vec2D *force)
 	{
-		for (int i = 0; i < e->array_size; i++)
+		for (int k = 0; k < e->spawn_stack.array_size; k++)
 		{
-			if (e->state[i] == 1)
+			if (e->spawn_stack.spawned[k] == 1)
 			{
-				Body::add_Force(i, &e->bodies, force);
+				Body::add_Force(k, &e->bodies, force);
 			}
 		}
 	}
 
 	void update_Pos(Emitter *e, unsigned int current_time, float dt)
 	{
-		for (int i = 0; i < e->array_size; i++)
+		for (int k = 0; k < e->spawn_stack.array_size; k++)
 		{
-			if (e->state[i] == 1)
+			if (e->spawn_stack.spawned[k] == 1)
 			{
-				Body::update_Pos(i, &e->bodies, dt);
+				Body::update_Pos(k, &e->bodies, dt);
 				//copy physics body position to world coord
-				e->world_coords.rect[i].x = e->bodies.pos[i].x;
-				e->world_coords.rect[i].y = e->bodies.pos[i].y;
+				e->world_coords.rect[k].x = e->bodies.pos[k].x;
+				e->world_coords.rect[k].y = e->bodies.pos[k].y;
 			}
 		}
 	}
 
-	void draw(Emitter *e, const Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer)
+	int draw(Emitter *e, const Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer)
 	{
-		for (int i = 0; i < e->array_size; i++)
+		
+		int n_drawn = 0;
+		for (int k = 0; k < e->spawn_stack.array_size; k++)
 		{
-			if (e->state[i] == 1)
+			if (e->spawn_stack.spawned[k] == 1)
 			{
-				Sprite::update(i, &e->sprites, current_time);
+				Sprite::update(k, &e->sprites, current_time);
 
 				Shape::Rect::Data screen_rect;
-				Grid_Camera::grid_to_Screen(&screen_rect, &e->world_coords.rect[i], cam);
+				Grid_Camera::grid_to_Screen(&screen_rect, &e->world_coords.rect[k], cam);
 
-				float alpha = 1.0 - (float)(current_time - e->creation_time[i]) / e->life_span[i];
+				float alpha = 1.0 - (float)(current_time - e->creation_time[k]) / e->life_span[k];
 
-				Sprite::draw(i, &e->sprites,
+				Sprite::draw(k, &e->sprites,
 					screen_rect.x,
 					screen_rect.y,
 					screen_rect.w,
 					screen_rect.h,
 					renderer,
 					0,
-					255, 255, 255, alpha*255);
+					255, 255, 255, alpha * 255);
+
+				n_drawn++;
 			}
 		}
+
+		return n_drawn;
 	}
 }

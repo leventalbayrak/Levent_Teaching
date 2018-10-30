@@ -1,9 +1,32 @@
 #pragma once
 #include "Light_data.h"
 #include "Grid_Camera_core.h"
+#include "Spawn_Stack_core.h"
 #include <stdlib.h>
 #include <algorithm>
 #include <math.h>
+
+namespace Light
+{
+	namespace System
+	{
+		void init(int screen_w, int screen_h, SDL_Renderer *renderer);
+	}
+
+	void init(Factory *f, int array_size);
+
+	int make_Instance(Factory *f);
+
+	void draw(Factory *l, Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer);
+
+	void set_Color(int which_light, RGB::RGB *rgb, Factory *l);
+
+	void set_Pos(int which_light, Vec2D::Vec2D *pos, Factory *l);
+
+	void set_Z_Height(int which_light, float z_height, Factory *l);
+
+	void set_Intensity(int which_light, float intensity, Factory *l);
+}
 
 namespace Light
 {
@@ -22,28 +45,18 @@ namespace Light
 	void init(Factory *f, int array_size)
 	{
 		f->array_size = array_size;
-		f->n_lights = 0;
+		
 		f->color = (RGB::RGB*)malloc(sizeof(RGB::RGB)*f->array_size);
 		f->pos = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*f->array_size);
 		f->z_height = (float*)malloc(sizeof(float)*f->array_size);
 		f->intensity = (float*)malloc(sizeof(float)*f->array_size);
-	}
 
-	void resize(Factory *f)
-	{
-		f->array_size += f->array_size >> 1;
-
-		f->color = (RGB::RGB*)realloc(f->color,sizeof(RGB::RGB)*f->array_size);
-		f->pos = (Vec2D::Vec2D*)realloc(f->pos,sizeof(Vec2D::Vec2D)*f->array_size);
-		f->z_height = (float*)realloc(f->z_height,sizeof(float)*f->array_size);
-		f->intensity = (float*)realloc(f->intensity,sizeof(float)*f->array_size);
+		Spawn_Stack::init(&f->spawn_stack, array_size);
 	}
 
 	int make_Instance(Factory *f)
 	{
-		if (f->n_lights >= f->array_size) resize(f);
-		++f->n_lights;
-		return f->n_lights - 1;
+		return Spawn_Stack::make(&f->spawn_stack);
 	}
 
 	void draw(Factory *l, Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer)
@@ -54,7 +67,7 @@ namespace Light
 		SDL_LockTexture(internal::lightmap, NULL, (void**)&pixels, &pitch);
 
 		int buffer_size = pitch * internal::h;
-#pragma omp parallel for num_threads(4)
+
 		for (int index = 0; index < buffer_size; index += 4)
 		{
 			int x = (index % pitch) / 4;
@@ -73,8 +86,10 @@ namespace Light
 			float pixel_height = 0.0;
 			Vec3D::Vec3D frag_pos = { grid_pixel_pos.x, grid_pixel_pos.y, pixel_height };
 
-			for (int k = 0; k < l->n_lights; k++)
+			for (int k = 0; k < l->spawn_stack.array_size; k++)
 			{
+				if (l->spawn_stack.spawned[k] == 0) continue;
+
 				Vec3D::Vec3D light_pos = { l->pos[k].x, l->pos[k].y, l->z_height[k] };
 
 				Vec3D::Vec3D light_dir = light_pos;
