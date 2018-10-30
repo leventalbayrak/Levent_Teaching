@@ -1,0 +1,1 @@
+img=road.png tile_w=16 tile_h=16 n_cols=3 n_rows=1

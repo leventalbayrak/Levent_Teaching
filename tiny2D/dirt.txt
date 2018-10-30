@@ -1,0 +1,2 @@
+img=dirt.png
+frame_x=0 frame_y=0 frame_w=16 frame_h=16 n_frames=2 
