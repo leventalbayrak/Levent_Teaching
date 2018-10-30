@@ -35,6 +35,11 @@ namespace Grid
 		memset(g->data, 0, sizeof(int)*n_cols*n_rows);
 	}
 
+	void clear(Grid *g, int val)
+	{
+		memset(g->data, val, sizeof(int)*g->n_cols*g->n_rows);
+	}
+
 
 	inline void Vec2D_to_Grid(Point *gp, Vec2D::Vec2D *p)
 	{

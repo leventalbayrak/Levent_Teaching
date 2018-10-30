@@ -198,6 +198,7 @@ namespace My_Game
 			}
 		}
 
+		Grid::clear(&World::collision_imprint, -1);
 		for (int i = 0; i < World::enemy.spawn_stack.array_size; i++)
 		{
 			if (World::enemy.spawn_stack.spawned[i] == 1)

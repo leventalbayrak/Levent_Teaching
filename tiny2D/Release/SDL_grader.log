@@ -71,8 +71,6 @@ c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(249): warni
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Generating code
-  3 of 81 functions ( 3.7%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+  All 81 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   SDL_grader.vcxproj -> C:\Users\levent\Documents\GitHub\Levent_Development\tiny2D\Release\SDL_grader.exe
