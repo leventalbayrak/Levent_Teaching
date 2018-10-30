@@ -54,11 +54,11 @@ c:\users\levent.albayrak\documents\github\levent_development\tiny2d\include/Part
 c:\users\levent.albayrak\documents\github\levent_development\tiny2d\include/Particle_core.h(152): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent.albayrak\documents\github\levent_development\tiny2d\include/Particle_core.h(161): warning C4244: 'argument': conversion from 'float' to 'unsigned char', possible loss of data
 c:\users\levent.albayrak\documents\github\levent_development\tiny2d\include/Particle_core.h(161): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\tiny2d\My_Game.h(86): warning C4018: '>=': signed/unsigned mismatch
+c:\users\levent.albayrak\documents\github\levent_development\tiny2d\My_Game.h(87): warning C4018: '>=': signed/unsigned mismatch
 main_my_game.cpp(23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 main_my_game.cpp(33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Generating code
-  2 of 45 functions ( 4.4%) were compiled, the rest were copied from previous compilation.
+  2 of 47 functions ( 4.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code

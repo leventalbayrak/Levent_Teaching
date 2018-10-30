@@ -32,8 +32,8 @@ namespace My_Game
 		
 		namespace Parameters
 		{
-			const int maze_n_rows = 80;
-			const int maze_n_cols = 128;
+			const int maze_n_rows = 40;
+			const int maze_n_cols = 64;
 			int step_frequency = 5;
 			
 		}
@@ -68,13 +68,14 @@ namespace My_Game
 		World::camera.world_coord.y = 0;
 		World::camera.world_coord.w = World::Parameters::maze_n_cols;
 		World::camera.world_coord.h = World::Parameters::maze_n_rows;
-
+		
 	}
 
 	void begin_Play(unsigned int current_time)
 	{
 		Font::set_Screen_Size(&World::text, 16, 16);
 
+		init_Maze(&World::maze);
 	}
 
 	void update(unsigned int current_time, float dt)
@@ -98,11 +99,10 @@ namespace My_Game
 
 		SDL_RenderClear(Engine::renderer);
 
-		World::camera.world_coord.x = World::current_maze_position.x-World::camera.world_coord.w / 2;
-		World::camera.world_coord.y = World::current_maze_position.y - World::camera.world_coord.h / 2;
 		Grid_Camera::calibrate(&World::camera);
-
+		
 		Tileset::draw_Grid(&World::tileset, &World::camera, &World::maze, Engine::renderer);
+		
 		Particle::draw(&World::emitter, &World::camera, current_time, Engine::renderer);
 		
 		//flip buffers
