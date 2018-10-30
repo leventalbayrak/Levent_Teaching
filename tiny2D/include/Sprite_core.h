@@ -55,14 +55,11 @@ namespace Sprite
 
 	void update(int instance_index, Factory *d, unsigned int current_time)
 	{
-		for (int i = 0; i < d->instances.spawn_stack.array_size; i++)
+		unsigned int elapsed = current_time - d->instances.last_frame_change_time[instance_index];
+		if (elapsed >= d->instances.frame_duration[instance_index])
 		{
-			unsigned int elapsed = current_time - d->instances.last_frame_change_time[instance_index];
-			if (elapsed >= d->instances.frame_duration[instance_index])
-			{
-				d->instances.current_frame[instance_index] = (d->instances.current_frame[instance_index] + elapsed / d->instances.frame_duration[instance_index]) % d->texture_info.n_frames;
-				d->instances.last_frame_change_time[instance_index] = current_time;
-			}
+			d->instances.current_frame[instance_index] = (d->instances.current_frame[instance_index] + elapsed / d->instances.frame_duration[instance_index]) % d->texture_info.n_frames;
+			d->instances.last_frame_change_time[instance_index] = current_time;
 		}
 	}
 
@@ -83,14 +80,8 @@ namespace Sprite
 		SDL_SetTextureAlphaMod(d->texture_info.texture, a);
 		SDL_SetTextureColorMod(d->texture_info.texture, r, g, b);
 
-		if (flip == 0)
-		{
-			SDL_RenderCopyEx(renderer, d->texture_info.texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
-		}
-		else
-		{
-			SDL_RenderCopyEx(renderer, d->texture_info.texture, &src, &dest, 0, NULL, SDL_FLIP_HORIZONTAL);
-		}
+		SDL_RenderCopyEx(renderer, d->texture_info.texture, &src, &dest, 0, NULL, (SDL_RendererFlip) flip);
+		
 	}
 
 	void add(Factory *sprite_database, const char *filename, SDL_Renderer *renderer)
