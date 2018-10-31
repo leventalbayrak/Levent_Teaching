@@ -22,16 +22,37 @@ namespace My_Game
 				{
 
 					float sign = 0.0;
-					if (g->data[i*g->n_cols + j] == 0) sign = -1.0;
-					else sign = 0.0001;
-
-					for (int y = 0; y < g->n_rows; y++)
+					if (g->data[i*g->n_cols + j] == 0)
 					{
-						for (int x = 0; x < g->n_cols; x++)
+
+						sign = -1.0;
+						for (int y = 0; y < g->n_rows; y++)
 						{
-							float dist = (i - y)*(i - y) + (j - x) * (j - x);
-							field[y*g->n_cols + x] += sign / (dist + 0.1);
+							for (int x = 0; x < g->n_cols; x++)
+							{
+								float dist = (i - y)*(i - y) + (j - x) * (j - x);
+								field[y*g->n_cols + x] += sign / (dist + 0.1);
+
+								field[y*g->n_cols + x] += 0.0000001*(1.0 - 2.0*rand() / RAND_MAX);
+							}
 						}
+					}
+					else
+					{
+
+						field[i*g->n_cols + j] = 2000;
+
+						//sign = 0.0001;
+
+						//for (int y = 0; y < g->n_rows; y++)
+						//{
+						//	for (int x = 0; x < g->n_cols; x++)
+						//	{
+						//		float dist = (i - y)*(i - y) + (j - x) * (j - x);
+						//		//field[y*g->n_cols + x] += sign / (dist + 0.1);
+
+						//	}
+						//}
 					}
 				}
 			}
