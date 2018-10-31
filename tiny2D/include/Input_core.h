@@ -61,6 +61,6 @@ namespace Input
 		Input::prev_mouse_left = Input::mouse_left;
 		Input::prev_mouse_right = Input::mouse_right;
 		Input::mouse_left = mouse_button & SDL_BUTTON(SDL_BUTTON_LEFT);
-		Input::mouse_right = mouse_button & SDL_BUTTON(SDL_BUTTON_RIGHT);
+		Input::mouse_right = (mouse_button & SDL_BUTTON(SDL_BUTTON_RIGHT)) == SDL_BUTTON(SDL_BUTTON_RIGHT);
 	}
 }
