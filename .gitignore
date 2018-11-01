@@ -31,3 +31,4 @@ tiny2D/Release/SDL_grader.tlog/SDL_grader.lastbuildstate
 tiny2D/Release/SDL_grader.tlog/SDL_grader.write.1u.tlog
 tiny2D/Release/vc141.pdb
 tiny2D/SDL_grader.vcxproj
+.gitignore~
