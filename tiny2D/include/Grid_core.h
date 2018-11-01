@@ -107,6 +107,27 @@ namespace Grid
 		}
 	}
 
+	//returns -1 if no unignored tile is overlapped, tile_id otherwise
+	int get_First_Overlapped_Tile(int ignore_tile_id, const Shape::Rect::Data *rect, const Grid *g)
+	{
+		Region region;
+		get_Region_Under_Shape(&region, rect);
+
+		for (int y = region.y0; y <= region.y1; y++)
+		{
+			for (int x = region.x0; x <= region.x1; x++)
+			{
+				int tile_value = g->data[y*g->n_cols + x];
+				if (tile_value != ignore_tile_id)
+				{
+					return tile_value;
+				}
+			}
+		}
+
+		return -1;
+	}
+
 	void draw_Float(float *grid,int n_rows, int n_cols, const Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer)
 	{
 		int x0 = cam->world_coord.x;
