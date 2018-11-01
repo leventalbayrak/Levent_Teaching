@@ -5,6 +5,7 @@
 #include "Grid_data.h"
 #include "Table_File_core.h"
 #include "Shape_data.h"
+#include "RGBA_data.h"
 
 namespace Grid
 {
@@ -106,8 +107,49 @@ namespace Grid
 		}
 	}
 
-	//returns rightmost or bottommost collision tile coords
-//0 bottom 1 top
+	void draw_Float(float *grid,int n_rows, int n_cols, const Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer)
+	{
+		int x0 = cam->world_coord.x;
+		int y0 = cam->world_coord.y;
+		int x1 = cam->world_coord.x + cam->world_coord.w;
+		int y1 = cam->world_coord.y + cam->world_coord.h;
+
+		int ty = cam->calibration.tile_y;
+		for (int i = y0; i <= y1; i++)
+		{
+			int tx = cam->calibration.tile_x;
+			for (int j = x0; j <= x1; j++)
+			{
+				SDL_Rect dest;
+				dest.x = tx;
+				dest.y = ty;
+				dest.w = cam->calibration.tile_w;
+				dest.h = cam->calibration.tile_h;
+
+				RGB::RGB color = {};
+				
+				if (grid[i*n_cols + j] < 0.333333)
+				{
+					color.r = 255.0*grid[i*n_cols + j] / 0.333333;
+				}
+				else if (grid[i*n_cols + j] < 0.666666)
+				{
+					color.g = 255.0*(grid[i*n_cols + j]-0.333333) / 0.333333;
+				}
+				else
+				{
+					color.b = 255.0*(grid[i*n_cols + j] - 0.666666) / 0.333333;
+				}
+
+				SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+				SDL_RenderFillRect(renderer, &dest);
+			
+				tx += cam->calibration.tile_w;
+			}
+			ty += cam->calibration.tile_h;
+		}
+
+	}
 
 	void load(Grid *g, const char *filename)
 	{

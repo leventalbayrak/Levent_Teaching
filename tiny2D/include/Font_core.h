@@ -13,7 +13,7 @@ namespace Font
 	you may leave the cells containing ascii characters that you will not be using blank
 	fill the font image grid rows from left to right
 	*/
-	void init(Font *f, const char *font_image_filename, const SDL_Renderer *renderer);
+	void init(Font *f, const char *font_tileset_filename, const SDL_Renderer *renderer);
 
 	void set_Screen_Pos(Font *f, float x, float y);
 
@@ -41,9 +41,9 @@ namespace Font
 	you may leave the cells containing ascii characters that you will not be using blank
 	fill the font image grid rows from left to right
 	*/
-	void init(Font *f, const char *font_image_filename, const SDL_Renderer *renderer)
+	void init(Font *f, const char *font_tileset_filename, const SDL_Renderer *renderer)
 	{
-		Tileset::init(&f->tileset, font_image_filename, renderer);
+		Tileset::init(&f->tileset, font_tileset_filename, renderer);
 		assert(f->tileset.n_rows == 16);
 		assert(f->tileset.n_cols == 16);
 	}
