@@ -11,177 +11,135 @@ using namespace std;
 
 #pragma comment(linker,"/subsystem:console")
 
-struct Vec2D
+
+int collision(const SDL_Rect *a, const SDL_Rect *b)
 {
-	float x;
-	float y;
-};
+	if (a->x + a->w < b->x) return 0;
+	if (b->x + b->w < a->x) return 0;
+	if (a->y + a->h < b->y) return 0;
+	if (b->y + b->h < a->y) return 0;
+	return 1;
+}
 
-struct RGB
+
+namespace SA
 {
-	unsigned char r, g, b;
-};
-
-//an emitter emits
-//same color&size particles
-//has a position
-//also force
-//min and max lifetime
-//max number of particles
-//min and maximum interval to emit
-
-//each particle needs a
-//position
-//force vector
-//velocity
-//lifetime
-
-namespace Particle_Emitter
-{
-	struct Particle_Emitter
+	namespace internal
 	{
-		Vec2D *pos;
-		Vec2D *force;
-		Vec2D *vel;
-		float *life;
-		int *state;
-		int n_particles;
 
-		Vec2D emitter_pos;
-		Vec2D emitter_force;
-		Vec2D emitter_vel;
-		RGB particle_color;
-		float particle_size;
-	};
-
-	void init(Particle_Emitter *p, int n_particles)
-	{
-		p->n_particles = n_particles;
-
-		//allocations
-		p->pos = new Vec2D[p->n_particles];
-		p->force = new Vec2D[p->n_particles];
-		p->vel = new Vec2D[p->n_particles];
-		p->life = new float[p->n_particles];
-		p->state = new int[p->n_particles];
-
-		memset(p->pos, 0, sizeof(Vec2D)*p->n_particles);
-		memset(p->force, 0, sizeof(Vec2D)*p->n_particles);
-		memset(p->vel, 0, sizeof(Vec2D)*p->n_particles);
-		memset(p->life, 0, sizeof(float)*p->n_particles);
-		memset(p->state, 0, sizeof(int)*p->n_particles);
-
-		p->emitter_force = {};
-		p->emitter_vel = {};
-		p->emitter_pos = { 50,50 };//TODO
-		p->particle_color = { 165,75,0 };
-		p->particle_size = 4.0;
-
-	}
-
-	void spawn(Particle_Emitter *p, Vec2D influence_vector, int how_many)
-	{
-		for (int i = 0; i < p->n_particles; i++)
+		float evaluate_Solution_Fitness(SDL_Rect *boxes, int n_boxes)
 		{
-			if (p->state[i] == 0)
+			float fitness = 0.0;
+			for (int i = 0; i < n_boxes; i++)
 			{
-				p->state[i] = 1;
+				for (int j = i + 1; j < n_boxes; j++)
+				{
+					int r = collision(&boxes[i], &boxes[j]);
+					if (r == 1)
+					{
+						fitness -= 2;
+					}
 
-				p->pos[i] = p->emitter_pos;
-				p->vel[i] = p->emitter_vel;
-				p->life[i] = 1000.0;//TODO
-				p->force[i] = {};
-
-				p->force[i].x += influence_vector.x;
-				p->force[i].y += influence_vector.y;
-
-				if (--how_many <= 0) break;//TODO
+					if (boxes[i].x < 0 || boxes[i].y < 0) fitness -= 2;
+				}
 			}
+
+			return fitness;
+		}
+
+		void modify_Solution(SDL_Rect *src, int n_boxes)
+		{
+			int which_box = rand() % n_boxes;
+			src[which_box].x += 20.0*(1.0 - 2.0*rand() / RAND_MAX);
+			src[which_box].y += 20.0*(1.0 - 2.0*rand() / RAND_MAX);
 		}
 	}
 
-	void update(Particle_Emitter *p, float time_elapsed)
+	void generate_Solution(SDL_Rect *dest, int n_boxes, int max_x, int max_y)
 	{
-		//implicit euler, mass=1.0
-		Vec2D accel = p->emitter_force;
-
-		p->emitter_vel.x += accel.x*time_elapsed;
-		p->emitter_vel.y += accel.y*time_elapsed;
-		p->emitter_pos.x += p->emitter_vel.x*time_elapsed;
-		p->emitter_pos.y += p->emitter_vel.y*time_elapsed;
-
-		for (int i = 0; i < p->n_particles; i++)
+		dest[0].x = 20;
+		dest[0].y = 20;
+		dest[0].w = 200;
+		dest[0].h = 200;
+		for (int i = 1; i < n_boxes; i++)
 		{
-			if (p->state[i] == 0) continue;
-			
-			Vec2D accel = p->force[i];
-			p->vel[i].x += accel.x*time_elapsed;
-			p->vel[i].y += accel.y*time_elapsed;
-			p->pos[i].x += p->vel[i].x*time_elapsed;
-			p->pos[i].y += p->vel[i].y*time_elapsed;
-		
-			p->life[i] -= time_elapsed;
-			if (p->life[i] <= 0.0)
-			{
-				p->state[i] = 0;
-			}
+			dest[i].w = 5 + rand() % 40;
+			dest[i].h = 5 + rand() % 40;
+			dest[i].x = rand() % (max_x - dest[i].w);
+			dest[i].y = rand() % (max_y - dest[i].h);
 		}
 	}
 
-	void draw(Particle_Emitter *p,SDL_Renderer *renderer)
+	float update(SDL_Rect *current_solution, int n_boxes, SDL_Rect *tmp_solution, float temperature)
 	{
-		SDL_SetRenderDrawColor(renderer, p->particle_color.r, p->particle_color.g, p->particle_color.b, 255);
-		for (int i = 0; i < p->n_particles; i++)
+		memcpy(tmp_solution, current_solution, sizeof(SDL_Rect)*n_boxes);
+
+		internal::modify_Solution(tmp_solution, n_boxes);
+
+		float fitness_current = internal::evaluate_Solution_Fitness(current_solution, n_boxes);
+		float fitness_new = internal::evaluate_Solution_Fitness(tmp_solution, n_boxes);
+
+		double p_accept_new_solution = exp((fitness_new - fitness_current) / temperature);
+		double p = (double)rand() / RAND_MAX;
+
+		if (p <= p_accept_new_solution)
 		{
-			if (p->state[i] == 0) continue;
-			
-			SDL_Rect rect = { p->pos[i].x,p->pos[i].y,p->particle_size, p->particle_size };
-			SDL_RenderFillRect(renderer, &rect);
+			memcpy(current_solution, tmp_solution, sizeof(SDL_Rect)*n_boxes);
+			return fitness_new;
 		}
+		return fitness_current;
 	}
 
 }
+
 
 namespace Game
 {
 	SDL_Renderer *renderer = NULL;
 	int screen_width = 800;
 	int screen_height = 600;
-	
 
+	float temperature = 2;
+	float temperature_decay = 0.98;
 
-	
-	
-
-	
-}
-int main(int argc, char **argv)
-{
-	SDL_Init(SDL_INIT_VIDEO);
-
-	
-
-	SDL_Window *window = SDL_CreateWindow(
-		"Fortnite",
-		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		Game::screen_width, Game::screen_height, SDL_WINDOW_SHOWN);
-
-	Game::renderer = SDL_CreateRenderer(window,
-		-1, SDL_RENDERER_ACCELERATED);
-
-
-	Particle_Emitter::Particle_Emitter emitter;
-	Particle_Emitter::init(&emitter, 1000);
-	emitter.emitter_pos.x = Game::screen_width / 2.0;
-	emitter.emitter_pos.y = Game::screen_height / 2.0;
+	const int n_boxes = 120;
+	SDL_Rect boxes[n_boxes];
+	SDL_Rect tmp_boxes[n_boxes];
+	unsigned int color[n_boxes];
 
 	unsigned char prev_key_state[256];
-	unsigned char *keys = (unsigned char*)SDL_GetKeyboardState(NULL);
+	unsigned char *keys = NULL;
 
-	bool done = false;
-	while (!done)
+	bool update_solver = true;
+
+	void init()
 	{
-		memcpy(prev_key_state, keys, 256);
+		SDL_Init(SDL_INIT_VIDEO);
+
+		prev_key_state[256];
+		keys = (unsigned char*)SDL_GetKeyboardState(NULL);
+
+		SDL_Window *window = SDL_CreateWindow(
+			"Fortnite",
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			Game::screen_width, Game::screen_height, SDL_WINDOW_SHOWN);
+
+		Game::renderer = SDL_CreateRenderer(window,
+			-1, SDL_RENDERER_ACCELERATED);
+
+		SA::generate_Solution(boxes, n_boxes, screen_width, screen_height);
+
+		for (int i = 0; i < n_boxes; i++)
+		{
+			color[i] = 0;
+			color[i] = ((rand()%256)<<24) | ((rand() % 256) << 16) | ((rand() % 256) << 8);
+		}
+	}
+
+	void update()
+	{
+
+		memcpy(Game::prev_key_state, Game::keys, 256);
 
 		//consume all window events first
 		SDL_Event event;
@@ -189,81 +147,63 @@ int main(int argc, char **argv)
 		{
 			if (event.type == SDL_QUIT)
 			{
-				done = true;
+				exit(0);
 			}
 		}
-		
-		emitter.emitter_force = {};
-		for (int i = 0; i < emitter.n_particles; i++)
+
+		if (update_solver)
 		{
-			if (emitter.state[i] == 0) continue;
-			emitter.force[i] = {};
+			float fitness = 0.0;
+			for (int i = 0; i < 100; i++)
+			{
+				fitness = SA::update(boxes, n_boxes, tmp_boxes, temperature);
+			}
+
+			printf("fitness: %f temperature: %f\n", fitness, temperature);
+
+			if (fitness >= 0.0)
+			{
+				update_solver = false;
+			}
+
+			temperature *= temperature_decay;
 		}
 
-		if (keys[SDL_SCANCODE_W])
-		{
-			Vec2D f = { 0.0, 0.1 };
-			float dampen = 0.01;
-			f.x += 4.0*dampen * (1.0 - 2.0*rand() / RAND_MAX);
-			f.y += dampen * (1.0 - 2.0*rand() / RAND_MAX);
-			Particle_Emitter::spawn(&emitter,f, 1);
+	}
 
-			emitter.emitter_force.y = -0.0001;
-		}
-		if (keys[SDL_SCANCODE_S])
-		{
-			Vec2D f = { 0.0, -0.1 };
-			float dampen = 0.01;
-			f.x += 4.0*dampen * (1.0 - 2.0*rand() / RAND_MAX);
-			f.y += dampen * (1.0 - 2.0*rand() / RAND_MAX);
-			Particle_Emitter::spawn(&emitter, f, 1);
-
-			emitter.emitter_force.y = 0.0001;
-		}
-		if (keys[SDL_SCANCODE_A])
-		{
-			Vec2D f = { 0.1, 0.0 };
-			float dampen = 0.01;
-			f.x += 4.0*dampen * (1.0 - 2.0*rand() / RAND_MAX);
-			f.y += dampen * (1.0 - 2.0*rand() / RAND_MAX);
-			Particle_Emitter::spawn(&emitter, f, 1);
-
-			emitter.emitter_force.x = -0.0001;
-		}
-		if (keys[SDL_SCANCODE_D])
-		{
-			Vec2D f = { -0.1, 0.0 };
-			float dampen = 0.01;
-			f.x += 4.0*dampen * (1.0 - 2.0*rand() / RAND_MAX);
-			f.y += dampen * (1.0 - 2.0*rand() / RAND_MAX);
-			Particle_Emitter::spawn(&emitter, f, 1);
-
-			emitter.emitter_force.x = 0.0001;
-		}
-
-
-		/*
-		GAME CODE
-		*/
-
-		Particle_Emitter::update(&emitter, 1.0);
-
-		//RENDER
-
+	void draw()
+	{
 		//set color to white
 		SDL_SetRenderDrawColor(Game::renderer, 255, 255, 255, 255);
 		//clear screen with white
 		SDL_RenderClear(Game::renderer);
 
-		SDL_SetRenderDrawColor(Game::renderer, 255, 0, 255, 255);
-		SDL_Rect rect = { emitter.emitter_pos.x,emitter.emitter_pos.y,5,5 };
-		SDL_RenderFillRect(Game::renderer, &rect);
-
-		Particle_Emitter::draw(&emitter, Game::renderer);
+		for (int i = 0; i < n_boxes; i++)
+		{
+			int r = (color[i] & 0xFF000000) >> 24;
+			int g = (color[i] & 0x00FF0000) >> 16;
+			int b = (color[i] & 0x0000FF00) >> 8;
+			SDL_SetRenderDrawColor(Game::renderer, r, g, b, 255);
+			SDL_RenderDrawRect(renderer, &boxes[i]);
+		}
 
 		//flip buffers
 		SDL_RenderPresent(Game::renderer);
+	}
 
+}
+int main(int argc, char **argv)
+{
+	
+
+	Game::init();
+
+
+	for(;;)
+	{
+		Game::update();
+		
+		Game::draw();
 	}
 
 
