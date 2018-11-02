@@ -89,4 +89,11 @@ c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(205): warni
 c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(205): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  .NETFramework,Version=v4.0.AssemblyAttributes.cpp
+  main_my_game.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+main_my_game.obj : warning LNK4248: unresolved typeref token (01000015) for 'SDL_Renderer'; image may not run
+main_my_game.obj : warning LNK4248: unresolved typeref token (01000016) for 'SDL_Texture'; image may not run
+main_my_game.obj : warning LNK4248: unresolved typeref token (01000019) for '_Mix_Music'; image may not run
+main_my_game.obj : warning LNK4248: unresolved typeref token (0100001A) for '_SDL_GameController'; image may not run
+main_my_game.obj : warning LNK4248: unresolved typeref token (0100001B) for 'SDL_Window'; image may not run
   SDL_grader.vcxproj -> C:\Users\levent\Documents\GitHub\Levent_Development\tiny2D\Debug\SDL_grader.exe
