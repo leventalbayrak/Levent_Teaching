@@ -42,6 +42,7 @@ c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(
 c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(89): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(90): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(91): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\shape_core.h(121): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(73): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(74): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\tileset_core.h(75): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data

@@ -112,6 +112,7 @@ namespace Grid
 	{
 		Region region;
 		get_Region_Under_Shape(&region, rect);
+		clip_Grid_Region(&region, g->n_cols, g->n_rows);
 
 		for (int y = region.y0; y <= region.y1; y++)
 		{
