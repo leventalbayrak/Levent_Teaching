@@ -1,0 +1,2 @@
+add last key state
+force y only on key down once

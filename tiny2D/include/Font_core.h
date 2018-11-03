@@ -48,6 +48,11 @@ namespace Font
 		assert(f->tileset.n_cols == 16);
 	}
 
+	void set_RGBA(Font *f, const RGBA::RGBA *color)
+	{
+		f->color = *color;
+	}
+
 	void set_Screen_Pos(Font *f, float x, float y)
 	{
 		f->screen_coord.x = x;
@@ -86,7 +91,7 @@ namespace Font
 
 			int row = str[i] >> 4;//divide by 16
 			int col = str[i] & 15;//str[i] % 16 but faster :)
-			Tileset::draw_Single(row, col, &f->tileset, f->screen_coord.x, f->screen_coord.y, text_w, text_h, renderer);
+			Tileset::draw_Single(row, col, &f->tileset, f->screen_coord.x, f->screen_coord.y, text_w, text_h, &f->color, renderer);
 			f->screen_coord.x += text_w;
 
 		}

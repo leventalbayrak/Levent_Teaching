@@ -2,6 +2,7 @@
 #pragma warning(disable:4996)
 #include <assert.h>
 #include "Tileset_data.h"
+#include "RGBA_data.h"
 #include "SDL2-2.0.8\include\SDL.h"
 #include "SDL2-2.0.8\include\SDL_image.h"
 
@@ -9,9 +10,9 @@ namespace Tileset
 {
 	void init(Tileset *tileset, const char *filename, const SDL_Renderer *renderer);
 
-	void draw_Single(int tile_row, int tile_col, const Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, const SDL_Renderer *renderer);
+	void draw_Single(int tile_row, int tile_col, const Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, const RGBA::RGBA *color, const SDL_Renderer *renderer);
 
-	void draw_Grid(const Tileset *tileset, const Grid_Camera::Grid_Camera *cam, const Grid::Grid *g, SDL_Renderer *renderer);
+	void draw_Grid(const Tileset *tileset, const Grid_Camera::Grid_Camera *cam, const Grid::Grid *g, const RGBA::RGBA *color, SDL_Renderer *renderer);
 
 
 }
@@ -47,7 +48,7 @@ namespace Tileset
 		tileset->n_rows = n_rows;
 	}
 
-	void draw_Single(int tile_row, int tile_col, const Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, const SDL_Renderer *renderer)
+	void draw_Single(int tile_row, int tile_col, const Tileset *t, int dest_x, int dest_y, int dest_w, int dest_h, const RGBA::RGBA *color, const SDL_Renderer *renderer)
 	{
 		SDL_Rect src;
 		src.x = tile_col * t->tile_w;
@@ -61,10 +62,13 @@ namespace Tileset
 		dest.w = dest_w;
 		dest.h = dest_h;
 
+		SDL_SetTextureAlphaMod(t->tex, color->a);
+		SDL_SetTextureColorMod(t->tex, color->r, color->g, color->b);
+		
 		SDL_RenderCopyEx((SDL_Renderer*)renderer, t->tex, &src, &dest, 0, NULL, SDL_FLIP_NONE);
 	}
 
-	void draw_Grid(const Tileset *tileset, const Grid_Camera::Grid_Camera *cam, const Grid::Grid *g, SDL_Renderer *renderer)
+	void draw_Grid(const Tileset *tileset, const Grid_Camera::Grid_Camera *cam, const Grid::Grid *g, const RGBA::RGBA *color, SDL_Renderer *renderer)
 	{
 		int x0 = cam->world_coord.x;
 		int y0 = cam->world_coord.y;
@@ -82,7 +86,7 @@ namespace Tileset
 				int grid_data = tmp_level_data[j];
 				int tileset_row = grid_data / tileset->n_cols;
 				int tileset_col = grid_data % tileset->n_cols;
-				draw_Single(tileset_row, tileset_col, tileset, tx, ty, cam->calibration.tile_w, cam->calibration.tile_h, renderer);
+				draw_Single(tileset_row, tileset_col, tileset, tx, ty, cam->calibration.tile_w, cam->calibration.tile_h, color, renderer);
 
 				tx += cam->calibration.tile_w;
 			}

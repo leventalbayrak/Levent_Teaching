@@ -73,8 +73,28 @@ namespace Shape
 			}
 			return NO_COLLISION;
 		}
+
+
+		void draw(Factory *f, RGB::RGB *color, const Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer)
+		{
+			for (int i = 0; i < f->array_size; i++)
+			{
+				if (f->spawn_stack.spawned[i] == 0) continue;
+
+				Shape::Rect::Data screen_rect;
+				Grid_Camera::grid_to_Screen(&screen_rect, &f->rect[i], cam);
+
+				SDL_Rect dest;
+				dest.x = screen_rect.x;
+				dest.y = screen_rect.y;
+				dest.w = screen_rect.w;
+				dest.h = screen_rect.h;
+
+				SDL_SetRenderDrawColor(renderer, color->r, color->g, color->b, 255);
+				SDL_RenderFillRect(renderer, &dest);
+			}
+
+		}
 	}
-
-
 	
 }
