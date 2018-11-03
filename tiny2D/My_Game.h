@@ -16,6 +16,7 @@ namespace My_Game
 	{
 		shapes[0] = { (float)1.0,(float)(max_y / 2.0),w,h };
 		shapes[n_shapes - 1] = { (float)(max_x - 2.0),(float)(max_y / 2.0),w,h };
+		shapes[n_shapes - 1] = { (float)(max_x - 2.0),(float)(max_y - 2.0),w,h };
 		for (int i = 1; i < n_shapes - 1; i++)
 		{
 			float x = max_x * (double)rand() / RAND_MAX;
@@ -46,7 +47,7 @@ namespace My_Game
 			dist_from_neighbor_mid += (shapes[i].x - x)*(shapes[i].x - x);
 			dist_from_neighbor_mid += (shapes[i].y - y)*(shapes[i].y - y);
 			
-			fitness -= 2.0*sqrt(dist_from_neighbor_mid);
+			fitness -= 20.0*sqrt(dist_from_neighbor_mid);
 
 			
 		}
@@ -56,7 +57,7 @@ namespace My_Game
 			float x = (shapes[i - 1].x - shapes[i].x)*(shapes[i - 1].x - shapes[i].x);
 			float y = (shapes[i - 1].y - shapes[i].y)*(shapes[i - 1].y - shapes[i].y);
 
-			distance_sum += sqrt(x + y);
+			distance_sum += 2.0*sqrt(x + y);
 
 		}
 		fitness -= 0.9*distance_sum;
@@ -124,7 +125,7 @@ namespace My_Game
 		namespace Parameters
 		{
 			int step_frequency = 0;
-			int n_points = 24;
+			int n_points = 100;
 		}
 
 		Tileset::Tileset tileset;
