@@ -106,6 +106,9 @@ namespace My_Game
 		float current_fitness = _calculate_Solution_Fitness(src, n_shapes, collision);
 		float permute_fitness = _calculate_Solution_Fitness(tmp, n_shapes, collision);
 
+		//any positive new-current makes it > 1, so it takes new (0.001 for example)
+		//slight differences -> e^-0.001, still is 0.999, so it takes new again - this is where temperature kicks in
+		//temperature must be in the order of 0.0001 to make -0.001 not acceptable-ish
 		float p = exp((permute_fitness - current_fitness) / temperature);
 		float r = (double)rand() / RAND_MAX;
 		if (r < p)
@@ -218,6 +221,49 @@ namespace My_Game
 		}
 
 		generate_New_Solution(World::points.rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
+
+#define PERMUTE_EXPERIMENT 0
+#if PERMUTE_EXPERIMENT 1
+		FILE *f = fopen("result.txt", "w+");
+		float permute_min = 1.0;
+		float permute_max = 32.0;
+		float permute_step = 1.0;
+		int n_samples = 1000;
+		int n_solutions = 100;
+
+		Shape::Rect::Factory *solutions = new Shape::Rect::Factory[n_solutions];
+		for (int i = 0; i < n_solutions; i++)
+		{
+			Shape::Rect::init(&solutions[i], World::Parameters::n_points);
+			for (int j = 0; j < World::Parameters::n_points; j++)
+			{
+				Shape::Rect::make_Instance(&solutions[i]);
+			}
+			generate_New_Solution(solutions[i].rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
+		}
+
+		for (float p = permute_min; p <= permute_max; p += permute_step)
+		{
+			printf("permute %f\n", p);
+			fprintf(f, "permute=%f", p);
+			for (int i = 0; i < n_solutions; i++)
+			{
+				for (int j = 0; j < n_samples; j++)
+				{
+
+					_permute_Solution(World::tmp_points.rect, solutions[i].rect, World::Parameters::n_points, p, World::maze.n_cols - 1, World::maze.n_rows - 1);
+
+					float fitness = _calculate_Solution_Fitness(World::tmp_points.rect, World::Parameters::n_points, &World::maze);
+					fprintf(f, "\t%f", fitness);
+				}
+			}
+			fprintf(f, "\n");
+		}
+		fclose(f);
+		exit(0);
+#endif
+
+
 #define DEBUG_EXPERIMENT 0
 #if DEBUG_EXPERIMENT 1
 		FILE *f = fopen("result.txt", "w+");
