@@ -93,7 +93,35 @@ namespace Shape
 				SDL_SetRenderDrawColor(renderer, color->r, color->g, color->b, 255);
 				SDL_RenderFillRect(renderer, &dest);
 			}
+		}
 
+		void draw_Connecting_Lines(Factory *f, RGB::RGB *color, const Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer)
+		{
+			int last = 0;
+			for (int i = 0; i < f->array_size; i++)
+			{
+				if (f->spawn_stack.spawned[i] == 1)
+				{
+					last = i;
+					break;
+				}
+			}
+
+			Shape::Rect::Data screen_rect_last;
+			Grid_Camera::grid_to_Screen(&screen_rect_last, &f->rect[last], cam);
+			
+			for (int i = last + 1; i < f->array_size; i++)
+			{
+				if (f->spawn_stack.spawned[i] == 0) continue;
+
+				Shape::Rect::Data screen_rect_current;
+				Grid_Camera::grid_to_Screen(&screen_rect_current, &f->rect[i], cam);
+
+				SDL_SetRenderDrawColor(renderer, color->r, color->g, color->b, 255);
+				SDL_RenderDrawLine(renderer, screen_rect_last.x + screen_rect_last.w*0.5, screen_rect_last.y + screen_rect_last.h*0.5, screen_rect_current.x + screen_rect_current.w*0.5, screen_rect_current.y + screen_rect_current.h*0.5);
+
+				screen_rect_last = screen_rect_current;
+			}
 		}
 	}
 	
