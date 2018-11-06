@@ -33,3 +33,4 @@ tiny2D/Release/vc141.pdb
 tiny2D/SDL_grader.vcxproj
 .gitignore~
 tiny2D/.vs/SDL_grader/v15/.suo
+misc_examples/neuralnet_simulatd_Annealing/x64/Debug/nueralnet_simulated_annealing.ilk
