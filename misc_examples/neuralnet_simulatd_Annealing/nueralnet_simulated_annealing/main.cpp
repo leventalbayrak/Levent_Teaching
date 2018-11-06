@@ -89,7 +89,7 @@ namespace SA
 	double update(NN::NN *n,NN::NN *tmp,double input[4][2],double *expected_output,int n_tests, double temperature)
 	{
 		NN::copy(tmp, n);
-		NN_Ext::modify(tmp, 0.1);
+		NN_Ext::modify(tmp, 0.01);
 		double f0 = 0.0;
 		double f1 = 0.0;
 		for (int i = 0; i < n_tests; i++)
