@@ -42,16 +42,18 @@ namespace NN
 			double sum_hidden = 0.0;
 			for (int j = 0; j < n->n_input; j++)
 			{
-				sum_hidden += n->w_input_to_hidden[i*n->n_hidden + j] * input[i];
+				sum_hidden += n->w_input_to_hidden[i*n->n_hidden + j] * input[j];
 			}
 			sum_hidden += n->b_hidden[i];
-			if (sum_hidden < 0.0) sum_hidden = 0.0;
+			//if (sum_hidden < 0.0) sum_hidden = 0.0;
+			sum_hidden = 1.0 / (1.0 + exp(-sum_hidden));
 
 			output += sum_hidden;
 		}
 
+		//output = 1.0 / (1.0 + exp(-output));
 		//no bias in output
-		if (output < 0.0) output = 0.0;
+		//if (output < 0.0) output = 0.0;
 
 		return output;
 	}
@@ -86,10 +88,10 @@ namespace NN_Ext
 
 namespace SA
 {
-	double update(NN::NN *n,NN::NN *tmp,double input[4][2],double *expected_output,int n_tests, double temperature)
+	double update(NN::NN *n,NN::NN *tmp,double input[4][2],double *expected_output,int n_tests, double temperature, double modification_amount)
 	{
 		NN::copy(tmp, n);
-		NN_Ext::modify(tmp, 0.01);
+		NN_Ext::modify(tmp, modification_amount);
 		double f0 = 0.0;
 		double f1 = 0.0;
 		for (int i = 0; i < n_tests; i++)
@@ -122,7 +124,7 @@ int main()
 	NN::NN solution;
 	NN::NN tmp;
 	double temperature = 1.0;
-	double decay = 0.998;
+	double decay = 0.95;
 
 	printf("init\n");
 	
@@ -134,7 +136,7 @@ int main()
 	{
 		if (temperature < 0.0000001) break;
 		
-		double error = SA::update(&solution, &tmp, input, output,4, temperature);
+		double error = SA::update(&solution, &tmp, input, output,4, temperature, 0.5);
 		temperature *= decay;
 		for (int k = 0; k < 4; k++)
 		{
