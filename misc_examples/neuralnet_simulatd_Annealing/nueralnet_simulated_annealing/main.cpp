@@ -42,16 +42,18 @@ namespace NN
 			double sum_hidden = 0.0;
 			for (int j = 0; j < n->n_input; j++)
 			{
-				sum_hidden += n->w_input_to_hidden[i*n->n_hidden + j] * input[i];
+				sum_hidden += n->w_input_to_hidden[i*n->n_hidden + j] * input[j];
 			}
 			sum_hidden += n->b_hidden[i];
-			if (sum_hidden < 0.0) sum_hidden = 0.0;
+			//if (sum_hidden < 0.0) sum_hidden = 0.0;
+			sum_hidden = 1.0 / (1.0 + exp(-sum_hidden));
 
 			output += sum_hidden;
 		}
 
+		//output = 1.0 / (1.0 + exp(-output));
 		//no bias in output
-		if (output < 0.0) output = 0.0;
+		//if (output < 0.0) output = 0.0;
 
 		return output;
 	}
@@ -86,16 +88,20 @@ namespace NN_Ext
 
 namespace SA
 {
-	double update(NN::NN *n,NN::NN *tmp,double *input,double expected_output, double temperature)
+	double update(NN::NN *n,NN::NN *tmp,double input[4][2],double *expected_output,int n_tests, double temperature, double modification_amount)
 	{
 		NN::copy(tmp, n);
-		NN_Ext::modify(tmp, 0.1);
-		double out0 = NN::run(n, input);
-		double out1 = NN::run(tmp, input);
+		NN_Ext::modify(tmp, modification_amount);
+		double f0 = 0.0;
+		double f1 = 0.0;
+		for (int i = 0; i < n_tests; i++)
+		{
+			double out0 = NN::run(n, input[i]);
+			double out1 = NN::run(tmp, input[i]);
 
-		double f0 = (expected_output - out0)*(expected_output - out0);
-		double f1 = (expected_output - out1)*(expected_output - out1);
-
+			f0 += (expected_output[i] - out0)*(expected_output[i] - out0);
+			f1 += (expected_output[i] - out1)*(expected_output[i] - out1);
+		}
 		double pe = exp((f0-f1)/temperature);
 		double p = (double)rand() / RAND_MAX;
 		if (p <= pe)
@@ -118,7 +124,7 @@ int main()
 	NN::NN solution;
 	NN::NN tmp;
 	double temperature = 1.0;
-	double decay = 0.998;
+	double decay = 0.95;
 
 	printf("init\n");
 	
@@ -128,14 +134,17 @@ int main()
 	printf("run\n");
 	for (;;)
 	{
-		if (temperature < 0.00001) break;
+		if (temperature < 0.0000001) break;
 		
-		int k = rand() % 4;
-		double error = SA::update(&solution, &tmp, input[k], output[k], temperature);
+		double error = SA::update(&solution, &tmp, input, output,4, temperature, 0.5);
 		temperature *= decay;
-		double r = NN::run(&solution, input[k]);
-		printf("%f %f -> %f\n", input[k][0], input[k][1], r);
+		for (int k = 0; k < 4; k++)
+		{
+			double r = NN::run(&solution, input[k]);
+			printf("%f %f -> %f\n", input[k][0], input[k][1], r);
+		}
 		printf("temp %f error %f\n", temperature, error);
+
 
 	}
 

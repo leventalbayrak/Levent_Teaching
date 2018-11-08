@@ -57,11 +57,11 @@ namespace SA
 
 	void generate_Solution(SDL_Rect *dest, int n_boxes, int max_x, int max_y)
 	{
-		dest[0].x = 20;
+		/*dest[0].x = 20;
 		dest[0].y = 20;
 		dest[0].w = 200;
-		dest[0].h = 200;
-		for (int i = 1; i < n_boxes; i++)
+		dest[0].h = 200;*/
+		for (int i = 0; i < n_boxes; i++)
 		{
 			dest[i].w = 5 + rand() % 40;
 			dest[i].h = 5 + rand() % 40;
@@ -102,7 +102,7 @@ namespace Game
 	float temperature = 2;
 	float temperature_decay = 0.98;
 
-	const int n_boxes = 120;
+	const int n_boxes = 500;
 	SDL_Rect boxes[n_boxes];
 	SDL_Rect tmp_boxes[n_boxes];
 	unsigned int color[n_boxes];

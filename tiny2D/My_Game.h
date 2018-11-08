@@ -50,7 +50,7 @@ namespace My_Game
 			int k = Grid::get_First_Overlapped_Tile(-1, &shapes[i], collision);
 			if (k != -1)
 			{
-				fitness -= -100;
+				fitness -= 100;
 			}
 
 			double dist_from_neighbor_mid = 0.0;
@@ -59,7 +59,7 @@ namespace My_Game
 			dist_from_neighbor_mid += (shapes[i].x - x)*(shapes[i].x - x);
 			dist_from_neighbor_mid += (shapes[i].y - y)*(shapes[i].y - y);
 
-			//fitness -= 4.0*sqrt(dist_from_neighbor_mid);		
+			fitness -= 4.0*sqrt(dist_from_neighbor_mid);		
 		}
 
 		float distance_sum = 0.0;
@@ -159,10 +159,10 @@ namespace My_Game
 		namespace Parameters
 		{
 			int step_frequency = 0;
-			int n_points = 100;
+			int n_points = 20;
 			float box_size = 1.0;
 			float permute_amount = 24.0;//<-- VERY IMPORTANT RANK 3
-			float temperature_decay = 0.95;//<-- VERY IMPORTANT RANK 1
+			float temperature_decay = 0.98;//<-- VERY IMPORTANT RANK 1
 			int n_permute_same_temp = 80;//<-- VERY IMPORTANT RANK 2
 		}
 
