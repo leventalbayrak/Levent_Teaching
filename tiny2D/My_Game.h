@@ -12,133 +12,7 @@
 namespace My_Game
 {
 
-	void generate_New_Solution(Shape::Rect::Data *shapes, int n_shapes, float w, float h, float max_x, float max_y)
-	{
-		shapes[0] = { (float)1.0,(float)(max_y / 2.0),w,h };
-		shapes[n_shapes - 1] = { (float)(max_x - 2.0),(float)(max_y / 2.0),w,h };
-		//shapes[n_shapes - 1] = { (float)(max_x - 2.0),(float)(max_y - 2.0),w,h };
-		for (int i = 1; i < n_shapes - 1; i++)
-		{
-			float x = max_x * (double)rand() / RAND_MAX;
-			float y = max_y * (double)rand() / RAND_MAX;
-
-			shapes[i].x = x;
-			shapes[i].y = y;
-			shapes[i].w = w;
-			shapes[i].h = h;
-		}
-	}
-
-	double _calculate_Solution_Fitness(Shape::Rect::Data *shapes, int n_shapes, Grid::Grid *collision)
-	{
-		double fitness = 0.0;
-
-		for (int i = 0; i < n_shapes; i++)
-		{
-			for (int j = i + 1; j < n_shapes; j++)
-			{
-				int r = Shape::Rect::collision(&shapes[i], &shapes[j]);
-				if (r == 1)
-				{
-					fitness -= 100;
-				}
-			}
-		}
-
-		for (int i = 1; i < n_shapes - 1; i++)
-		{
-			int k = Grid::get_First_Overlapped_Tile(-1, &shapes[i], collision);
-			if (k != -1)
-			{
-				fitness -= 100;
-			}
-
-			double dist_from_neighbor_mid = 0.0;
-			double x = 0.5*(shapes[i - 1].x + shapes[i + 1].x);
-			double y = 0.5*(shapes[i - 1].y + shapes[i + 1].y);
-			dist_from_neighbor_mid += (shapes[i].x - x)*(shapes[i].x - x);
-			dist_from_neighbor_mid += (shapes[i].y - y)*(shapes[i].y - y);
-
-			fitness -= 4.0*sqrt(dist_from_neighbor_mid);		
-		}
-
-		float distance_sum = 0.0;
-		for (int i = 1; i < n_shapes; i++)
-		{
-			float x = (shapes[i - 1].x - shapes[i].x)*(shapes[i - 1].x - shapes[i].x);
-			float y = (shapes[i - 1].y - shapes[i].y)*(shapes[i - 1].y - shapes[i].y);
-
-			distance_sum += sqrt(x + y);
-
-		}
-		fitness -= 0.9*distance_sum;
-
-		fitness /= n_shapes;
-		return fitness;
-	}
-
-	void _permute_Solution(Shape::Rect::Data *dest, Shape::Rect::Data *src, int n_shapes, float amount, float max_x, float max_y)
-	{
-		memcpy(dest, src, sizeof(Shape::Rect::Data)*n_shapes);
-		int n_permute = 1;
-		//for (int i = 1; i < n_shapes-1; i++)
-		for (int i = 0; i < n_permute; i++)
-		{
-			int k = 1 + rand() % (n_shapes - 2);
-			float x_amount = amount * (1.0 - 2.0*rand() / RAND_MAX);
-			float y_amount = amount * (1.0 - 2.0*rand() / RAND_MAX);
-
-			dest[k].x += x_amount;
-			dest[k].y += y_amount;
-
-			if (dest[k].x < 0) dest[k].x = 0;
-			if (dest[k].y < 0) dest[k].y = 0;
-			if (dest[k].x > max_x) dest[k].x = max_x;
-			if (dest[k].y > max_y) dest[k].y = max_y;
-		}
-	}
-
-	float update_Solution(Shape::Rect::Data *src, Shape::Rect::Data *tmp, int n_shapes, Grid::Grid *collision, float permute_amount, float temperature)
-	{
-
-		_permute_Solution(tmp, src, n_shapes, permute_amount, collision->n_cols - 1, collision->n_rows - 1);
-
-		float current_fitness = _calculate_Solution_Fitness(src, n_shapes, collision);
-		float permute_fitness = _calculate_Solution_Fitness(tmp, n_shapes, collision);
-
-		//any positive new-current makes it > 1, so it takes new (0.001 for example)
-		//slight differences -> e^-0.001, still is 0.999, so it takes new again - this is where temperature kicks in
-		//temperature must be in the order of 0.0001 to make -0.001 not acceptable-ish
-		float p = exp((permute_fitness - current_fitness) / temperature);
-		float r = (double)rand() / RAND_MAX;
-		if (r < p)
-		{
-			memcpy(src, tmp, sizeof(Shape::Rect::Data)*n_shapes);
-			return permute_fitness;
-		}
-
-		return current_fitness;
-	}
-
-	float solve(Shape::Rect::Data *src, Shape::Rect::Data *tmp, int n_shapes, int n_steps_per_temperature, Grid::Grid *collision, float permute_amount, float temperature, float temperature_decay)
-	{
-		int n_steps = 0;
-		float fitness = 0.0;
-		float epsilon = 0.0001;
-		while (temperature >= epsilon)
-		{
-			for (int i = 0; i < n_steps_per_temperature; i++)
-			{
-				fitness = update_Solution(src, tmp, n_shapes, collision, permute_amount, temperature);
-
-				n_steps++;
-			}
-			temperature *= temperature_decay;
-
-		}
-		//printf("n_steps = %d\n", n_steps);
-		return fitness;
-	}
+	
 
 	namespace Command
 	{
@@ -220,84 +94,7 @@ namespace My_Game
 			Shape::Rect::make_Instance(&World::tmp_points);
 		}
 
-		generate_New_Solution(World::points.rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
-
-#define PERMUTE_EXPERIMENT 0
-#if PERMUTE_EXPERIMENT 1
-		FILE *f = fopen("result.txt", "w+");
-		float permute_min = 1.0;
-		float permute_max = 32.0;
-		float permute_step = 1.0;
-		int n_samples = 1000;
-		int n_solutions = 100;
-
-		Shape::Rect::Factory *solutions = new Shape::Rect::Factory[n_solutions];
-		for (int i = 0; i < n_solutions; i++)
-		{
-			Shape::Rect::init(&solutions[i], World::Parameters::n_points);
-			for (int j = 0; j < World::Parameters::n_points; j++)
-			{
-				Shape::Rect::make_Instance(&solutions[i]);
-			}
-			generate_New_Solution(solutions[i].rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
-		}
-
-		for (float p = permute_min; p <= permute_max; p += permute_step)
-		{
-			printf("permute %f\n", p);
-			fprintf(f, "permute=%f", p);
-			for (int i = 0; i < n_solutions; i++)
-			{
-				for (int j = 0; j < n_samples; j++)
-				{
-
-					_permute_Solution(World::tmp_points.rect, solutions[i].rect, World::Parameters::n_points, p, World::maze.n_cols - 1, World::maze.n_rows - 1);
-
-					float fitness = _calculate_Solution_Fitness(World::tmp_points.rect, World::Parameters::n_points, &World::maze);
-					fprintf(f, "\t%f", fitness);
-				}
-			}
-			fprintf(f, "\n");
-		}
-		fclose(f);
-		exit(0);
-#endif
-
-
-#define DEBUG_EXPERIMENT 0
-#if DEBUG_EXPERIMENT 1
-		FILE *f = fopen("result.txt", "w+");
-		float temp_min = 0.95;
-		float temp_max = 0.95;
-		float temp_step = 0.01;
-		float permute_min = 24.0;
-		float permute_max = 24.0;
-		float permute_step = 8.0;
-
-		int n_permute_same_temp_min = 5;
-		int n_permute_same_temp_max = 990;
-		int n_permute_same_temp_step = 2;
-
-		for (float p = permute_min; p <= permute_max; p += permute_step)
-		{
-
-			for (float t = temp_min; t <= temp_max; t += temp_step)
-			{
-				for (int ps = n_permute_same_temp_min; ps <= n_permute_same_temp_max; ps *= n_permute_same_temp_step)
-				{
-					printf("%d - %f - %f\n", ps, p, t);
-					generate_New_Solution(World::points.rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
-					float fitness = solve(World::points.rect, World::tmp_points.rect, World::Parameters::n_points, ps, &World::maze, p, 1.0, t);
-					fprintf(f, "%d\t%f\t%f\t%f\n", ps, fitness, p, t);
-				}
-			}
-
-		}
-
-		fclose(f);
-		exit(0);
-#endif
-
+		
 	}
 
 	void update(unsigned int current_time, float dt)
@@ -307,45 +104,12 @@ namespace My_Game
 
 		Grid_Camera::calibrate(&World::camera);
 
-		if (current_time - World::last_step_time >= World::Parameters::step_frequency)
-		{
-			World::last_step_time = current_time;
-			for (int i = 0; i < World::Parameters::n_permute_same_temp; i++)
-			{
-				World::fitness = update_Solution(World::points.rect, World::tmp_points.rect, World::Parameters::n_points, &World::maze, World::Parameters::permute_amount, World::temperature);
-			}
-			World::temperature *= World::Parameters::temperature_decay;
-		}
 
 		Vec2D::Vec2D screen_point = { Input::mouse_x ,Input::mouse_y };
 		Grid_Camera::screen_to_Grid(&World::mouse_grid_point, &screen_point, &World::camera);
 
 
-		if (Input::mouse_left == 1)
-		{
-			World::temperature = 1.0;
-
-			Vec2D::Vec2D tmp = { World::points.rect[World::Parameters::n_points - 1].x,World::points.rect[World::Parameters::n_points - 1].y };
-			generate_New_Solution(World::points.rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
-
-			World::points.rect[World::Parameters::n_points - 1].x = tmp.x;
-			World::points.rect[World::Parameters::n_points - 1].y = tmp.y;
-			World::points.rect[0].x = World::mouse_grid_point.x;
-			World::points.rect[0].y = World::mouse_grid_point.y;
-		}
-
-		if (Input::mouse_right == 1)
-		{
-			World::temperature = 1.0;
-
-			Vec2D::Vec2D tmp = { World::points.rect[0].x,World::points.rect[0].y };
-			generate_New_Solution(World::points.rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
-
-			World::points.rect[0].x = tmp.x;
-			World::points.rect[0].y = tmp.y;
-			World::points.rect[World::Parameters::n_points - 1].x = World::mouse_grid_point.x;
-			World::points.rect[World::Parameters::n_points - 1].y = World::mouse_grid_point.y;
-		}
+		
 
 		//
 	}
