@@ -6,14 +6,14 @@
 
 int main()
 {
-	NN::Solution solution;
-	NN::init(&solution, 2, 2, 1, 0.95, 5, 0.5, 0.1, 10);
+	NN::Solution::Solution solution;
+	NN::Solution::init(&solution, 2, 2, 1, 1, 0.95, 5, 0.5, 0.1, 10);
 
 	int iteration = 0;
 
 	for (;;)
 	{
-		if (NN::get_Temperature(&solution) < 0.000001) break;
+		if (NN::Solution::get_Temperature(&solution) < 0.000001) break;
 
 		iteration++;
 
@@ -23,64 +23,72 @@ int main()
 		{
 			double input[2] = { 0,0 };
 
-			double out0 = 0;
-			double out1 = 0;
-			NN::run(out0, out1, input, &solution);
+			double out[2][1];
+			NN::Solution::run(out[0],out[1], input, &solution);
 
-			current_fitness -= (out0 - 0.0)*(out0 - 0.0);
-			new_fitness -= (out1 - 0.0)*(out1 - 0.0);
-		}
-		{
-			double input[2] = { 1,0 };
-
-			double out0 = 0;
-			double out1 = 0;
-			NN::run(out0, out1, input, &solution);
-
-			current_fitness -= (out0 - 1.0)*(out0 - 1.0);
-			new_fitness -= (out1 - 1.0)*(out1 - 1.0);
-		}
-		{
-			double input[2] = { 0,1 };
-
-			double out0 = 0;
-			double out1 = 0;
-			NN::run(out0, out1, input, &solution);
-
-			current_fitness -= (out0 - 1.0)*(out0 - 1.0);
-			new_fitness -= (out1 - 1.0)*(out1 - 1.0);
+			current_fitness -= (out[0][0] - 0.0)*(out[0][0] - 0.0);
+			new_fitness -= (out[1][0] - 0.0)*(out[1][0] - 0.0);
 		}
 		{
 			double input[2] = { 1,1 };
 
-			double out0 = 0;
-			double out1 = 0;
-			NN::run(out0, out1, input, &solution);
+			double out[2][1];
+			NN::Solution::run(out[0], out[1], input, &solution);
 
-			current_fitness -= (out0 - 0.0)*(out0 - 0.0);
-			new_fitness -= (out1 - 0.0)*(out1 - 0.0);
+			current_fitness -= (out[0][0] - 0.0)*(out[0][0] - 0.0);
+			new_fitness -= (out[1][0] - 0.0)*(out[1][0] - 0.0);
+		}
+		{
+			double input[2] = { 0,1 };
+
+			double out[2][1];
+			NN::Solution::run(out[0], out[1], input, &solution);
+
+			current_fitness -= (out[0][0] - 1)*(out[0][0] - 1);
+			new_fitness -= (out[1][0] - 1)*(out[1][0] - 1);
+		}
+		{
+			double input[2] = { 1,0 };
+
+			double out[2][1];
+			NN::Solution::run(out[0], out[1], input, &solution);
+
+			current_fitness -= (out[0][0] - 1)*(out[0][0] - 1);
+			new_fitness -= (out[1][0] - 1)*(out[1][0] - 1);
 		}
 		
-		NN::learn(&solution, current_fitness, new_fitness);
+		NN::Solution::learn(&solution, current_fitness, new_fitness);
 
 	}
+
+	NN::Data n;
+	NN::Solution::create_Current_Copy(&n, &solution);
 	
 	{
-		double input[2] = { 1,1 };
-		printf("%f\n", NN::run(&solution, input));
+		double input[2] = { 0,0 };
+		double output[1];
+		NN::Single::run(output, input, &n);
+		printf("%f\n", output[0]);
 	}
 	{
 		double input[2] = { 0,1 };
-		printf("%f\n", NN::run(&solution, input));
+		double output[1];
+		NN::Single::run(output, input, &n);
+		printf("%f\n", output[0]);
 	}
 	{
 		double input[2] = { 1,0 };
-		printf("%f\n", NN::run(&solution, input));
+		double output[1];
+		NN::Single::run(output, input, &n);
+		printf("%f\n", output[0]);
 	}
 	{
-		double input[2] = { 0,0 };
-		printf("%f\n", NN::run(&solution, input));
+		double input[2] = { 1,1 };
+		double output[1];
+		NN::Single::run(output, input, &n);
+		printf("%f\n", output[0]);
 	}
+	
 	printf("%d\n", iteration);
 	getchar();
 	return 0;
