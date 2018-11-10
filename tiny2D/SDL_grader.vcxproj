@@ -159,6 +159,8 @@
     <ClInclude Include="include\Vec_core.h" />
     <ClInclude Include="include\Vec_data.h" />
     <ClInclude Include="My_Game.h" />
+    <ClInclude Include="NN_core.h" />
+    <ClInclude Include="NN_data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

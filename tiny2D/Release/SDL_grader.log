@@ -58,10 +58,14 @@ c:\users\levent\documents\github\levent_development\tiny2d\include\body_core.h(8
 c:\users\levent\documents\github\levent_development\tiny2d\include\body_core.h(89): warning C4244: '*=': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(81): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
 c:\users\levent\documents\github\levent_development\tiny2d\include\light_core.h(81): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(244): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(243): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(242): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(241): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(259): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(258): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(257): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(256): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(282): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(281): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(280): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\include\actor_core.h(279): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(72): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(82): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(83): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
@@ -72,12 +76,16 @@ c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core
 c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(157): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(156): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\include\particle_core.h(155): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(39): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(65): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(80): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(81): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(108): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(108): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(71): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(92): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(93): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(128): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(128): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(135): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(135): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(147): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(152): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(152): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance

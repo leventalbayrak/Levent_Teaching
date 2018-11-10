@@ -95,19 +95,19 @@ namespace Particle
 	{
 		for (int k = 0; k < e->spawn_stack.array_size; k++)
 		{
-			if (e->spawn_stack.spawned[k] == 1)
+			if (e->spawn_stack.spawned[k] == 0) continue;
+			
+			if (current_time - e->creation_time[k] >= e->life_span[k])
 			{
-				if (current_time - e->creation_time[k] >= e->life_span[k])
-				{
-					Spawn_Stack::destroy(k, &e->spawn_stack);
-				}
-				else
-				{
-					Body::update_Vel(k, &e->bodies, dt);
-					//clear forces
-					e->bodies.force[k] = {};
-				}
+				Spawn_Stack::destroy(k, &e->spawn_stack);
 			}
+			else
+			{
+				Body::update_Vel(k, &e->bodies, dt);
+				//clear forces
+				e->bodies.force[k] = {};
+			}
+
 		}
 	}
 
