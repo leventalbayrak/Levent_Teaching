@@ -72,6 +72,9 @@ namespace NN
 		void modify(Data *n, int n_mod_count, double range)
 		{
 			for (int i = 0; i < n_mod_count; i++) n->data[rand() % n->total_size] += range * (1.0 - 2.0*rand() / RAND_MAX);
+
+			int k = rand() % n->total_size;
+			n->data[k] = -n->data[k];
 		}
 
 		void evolve_Modify(Data *dest, const Data *src, int mod_count, double range)
@@ -119,6 +122,7 @@ namespace NN
 			s->n_modify_count = n_modify_count;
 
 			internal::randomize(&s->current, randomize_range);
+			internal::randomize(&s->tmp, randomize_range);
 		}
 
 		inline void run_Main(double *output, const double *input, const Solution *s)

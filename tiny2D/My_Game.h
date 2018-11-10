@@ -54,7 +54,7 @@ namespace My_Game
 		Actor::Factory obstacles;
 		Actor::Factory agents_main;
 		Actor::Factory agents_alt;
-		int n_agents = 40;
+		int n_agents = 100;
 		int n_obstacles = 20;
 
 		int state = 0;//0 prep, 1 test, 2 update
@@ -93,8 +93,7 @@ namespace My_Game
 		World::camera.world_coord.h = World::maze.n_rows;
 
 
-		
-		NN::Solution::init(&World::solution, 3, 3, 1, 1, 0.95, 5, 1.0, 0.5, 20);
+		NN::Solution::init(&World::solution, 2, 4, 1, 1.0, 0.97, 2, 1.0, 0.5, 2);
 
 	}
 
@@ -149,7 +148,7 @@ namespace My_Game
 			Vec2D::Vec2D *v = Actor::get_Vel(0, &World::obstacles);
 			*v = {};
 
-			Vec2D::Vec2D force = {-3000.0-(3000.0*rand()/RAND_MAX),0.0};
+			Vec2D::Vec2D force = {-3000.0/*-(3000.0*rand()/RAND_MAX)*/,0.0};
 			Actor::add_Force(0, &World::obstacles, &force);
 
 			
@@ -161,7 +160,7 @@ namespace My_Game
 			Actor::update_Pos(0, &World::obstacles, dt);
 
 			Vec2D::Vec2D *p = Actor::get_Pos(0, &World::obstacles);
-			if (p->x <= 0)
+			if (p->x <= 1)
 			{
 				World::state = 2;
 			}
@@ -171,44 +170,37 @@ namespace My_Game
 				double input[4];
 				
 
-				input[0] = Actor::get_Pos(i, &World::agents_main)->x;
-				input[1] = Actor::get_Pos(i, &World::obstacles)->x;
-				input[2] = abs(Actor::get_Vel(i, &World::obstacles)->x);
-				double output_main[1];
+				input[0] = abs(Actor::get_Pos(i, &World::agents_main)->x - Actor::get_Pos(0, &World::obstacles)->x);
+				input[1] = 0.01*abs(Actor::get_Vel(0, &World::obstacles)->x);
+				double output_main[1] = { 0 };
 				NN::Solution::run_Main(output_main, input, &World::solution);
 
 
-				input[0] = Actor::get_Pos(i, &World::agents_alt)->x;
-				input[1] = Actor::get_Pos(i, &World::obstacles)->x;
-				input[2] = abs(Actor::get_Vel(i, &World::obstacles)->x);
-				double output_alt[1];
+				input[0] = abs(Actor::get_Pos(i, &World::agents_alt)->x - Actor::get_Pos(0, &World::obstacles)->x);
+				input[1] = 0.01*abs(Actor::get_Vel(0, &World::obstacles)->x);
+				double output_alt[1] = { 0 };
 				NN::Solution::run_Alt(output_alt, input, &World::solution);
 
-				if (Actor::collision(0, &World::obstacles, i,  &World::agents_main))
-				{
-					World::tmp_fitness_main -= 1.0;
-				}
-				if (Actor::collision(0, &World::obstacles, i,  &World::agents_alt))
-				{
-					World::tmp_fitness_alt -= 1.0;
-				}
 
-				double dx = Actor::get_Pos(i, &World::agents_main)->x - Actor::get_Pos(0, &World::obstacles)->x;
-				dx *= dx;
-				if (dx < output_main[0] * 200 && (Actor::get_Pos(i, &World::agents_main)->y >= World::maze.n_rows - 4))
+				if (output_main[0] >= 0.9 && (Actor::get_Pos(i, &World::agents_main)->y >= World::maze.n_rows - 4))
 				{
-					Vec2D::Vec2D jump = { 0.0,-3000.0 };
+					Vec2D::Vec2D jump = { 0.0,-1900.0 };
 					Actor::add_Force(i, &World::agents_main, &jump);
-				}
-				dx = Actor::get_Pos(i, &World::agents_alt)->x - Actor::get_Pos(0, &World::obstacles)->x;
-				dx *= dx;
-				if (dx < output_alt[0] * 200 && (Actor::get_Pos(i, &World::agents_alt)->y >= World::maze.n_rows - 4))
-				{
-					Vec2D::Vec2D jump = { 0.0,-3000.0 };
-					Actor::add_Force(i, &World::agents_alt, &jump);
+					//World::tmp_fitness_main -= 1.0;
+
+					printf("%f %f\n", output_main[0], output_alt[0]);
 				}
 
-				Vec2D::Vec2D gravity = { 0.0,100.0 };
+				
+
+				if (output_alt[0] >= 0.9 && (Actor::get_Pos(i, &World::agents_alt)->y >= World::maze.n_rows - 4))
+				{
+					Vec2D::Vec2D jump = { 0.0,-1900.0 };
+					Actor::add_Force(i, &World::agents_alt, &jump);
+					//World::tmp_fitness_alt -= 1.0;
+				}
+
+				Vec2D::Vec2D gravity = { 0.0,80 };
 				Actor::add_Force(i, &World::agents_main, &gravity);
 				Actor::add_Force(i, &World::agents_alt, &gravity);
 
@@ -222,13 +214,23 @@ namespace My_Game
 				if (pmain->y > World::maze.n_rows - 4)
 				{
 					Actor::undo_Pos_Update(i, &World::agents_main);
+					*(Actor::get_Vel(i, &World::agents_main)) = {};
 				}
 				Vec2D::Vec2D *palt = Actor::get_Pos(i, &World::agents_alt);
 				if (palt->y > World::maze.n_rows - 4)
 				{
 					Actor::undo_Pos_Update(i, &World::agents_alt);
+					*(Actor::get_Vel(i, &World::agents_alt)) = {};
 				}
 
+				if (Actor::collision(0, &World::obstacles, i, &World::agents_main))
+				{
+					World::tmp_fitness_main -= 1.0;
+				}
+				if (Actor::collision(0, &World::obstacles, i, &World::agents_alt))
+				{
+					World::tmp_fitness_alt -= 1.0;
+				}
 			}
 
 		}
