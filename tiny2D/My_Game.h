@@ -56,6 +56,10 @@ namespace My_Game
 		Actor::Factory agents_alt;
 		int n_agents = 100;
 		int n_obstacles = 20;
+		double min_obstacle_force = 1000;
+		double max_obstacle_force = 5000;
+		int max_n_samples = 10;
+		int current_sample = 0;
 
 		int state = 0;//0 prep, 1 test, 2 update
 		
@@ -75,13 +79,13 @@ namespace My_Game
 		Font::init(&World::text, "font_tileset.txt", Engine::renderer);
 		Tileset::init(&World::tileset, "map_tileset.txt", Engine::renderer);
 
-		Actor::init(&World::agents_main, 100);
+		Actor::init(&World::agents_main, World::n_agents);
 		Actor::add_Sprite(&World::agents_main, "saitama_pink_run.txt", Engine::renderer);
 
-		Actor::init(&World::agents_alt, 100);
+		Actor::init(&World::agents_alt, World::n_agents);
 		Actor::add_Sprite(&World::agents_alt, "saitama_pink_run.txt", Engine::renderer);
 
-		Actor::init(&World::obstacles, 100);
+		Actor::init(&World::obstacles, World::n_obstacles);
 		Actor::add_Sprite(&World::obstacles, "saitama_pink_run.txt", Engine::renderer);
 
 		Grid::load(&World::maze, "collision.csv");
@@ -93,24 +97,27 @@ namespace My_Game
 		World::camera.world_coord.h = World::maze.n_rows;
 
 
-		NN::Solution::init(&World::solution, 3, 4, 1, 1.0, 0.97, 5, 2.0, 0.1, 1);
+		NN::Solution::init(&World::solution, 3, 3, 1, 1.0, 0.97, 5, 4.0, 0.1, 1);
 
 	}
 
 	void learn()
 	{
 		//evaluate
-		World::state = 0;
+		World::current_sample = 0;
+		World::state = 2;
 		World::fitness_main = 0;
 		World::fitness_alt = 0;
 		World::solution.temperature.temperature = 1.0;
+		World::tmp_fitness_main = 0.0;
+		World::tmp_fitness_alt = 0.0;
 
 		Engine::event_Loop();
 		printf("learn\n");
 		int iter = 0;
 		for (;;)
 		{
-			float dt = 14 + 2.0*rand() / RAND_MAX;
+			float dt = (14 + 2.0*rand() / RAND_MAX)/1000.0;
 
 			iter++;
 			Grid_Camera::calibrate(&World::camera);
@@ -128,19 +135,18 @@ namespace My_Game
 					*v = {};
 				}
 
-				World::tmp_fitness_main = 0.0;
-				World::tmp_fitness_alt = 0.0;
-
 				Actor::set_Pos(0, World::maze.n_cols - 4, World::maze.n_rows - 4, &World::obstacles);
 
 				Vec2D::Vec2D *v = Actor::get_Vel(0, &World::obstacles);
 				*v = {};
 
-				Vec2D::Vec2D force = { -3000.0 /*- (5000.0*rand() / RAND_MAX)*/,0.0 };
+				double fx = World::min_obstacle_force + (World::max_obstacle_force - World::min_obstacle_force)*rand() / RAND_MAX;
+				Vec2D::Vec2D force = { -fx,0.0 };
 				Actor::add_Force(0, &World::obstacles, &force);
 
 
 				World::state = 1;
+			
 			}
 			else if (World::state == 1)
 			{
@@ -151,6 +157,7 @@ namespace My_Game
 				if (p->x <= 1)
 				{
 					World::state = 2;
+					continue;
 				}
 
 				for (int i = 0; i < World::n_agents; i++)
@@ -224,12 +231,28 @@ namespace My_Game
 			{
 				World::state = 0;
 
-				World::fitness_main = World::tmp_fitness_main;
-				World::fitness_alt = World::tmp_fitness_alt;
-				NN::Solution::learn(&World::solution, World::fitness_main, World::fitness_alt);
+				if (++World::current_sample >= World::max_n_samples)
+				{
+					World::current_sample = 0;
+					World::fitness_main = World::tmp_fitness_main/World::max_n_samples;
+					World::fitness_alt = World::tmp_fitness_alt/World::max_n_samples;
+					
+
+					NN::Solution::learn(&World::solution, World::fitness_main, World::fitness_alt);
+					printf("%d %f %f\n", iter, World::fitness_main, NN::Solution::get_Temperature(&World::solution));
+
+					World::tmp_fitness_main = 0;
+					World::tmp_fitness_alt = 0;
+
+					if (NN::Solution::get_Temperature(&World::solution) <= 0.0001)
+					{
+						return;
+					}
+
+				}
+
 				
-				printf("%d %f\n", iter, World::tmp_fitness_main);
-				if (NN::Solution::get_Temperature(&World::solution) <= 0.000001) return;
+				
 			}
 		
 		}
@@ -298,7 +321,8 @@ namespace My_Game
 			Vec2D::Vec2D *v = Actor::get_Vel(0, &World::obstacles);
 			*v = {};
 
-			Vec2D::Vec2D force = {-3000.0/*-(5000.0*rand()/RAND_MAX)*/,0.0};
+			double fx = World::min_obstacle_force + (World::max_obstacle_force - World::min_obstacle_force)*rand() / RAND_MAX;
+			Vec2D::Vec2D force = { -fx,0.0 };
 			Actor::add_Force(0, &World::obstacles, &force);
 
 			
@@ -313,6 +337,7 @@ namespace My_Game
 			if (p->x <= 1)
 			{
 				World::state = 2;
+				return;
 			}
 
 			for (int i = 0; i < World::n_agents; i++)
@@ -406,7 +431,7 @@ namespace My_Game
 		for (int i = 0; i < World::n_agents; i++)
 		{
 			Actor::draw(i, &World::agents_main, &World::camera, current_time, Engine::renderer);
-			Actor::draw(i, &World::agents_alt, &World::camera, current_time, Engine::renderer);
+			//Actor::draw(i, &World::agents_alt, &World::camera, current_time, Engine::renderer);
 		}
 
 

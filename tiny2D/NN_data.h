@@ -14,12 +14,6 @@ namespace NN
 
 	namespace internal
 	{
-		struct Evolve_In
-		{
-			double fitness0;
-			double fitness1;
-		};
-
 		struct Temperature
 		{
 			double temperature;

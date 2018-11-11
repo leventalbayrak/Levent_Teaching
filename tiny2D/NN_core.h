@@ -88,9 +88,9 @@ namespace NN
 			Single::run(output, input, n);
 		}
 
-		void evolve_Update(Temperature *t, Data *dest, Data *src, Evolve_In *e)
+		void evolve_Update(Temperature *t, Data *dest, Data *src, double fitness_dest, double fitness_src)
 		{
-			double pe = exp((e->fitness1 - e->fitness0) / t->temperature);
+			double pe = exp((fitness_src - fitness_dest) / t->temperature);
 			double p = (double)rand() / RAND_MAX;
 
 			if (p <= pe)
@@ -136,8 +136,7 @@ namespace NN
 
 		void learn(Solution *s, double fitness0, double fitness1)
 		{
-			internal::Evolve_In ein = { fitness0, fitness1 };
-			evolve_Update(&s->temperature, &s->current, &s->tmp, &ein);
+			evolve_Update(&s->temperature, &s->current, &s->tmp, fitness0, fitness1);
 			internal::evolve_Modify(&s->tmp, &s->current, s->n_modify_count, s->modify_range);
 		}
 
