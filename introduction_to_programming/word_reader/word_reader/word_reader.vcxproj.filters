@@ -32,5 +32,11 @@
     <ClInclude Include="String_Ext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Word_Stats_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Word_Stats_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

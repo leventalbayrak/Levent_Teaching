@@ -118,6 +118,8 @@
     <ClInclude Include="String_Ext.h" />
     <ClInclude Include="Word_Reader_core.h" />
     <ClInclude Include="Word_Reader_data.h" />
+    <ClInclude Include="Word_Stats_core.h" />
+    <ClInclude Include="Word_Stats_data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
