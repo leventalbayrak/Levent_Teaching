@@ -6,139 +6,13 @@
 #include "include/Light_core.h"
 #include "include/Actor_core.h"
 #include "include/Particle_core.h"
-
+#include "NN_core.h"
 
 
 namespace My_Game
 {
 
-	void generate_New_Solution(Shape::Rect::Data *shapes, int n_shapes, float w, float h, float max_x, float max_y)
-	{
-		shapes[0] = { (float)1.0,(float)(max_y / 2.0),w,h };
-		shapes[n_shapes - 1] = { (float)(max_x - 2.0),(float)(max_y / 2.0),w,h };
-		//shapes[n_shapes - 1] = { (float)(max_x - 2.0),(float)(max_y - 2.0),w,h };
-		for (int i = 1; i < n_shapes - 1; i++)
-		{
-			float x = max_x * (double)rand() / RAND_MAX;
-			float y = max_y * (double)rand() / RAND_MAX;
-
-			shapes[i].x = x;
-			shapes[i].y = y;
-			shapes[i].w = w;
-			shapes[i].h = h;
-		}
-	}
-
-	double _calculate_Solution_Fitness(Shape::Rect::Data *shapes, int n_shapes, Grid::Grid *collision)
-	{
-		double fitness = 0.0;
-
-		for (int i = 0; i < n_shapes; i++)
-		{
-			for (int j = i + 1; j < n_shapes; j++)
-			{
-				int r = Shape::Rect::collision(&shapes[i], &shapes[j]);
-				if (r == 1)
-				{
-					fitness -= 100;
-				}
-			}
-		}
-
-		for (int i = 1; i < n_shapes - 1; i++)
-		{
-			int k = Grid::get_First_Overlapped_Tile(-1, &shapes[i], collision);
-			if (k != -1)
-			{
-				fitness -= 100;
-			}
-
-			double dist_from_neighbor_mid = 0.0;
-			double x = 0.5*(shapes[i - 1].x + shapes[i + 1].x);
-			double y = 0.5*(shapes[i - 1].y + shapes[i + 1].y);
-			dist_from_neighbor_mid += (shapes[i].x - x)*(shapes[i].x - x);
-			dist_from_neighbor_mid += (shapes[i].y - y)*(shapes[i].y - y);
-
-			fitness -= 4.0*sqrt(dist_from_neighbor_mid);		
-		}
-
-		float distance_sum = 0.0;
-		for (int i = 1; i < n_shapes; i++)
-		{
-			float x = (shapes[i - 1].x - shapes[i].x)*(shapes[i - 1].x - shapes[i].x);
-			float y = (shapes[i - 1].y - shapes[i].y)*(shapes[i - 1].y - shapes[i].y);
-
-			distance_sum += sqrt(x + y);
-
-		}
-		fitness -= 0.9*distance_sum;
-
-		fitness /= n_shapes;
-		return fitness;
-	}
-
-	void _permute_Solution(Shape::Rect::Data *dest, Shape::Rect::Data *src, int n_shapes, float amount, float max_x, float max_y)
-	{
-		memcpy(dest, src, sizeof(Shape::Rect::Data)*n_shapes);
-		int n_permute = 1;
-		//for (int i = 1; i < n_shapes-1; i++)
-		for (int i = 0; i < n_permute; i++)
-		{
-			int k = 1 + rand() % (n_shapes - 2);
-			float x_amount = amount * (1.0 - 2.0*rand() / RAND_MAX);
-			float y_amount = amount * (1.0 - 2.0*rand() / RAND_MAX);
-
-			dest[k].x += x_amount;
-			dest[k].y += y_amount;
-
-			if (dest[k].x < 0) dest[k].x = 0;
-			if (dest[k].y < 0) dest[k].y = 0;
-			if (dest[k].x > max_x) dest[k].x = max_x;
-			if (dest[k].y > max_y) dest[k].y = max_y;
-		}
-	}
-
-	float update_Solution(Shape::Rect::Data *src, Shape::Rect::Data *tmp, int n_shapes, Grid::Grid *collision, float permute_amount, float temperature)
-	{
-
-		_permute_Solution(tmp, src, n_shapes, permute_amount, collision->n_cols - 1, collision->n_rows - 1);
-
-		float current_fitness = _calculate_Solution_Fitness(src, n_shapes, collision);
-		float permute_fitness = _calculate_Solution_Fitness(tmp, n_shapes, collision);
-
-		//any positive new-current makes it > 1, so it takes new (0.001 for example)
-		//slight differences -> e^-0.001, still is 0.999, so it takes new again - this is where temperature kicks in
-		//temperature must be in the order of 0.0001 to make -0.001 not acceptable-ish
-		float p = exp((permute_fitness - current_fitness) / temperature);
-		float r = (double)rand() / RAND_MAX;
-		if (r < p)
-		{
-			memcpy(src, tmp, sizeof(Shape::Rect::Data)*n_shapes);
-			return permute_fitness;
-		}
-
-		return current_fitness;
-	}
-
-	float solve(Shape::Rect::Data *src, Shape::Rect::Data *tmp, int n_shapes, int n_steps_per_temperature, Grid::Grid *collision, float permute_amount, float temperature, float temperature_decay)
-	{
-		int n_steps = 0;
-		float fitness = 0.0;
-		float epsilon = 0.0001;
-		while (temperature >= epsilon)
-		{
-			for (int i = 0; i < n_steps_per_temperature; i++)
-			{
-				fitness = update_Solution(src, tmp, n_shapes, collision, permute_amount, temperature);
-
-				n_steps++;
-			}
-			temperature *= temperature_decay;
-
-		}
-		//printf("n_steps = %d\n", n_steps);
-		return fitness;
-	}
+	
 
 	namespace Command
 	{
@@ -158,12 +32,7 @@ namespace My_Game
 
 		namespace Parameters
 		{
-			int step_frequency = 0;
-			int n_points = 20;
-			float box_size = 1.0;
-			float permute_amount = 24.0;//<-- VERY IMPORTANT RANK 3
-			float temperature_decay = 0.98;//<-- VERY IMPORTANT RANK 1
-			int n_permute_same_temp = 80;//<-- VERY IMPORTANT RANK 2
+
 		}
 
 		Tileset::Tileset tileset;
@@ -182,8 +51,23 @@ namespace My_Game
 
 		float fitness = 0.0;
 
-		Shape::Rect::Factory points;
-		Shape::Rect::Factory tmp_points;
+		Actor::Factory obstacles;
+		Actor::Factory agents_main;
+		Actor::Factory agents_alt;
+		int n_agents = 100;
+		int n_obstacles = 20;
+		double min_obstacle_force = 1000;
+		double max_obstacle_force = 5000;
+		int max_n_samples = 10;
+		int current_sample = 0;
+
+		int state = 0;//0 prep, 1 test, 2 update
+		
+		double fitness_main = 0.0;
+		double fitness_alt = 0.0;
+		double tmp_fitness_main = 0.0;
+		double tmp_fitness_alt = 0.0;
+		NN::Solution::Solution solution;
 	}
 
 	void init(int screen_w, int screen_h)
@@ -195,8 +79,14 @@ namespace My_Game
 		Font::init(&World::text, "font_tileset.txt", Engine::renderer);
 		Tileset::init(&World::tileset, "map_tileset.txt", Engine::renderer);
 
-		Shape::Rect::init(&World::points, World::Parameters::n_points);
-		Shape::Rect::init(&World::tmp_points, World::Parameters::n_points);
+		Actor::init(&World::agents_main, World::n_agents);
+		Actor::add_Sprite(&World::agents_main, "saitama_pink_run.txt", Engine::renderer);
+
+		Actor::init(&World::agents_alt, World::n_agents);
+		Actor::add_Sprite(&World::agents_alt, "saitama_pink_run.txt", Engine::renderer);
+
+		Actor::init(&World::obstacles, World::n_obstacles);
+		Actor::add_Sprite(&World::obstacles, "saitama_pink_run.txt", Engine::renderer);
 
 		Grid::load(&World::maze, "collision.csv");
 
@@ -206,6 +96,167 @@ namespace My_Game
 		World::camera.world_coord.w = World::maze.n_cols;
 		World::camera.world_coord.h = World::maze.n_rows;
 
+
+		NN::Solution::init(&World::solution, 3, 3, 1, 1.0, 0.97, 5, 4.0, 0.1, 1);
+
+	}
+
+	void learn()
+	{
+		//evaluate
+		World::current_sample = 0;
+		World::state = 2;
+		World::fitness_main = 0;
+		World::fitness_alt = 0;
+		World::solution.temperature.temperature = 1.0;
+		World::tmp_fitness_main = 0.0;
+		World::tmp_fitness_alt = 0.0;
+
+		Engine::event_Loop();
+		printf("learn\n");
+		int iter = 0;
+		for (;;)
+		{
+			float dt = (14 + 2.0*rand() / RAND_MAX)/1000.0;
+
+			iter++;
+			Grid_Camera::calibrate(&World::camera);
+
+			if (World::state == 0)
+			{
+				for (int i = 0; i < World::n_agents; i++)
+				{
+					Actor::set_Pos(i, 4 + 40.0*rand() / RAND_MAX, World::maze.n_rows - 4, &World::agents_main);
+					Actor::set_Pos(i, Actor::get_Pos(i, &World::agents_main)->x, Actor::get_Pos(i, &World::agents_main)->y, &World::agents_alt);
+
+					Vec2D::Vec2D *v = Actor::get_Vel(i, &World::agents_main);
+					*v = {};
+					v = Actor::get_Vel(i, &World::agents_alt);
+					*v = {};
+				}
+
+				Actor::set_Pos(0, World::maze.n_cols - 4, World::maze.n_rows - 4, &World::obstacles);
+
+				Vec2D::Vec2D *v = Actor::get_Vel(0, &World::obstacles);
+				*v = {};
+
+				double fx = World::min_obstacle_force + (World::max_obstacle_force - World::min_obstacle_force)*rand() / RAND_MAX;
+				Vec2D::Vec2D force = { -fx,0.0 };
+				Actor::add_Force(0, &World::obstacles, &force);
+
+
+				World::state = 1;
+			
+			}
+			else if (World::state == 1)
+			{
+				Actor::update_Vel(0, &World::obstacles, dt);
+				Actor::update_Pos(0, &World::obstacles, dt);
+
+				Vec2D::Vec2D *p = Actor::get_Pos(0, &World::obstacles);
+				if (p->x <= 1)
+				{
+					World::state = 2;
+					continue;
+				}
+
+				for (int i = 0; i < World::n_agents; i++)
+				{
+					double input[4];
+
+
+					input[0] = abs(Actor::get_Pos(i, &World::agents_main)->x - Actor::get_Pos(0, &World::obstacles)->x);
+					input[1] = 0.01*(Actor::get_Vel(0, &World::obstacles)->x);
+					input[2] = dt;
+					double output_main[1] = { 0 };
+					NN::Solution::run_Main(output_main, input, &World::solution);
+
+
+					input[0] = abs(Actor::get_Pos(i, &World::agents_alt)->x - Actor::get_Pos(0, &World::obstacles)->x);
+					input[1] = 0.01*(Actor::get_Vel(0, &World::obstacles)->x);
+					input[2] = dt;
+					double output_alt[1] = { 0 };
+					NN::Solution::run_Alt(output_alt, input, &World::solution);
+
+
+					if (output_main[0] >= 0.9 && (Actor::get_Pos(i, &World::agents_main)->y >= World::maze.n_rows - 4))
+					{
+						Vec2D::Vec2D jump = { 0.0,-1900.0 };
+						Actor::add_Force(i, &World::agents_main, &jump);
+					}
+
+
+
+					if (output_alt[0] >= 0.9 && (Actor::get_Pos(i, &World::agents_alt)->y >= World::maze.n_rows - 4))
+					{
+						Vec2D::Vec2D jump = { 0.0,-1900.0 };
+						Actor::add_Force(i, &World::agents_alt, &jump);
+					}
+
+					Vec2D::Vec2D gravity = { 0.0,80 };
+					Actor::add_Force(i, &World::agents_main, &gravity);
+					Actor::add_Force(i, &World::agents_alt, &gravity);
+
+					Actor::update_Vel(i, &World::agents_main, dt);
+					Actor::update_Pos(i, &World::agents_main, dt);
+
+					Actor::update_Vel(i, &World::agents_alt, dt);
+					Actor::update_Pos(i, &World::agents_alt, dt);
+
+					Vec2D::Vec2D *pmain = Actor::get_Pos(i, &World::agents_main);
+					if (pmain->y > World::maze.n_rows - 4)
+					{
+						Actor::undo_Pos_Update(i, &World::agents_main);
+						*(Actor::get_Vel(i, &World::agents_main)) = {};
+					}
+					Vec2D::Vec2D *palt = Actor::get_Pos(i, &World::agents_alt);
+					if (palt->y > World::maze.n_rows - 4)
+					{
+						Actor::undo_Pos_Update(i, &World::agents_alt);
+						*(Actor::get_Vel(i, &World::agents_alt)) = {};
+					}
+
+					if (Actor::collision(0, &World::obstacles, i, &World::agents_main))
+					{
+						World::tmp_fitness_main -= 1.0;
+					}
+					if (Actor::collision(0, &World::obstacles, i, &World::agents_alt))
+					{
+						World::tmp_fitness_alt -= 1.0;
+					}
+				}
+
+			}
+			else if (World::state == 2)
+			{
+				World::state = 0;
+
+				if (++World::current_sample >= World::max_n_samples)
+				{
+					World::current_sample = 0;
+					World::fitness_main = World::tmp_fitness_main/World::max_n_samples;
+					World::fitness_alt = World::tmp_fitness_alt/World::max_n_samples;
+					
+
+					NN::Solution::learn(&World::solution, World::fitness_main, World::fitness_alt);
+					printf("%d %f %f\n", iter, World::fitness_main, NN::Solution::get_Temperature(&World::solution));
+
+					World::tmp_fitness_main = 0;
+					World::tmp_fitness_alt = 0;
+
+					if (NN::Solution::get_Temperature(&World::solution) <= 0.0001)
+					{
+						return;
+					}
+
+				}
+
+				
+				
+			}
+		
+		}
+		//
 	}
 
 	void begin_Play(unsigned int current_time)
@@ -214,90 +265,19 @@ namespace My_Game
 		Font::set_Screen_Size(&World::text, 16, 16);
 		Font::set_RGBA(&World::text, &text_color);
 
-		for (int i = 0; i < World::Parameters::n_points; i++)
+		for (int i = 0; i < World::n_agents; i++)
 		{
-			Shape::Rect::make_Instance(&World::points);
-			Shape::Rect::make_Instance(&World::tmp_points);
+			Actor::spawn(&World::agents_main, 4, current_time);
+			Actor::spawn(&World::agents_alt, 4, current_time);
+			*(Actor::get_Color(i, &World::agents_main)) = { 0,255,0,150 };
+			*(Actor::get_Color(i, &World::agents_alt)) = { 255,0,0,150 };
 		}
 
-		generate_New_Solution(World::points.rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
+		Actor::spawn(&World::obstacles, 4, current_time);
+		Actor::set_Flip(0, 1, &World::obstacles);
 
-#define PERMUTE_EXPERIMENT 0
-#if PERMUTE_EXPERIMENT 1
-		FILE *f = fopen("result.txt", "w+");
-		float permute_min = 1.0;
-		float permute_max = 32.0;
-		float permute_step = 1.0;
-		int n_samples = 1000;
-		int n_solutions = 100;
-
-		Shape::Rect::Factory *solutions = new Shape::Rect::Factory[n_solutions];
-		for (int i = 0; i < n_solutions; i++)
-		{
-			Shape::Rect::init(&solutions[i], World::Parameters::n_points);
-			for (int j = 0; j < World::Parameters::n_points; j++)
-			{
-				Shape::Rect::make_Instance(&solutions[i]);
-			}
-			generate_New_Solution(solutions[i].rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
-		}
-
-		for (float p = permute_min; p <= permute_max; p += permute_step)
-		{
-			printf("permute %f\n", p);
-			fprintf(f, "permute=%f", p);
-			for (int i = 0; i < n_solutions; i++)
-			{
-				for (int j = 0; j < n_samples; j++)
-				{
-
-					_permute_Solution(World::tmp_points.rect, solutions[i].rect, World::Parameters::n_points, p, World::maze.n_cols - 1, World::maze.n_rows - 1);
-
-					float fitness = _calculate_Solution_Fitness(World::tmp_points.rect, World::Parameters::n_points, &World::maze);
-					fprintf(f, "\t%f", fitness);
-				}
-			}
-			fprintf(f, "\n");
-		}
-		fclose(f);
-		exit(0);
-#endif
-
-
-#define DEBUG_EXPERIMENT 0
-#if DEBUG_EXPERIMENT 1
-		FILE *f = fopen("result.txt", "w+");
-		float temp_min = 0.95;
-		float temp_max = 0.95;
-		float temp_step = 0.01;
-		float permute_min = 24.0;
-		float permute_max = 24.0;
-		float permute_step = 8.0;
-
-		int n_permute_same_temp_min = 5;
-		int n_permute_same_temp_max = 990;
-		int n_permute_same_temp_step = 2;
-
-		for (float p = permute_min; p <= permute_max; p += permute_step)
-		{
-
-			for (float t = temp_min; t <= temp_max; t += temp_step)
-			{
-				for (int ps = n_permute_same_temp_min; ps <= n_permute_same_temp_max; ps *= n_permute_same_temp_step)
-				{
-					printf("%d - %f - %f\n", ps, p, t);
-					generate_New_Solution(World::points.rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
-					float fitness = solve(World::points.rect, World::tmp_points.rect, World::Parameters::n_points, ps, &World::maze, p, 1.0, t);
-					fprintf(f, "%d\t%f\t%f\t%f\n", ps, fitness, p, t);
-				}
-			}
-
-		}
-
-		fclose(f);
-		exit(0);
-#endif
-
+		learn();
+		printf("Done\n");
 	}
 
 	void update(unsigned int current_time, float dt)
@@ -305,46 +285,133 @@ namespace My_Game
 
 		Engine::event_Loop();
 
+		if (Input::keys[SDL_SCANCODE_SPACE])
+		{
+			World::fitness_main = 0;
+			World::fitness_alt = 0;
+			World::solution.temperature.temperature = 1.0;
+			World::state = 0;
+			learn();
+		}
+
 		Grid_Camera::calibrate(&World::camera);
 
-		if (current_time - World::last_step_time >= World::Parameters::step_frequency)
-		{
-			World::last_step_time = current_time;
-			for (int i = 0; i < World::Parameters::n_permute_same_temp; i++)
-			{
-				World::fitness = update_Solution(World::points.rect, World::tmp_points.rect, World::Parameters::n_points, &World::maze, World::Parameters::permute_amount, World::temperature);
-			}
-			World::temperature *= World::Parameters::temperature_decay;
-		}
 
 		Vec2D::Vec2D screen_point = { Input::mouse_x ,Input::mouse_y };
 		Grid_Camera::screen_to_Grid(&World::mouse_grid_point, &screen_point, &World::camera);
 
-
-		if (Input::mouse_left == 1)
+		if (World::state == 0)
 		{
-			World::temperature = 1.0;
+			for (int i = 0; i < World::n_agents; i++)
+			{
+				Actor::set_Pos(i, 4 + 40.0*rand() / RAND_MAX, World::maze.n_rows - 4, &World::agents_main);
+				Actor::set_Pos(i, Actor::get_Pos(i, &World::agents_main)->x, Actor::get_Pos(i, &World::agents_main)->y, &World::agents_alt);
 
-			Vec2D::Vec2D tmp = { World::points.rect[World::Parameters::n_points - 1].x,World::points.rect[World::Parameters::n_points - 1].y };
-			generate_New_Solution(World::points.rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
+				Vec2D::Vec2D *v = Actor::get_Vel(i, &World::agents_main);
+				*v = {};
+				v = Actor::get_Vel(i, &World::agents_alt);
+				*v = {};
+			}
 
-			World::points.rect[World::Parameters::n_points - 1].x = tmp.x;
-			World::points.rect[World::Parameters::n_points - 1].y = tmp.y;
-			World::points.rect[0].x = World::mouse_grid_point.x;
-			World::points.rect[0].y = World::mouse_grid_point.y;
+			World::tmp_fitness_main = 0.0;
+			World::tmp_fitness_alt = 0.0;
+
+			Actor::set_Pos(0, World::maze.n_cols - 4, World::maze.n_rows - 4, &World::obstacles);
+			
+			Vec2D::Vec2D *v = Actor::get_Vel(0, &World::obstacles);
+			*v = {};
+
+			double fx = World::min_obstacle_force + (World::max_obstacle_force - World::min_obstacle_force)*rand() / RAND_MAX;
+			Vec2D::Vec2D force = { -fx,0.0 };
+			Actor::add_Force(0, &World::obstacles, &force);
+
+			
+			World::state = 1;
 		}
-
-		if (Input::mouse_right == 1)
+		else if (World::state == 1)
 		{
-			World::temperature = 1.0;
+			Actor::update_Vel(0, &World::obstacles, dt);
+			Actor::update_Pos(0, &World::obstacles, dt);
 
-			Vec2D::Vec2D tmp = { World::points.rect[0].x,World::points.rect[0].y };
-			generate_New_Solution(World::points.rect, World::Parameters::n_points, World::Parameters::box_size, World::Parameters::box_size, World::maze.n_cols - 1, World::maze.n_rows - 1);
+			Vec2D::Vec2D *p = Actor::get_Pos(0, &World::obstacles);
+			if (p->x <= 1)
+			{
+				World::state = 2;
+				return;
+			}
 
-			World::points.rect[0].x = tmp.x;
-			World::points.rect[0].y = tmp.y;
-			World::points.rect[World::Parameters::n_points - 1].x = World::mouse_grid_point.x;
-			World::points.rect[World::Parameters::n_points - 1].y = World::mouse_grid_point.y;
+			for (int i = 0; i < World::n_agents; i++)
+			{
+				double input[4];
+				
+
+				input[0] = abs(Actor::get_Pos(i, &World::agents_main)->x - Actor::get_Pos(0, &World::obstacles)->x);
+				input[1] = 0.01*(Actor::get_Vel(0, &World::obstacles)->x);
+				input[2] = dt;
+				double output_main[1] = { 0 };
+				NN::Solution::run_Main(output_main, input, &World::solution);
+
+
+				input[0] = abs(Actor::get_Pos(i, &World::agents_alt)->x - Actor::get_Pos(0, &World::obstacles)->x);
+				input[1] = 0.01*(Actor::get_Vel(0, &World::obstacles)->x);
+				input[2] = dt;
+				double output_alt[1] = { 0 };
+				NN::Solution::run_Alt(output_alt, input, &World::solution);
+
+
+				if (output_main[0] >= 0.9 && (Actor::get_Pos(i, &World::agents_main)->y >= World::maze.n_rows - 4))
+				{
+					Vec2D::Vec2D jump = { 0.0,-1900.0 };
+					Actor::add_Force(i, &World::agents_main, &jump);
+				}
+
+				if (output_alt[0] >= 0.9 && (Actor::get_Pos(i, &World::agents_alt)->y >= World::maze.n_rows - 4))
+				{
+					Vec2D::Vec2D jump = { 0.0,-1900.0 };
+					Actor::add_Force(i, &World::agents_alt, &jump);
+				}
+
+				Vec2D::Vec2D gravity = { 0.0,80 };
+				Actor::add_Force(i, &World::agents_main, &gravity);
+				Actor::add_Force(i, &World::agents_alt, &gravity);
+
+				Actor::update_Vel(i, &World::agents_main, dt);
+				Actor::update_Pos(i, &World::agents_main, dt);
+
+				Actor::update_Vel(i, &World::agents_alt, dt);
+				Actor::update_Pos(i, &World::agents_alt, dt);
+
+				Vec2D::Vec2D *pmain = Actor::get_Pos(i, &World::agents_main);
+				if (pmain->y > World::maze.n_rows - 4)
+				{
+					Actor::undo_Pos_Update(i, &World::agents_main);
+					*(Actor::get_Vel(i, &World::agents_main)) = {};
+				}
+				Vec2D::Vec2D *palt = Actor::get_Pos(i, &World::agents_alt);
+				if (palt->y > World::maze.n_rows - 4)
+				{
+					Actor::undo_Pos_Update(i, &World::agents_alt);
+					*(Actor::get_Vel(i, &World::agents_alt)) = {};
+				}
+
+				if (Actor::collision(0, &World::obstacles, i, &World::agents_main))
+				{
+					World::tmp_fitness_main -= 1.0;
+				}
+				if (Actor::collision(0, &World::obstacles, i, &World::agents_alt))
+				{
+					World::tmp_fitness_alt -= 1.0;
+				}
+			}
+
+		}
+		else if (World::state == 2)
+		{
+			//evaluate
+			World::state = 0;
+			World::fitness_main = World::tmp_fitness_main;
+			World::fitness_alt = World::tmp_fitness_alt;
+			//NN::Solution::learn(&World::solution, World::fitness_main, World::fitness_alt);
 		}
 
 		//
@@ -358,12 +425,18 @@ namespace My_Game
 		RGBA::RGBA tile_tint = { 255,255,255,255 };
 		Tileset::draw_Grid(&World::tileset, &World::camera, &World::maze, &tile_tint, Engine::renderer);
 
-		RGB::RGB color = { 255,0,0 };
-		Shape::Rect::draw(&World::points, &color, &World::camera, Engine::renderer);
-		Shape::Rect::draw_Connecting_Lines(&World::points, &color, &World::camera, Engine::renderer);
+
+		Actor::draw(0, &World::obstacles, &World::camera, current_time, Engine::renderer);
+
+		for (int i = 0; i < World::n_agents; i++)
+		{
+			Actor::draw(i, &World::agents_main, &World::camera, current_time, Engine::renderer);
+			//Actor::draw(i, &World::agents_alt, &World::camera, current_time, Engine::renderer);
+		}
+
 
 		char str[256];
-		sprintf(str, "temperature %f\nfitness %f", World::temperature, World::fitness);
+		sprintf(str, "main %f\nalt %f\ntemp %f", World::fitness_main, World::fitness_alt, World::solution.temperature.temperature);
 		Font::set_Screen_Size(&World::text, 32, 32);
 		Font::set_Screen_Pos(&World::text, 10, 10);
 		Font::draw(&World::text, str, strlen(str), &World::camera, Engine::renderer);

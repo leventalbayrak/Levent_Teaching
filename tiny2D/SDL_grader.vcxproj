@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{C48613F3-05A5-47A5-82EB-167B3A4197D3}</ProjectGuid>
     <RootNamespace>SDLgrader</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -159,6 +159,8 @@
     <ClInclude Include="include\Vec_core.h" />
     <ClInclude Include="include\Vec_data.h" />
     <ClInclude Include="My_Game.h" />
+    <ClInclude Include="NN_core.h" />
+    <ClInclude Include="NN_data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

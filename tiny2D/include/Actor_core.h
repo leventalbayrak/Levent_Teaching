@@ -136,6 +136,11 @@ namespace Actor
 	{
 		f->current_sprite[which_actor] = which_sprite;
 	}
+
+	void set_Flip(int which_actor, int flip, Factory *f)
+	{
+		f->sprite_flip[which_actor] = flip;
+	}
 	
 	void set_Pos(int which_actor,float x, float y, Factory *f)
 	{
@@ -171,6 +176,11 @@ namespace Actor
 		return &f->bodies.last_pos[which_actor];
 	}
 
+	RGBA::RGBA *get_Color(int which_actor, Factory *f)
+	{
+		return &f->color[which_actor];
+	}
+
 	void set_Size(int which_actor, float w, float h, Factory *f)
 	{
 		f->world_coords.rect[which_actor].w = w;
@@ -179,8 +189,8 @@ namespace Actor
 
 	void set_Scale(int which_actor, Factory *f, float scale)
 	{
-		f->world_coords.rect[which_actor].w *= scale;
-		f->world_coords.rect[which_actor].h *= scale;
+		f->world_coords.rect[which_actor].w = scale;
+		f->world_coords.rect[which_actor].h = scale * (float)f->sprites[0].texture_info.frame_h / f->sprites[0].texture_info.frame_w;
 	}
 
 	void destroy(int which_actor, Factory *f)
@@ -189,6 +199,11 @@ namespace Actor
 		f->bodies.spawn_stack.spawned[which_actor] = 0;
 		f->sprites->instances.spawn_stack.spawned[which_actor] = 0;
 		f->world_coords.spawn_stack.spawned[which_actor] = 0;
+	}
+
+	int collision(int which_A, Factory *f_A, int which_B,  Factory *f_B)
+	{
+		return Shape::Rect::collision(&f_A->world_coords.rect[which_A], &f_B->world_coords.rect[which_B]);
 	}
 
 	int spawn(Factory *f, float scale, unsigned int current_time)
@@ -203,7 +218,7 @@ namespace Actor
 			for (int j = 0; j < f->n_sprites; j++)
 			{
 				f->sprites[j].instances.spawn_stack.spawned[k] = 1;
-				Sprite::modify(k, &f->sprites[j], 120);
+				Sprite::modify(k, &f->sprites[j], 120);//ANIMATION TIME HERE//FIX
 			}
 
 			f->creation_time[k] = current_time;
@@ -218,7 +233,7 @@ namespace Actor
 			f->world_coords.rect[k].y = 0;
 			f->world_coords.rect[k].w = scale;
 			//TODO: WATCH THIS
-			f->world_coords.rect[k].h = scale * (float)f->sprites[0].texture_info.frame_h / f->sprites[0].texture_info.frame_w;
+			f->world_coords.rect[k].h = scale * (float)f->sprites[0].texture_info.frame_h / f->sprites[0].texture_info.frame_w;//SPRITES 0 DANGEROUS
 
 			return k;
 		}
@@ -251,6 +266,25 @@ namespace Actor
 		}
 
 		return n_drawn;
+	}
+
+	void draw(int which_actor, const Factory *f, Grid_Camera::Grid_Camera *cam, unsigned int current_time, SDL_Renderer *renderer)
+	{
+		Sprite::update(which_actor, &f->sprites[f->current_sprite[which_actor]], current_time);
+
+		Shape::Rect::Data screen_rect;
+		Grid_Camera::grid_to_Screen(&screen_rect, &f->world_coords.rect[which_actor], cam);
+
+		Sprite::draw(which_actor, &f->sprites[f->current_sprite[which_actor]],
+			screen_rect.x,
+			screen_rect.y,
+			screen_rect.w,
+			screen_rect.h,
+			renderer,
+			f->sprite_flip[which_actor],
+			f->color[which_actor].r, f->color[which_actor].g, f->color[which_actor].b, f->color[which_actor].a);
+
+
 	}
 
 }

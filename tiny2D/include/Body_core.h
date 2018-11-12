@@ -70,8 +70,8 @@ namespace Body
 	void update_Vel(int index, Factory *a, float dt)
 	{
 		//implicit euler
-		Vec2D::Vec2D accel = { dt*a->force[index].x / a->mass[index],dt*a->force[index].y / a->mass[index] };
-		Vec2D::add(&a->vel[index], &accel);
+		Vec2D::Vec2D vel = { dt*a->force[index].x / a->mass[index],dt*a->force[index].y / a->mass[index] };
+		Vec2D::add(&a->vel[index], &vel);
 	}
 
 	void update_Pos(int index, Factory *a, float dt)
