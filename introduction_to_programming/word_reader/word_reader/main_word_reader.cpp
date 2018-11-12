@@ -5,6 +5,8 @@
 #include "String_core.h"
 #include "String_Ext.h"
 
+#include "Word_Stats_core.h"
+
 int main()
 {
 	WR::Data my_last_words;
@@ -30,8 +32,16 @@ int main()
 	printf("ratio of palindromes: %f\n", ratio);
 
 	//create a WS::Stats struct
+	WS::Stats my_words_stats;
 	//call calculate_Stats
+	WS::calculate_Stats(&my_words_stats, (const char**)my_last_words.words, my_last_words.n_words);
 	//call print_Stats
+	WS::print_Stats(&my_words_stats);
+
+	WR::Data filtered_words;
+	WR::filter(&filtered_words, &my_last_words, 25, 50);
+
+	WR::print(&filtered_words);
 
 	getchar();
 	return 0;

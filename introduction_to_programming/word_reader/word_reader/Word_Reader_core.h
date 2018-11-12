@@ -48,4 +48,39 @@ namespace WR
 
 	}
 
+	void filter(Data *destination, const Data *source, int min_length, int max_length)
+	{
+		destination->n_words = 0;
+		destination->array_size = 1024;
+		destination->words = (char**)malloc(sizeof(char*)*destination->array_size);
+
+		for (int i = 0; i < source->n_words; i++)
+		{
+			int length = Str_Ops::length(source->words[i]);
+			if (length >= min_length && length <= max_length)
+			{
+				if (destination->n_words >= destination->array_size)
+				{
+					internal::resize(destination);
+				}
+
+				destination->words[destination->n_words] = (char*)malloc(sizeof(char) * 256);
+
+				Str_Ops::copy(destination->words[destination->n_words], source->words[i]);
+
+				destination->n_words++;
+
+			}
+		}
+
+	}
+
+	void print(const Data *data)
+	{
+		for (int i = 0; i < data->n_words; i++)
+		{
+			printf("%s\n", data->words[i]);
+		}
+	}
+
 }
