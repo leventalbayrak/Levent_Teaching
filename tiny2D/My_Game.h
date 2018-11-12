@@ -55,10 +55,10 @@ namespace My_Game
 		Actor::Factory agents_main;
 		Actor::Factory agents_alt;
 		int n_agents = 100;
-		int n_obstacles = 20;
+		int n_obstacles = 10;
 		double min_obstacle_force = 1000;
 		double max_obstacle_force = 5000;
-		int max_n_samples = 10;
+		int max_n_samples = 20;
 		int current_sample = 0;
 
 		int state = 0;//0 prep, 1 test, 2 update
