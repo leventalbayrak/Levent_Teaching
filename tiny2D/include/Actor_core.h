@@ -11,7 +11,7 @@ namespace Actor
 {
 	void init(Factory *f, int array_size);
 
-	void add_Sprite(Factory *f, const char *filename, SDL_Renderer *renderer);
+	void add_Animated_Sprite(Factory *f, const char *filename, SDL_Renderer *renderer);
 
 	void add_Force(int which_actor, Factory *f, Vec2D::Vec2D *force);
 
@@ -23,7 +23,7 @@ namespace Actor
 
 	void apply_Friction(int which_actor, const Vec2D::Vec2D *friction, Factory *f);
 
-	void set_Sprite(int which_actor, int which_sprite, Factory *f);
+	void set_Animation(int which_actor, int which_sprite, Factory *f);
 
 	void set_Pos(int which_actor, float x, float y, Factory *f);
 
@@ -90,7 +90,8 @@ namespace Actor
 		Spawn_Stack::init(&f->spawn_stack, array_size);
 	}
 
-	void add_Sprite(Factory *f, const char *filename, SDL_Renderer *renderer)
+	//TODO:LET THIS RECEIVE A LOADED SPRITE FROM OUTSIDE
+	void add_Animated_Sprite(Factory *f, const char *filename, SDL_Renderer *renderer)
 	{
 		if (f->n_sprites >= f->sprite_array_size)
 		{
@@ -109,6 +110,28 @@ namespace Actor
 	{
 		Body::update_Vel(which_actor, &f->bodies, dt);
 		f->bodies.force[which_actor] = {};
+	}
+
+	void update_Vel(Factory *f, float dt)
+	{
+		for (int i = 0; i < f->array_size; i++)
+		{
+			if (f->spawn_stack.spawned[i] == 1)
+			{
+				update_Vel(i, f, dt);
+			}
+		}
+	}
+
+	void update_Pos(Factory *f, float dt)
+	{
+		for (int i = 0; i < f->array_size; i++)
+		{
+			if (f->spawn_stack.spawned[i] == 1)
+			{
+				update_Pos(i, f, dt);
+			}
+		}
 	}
 
 	void update_Pos(int which_actor, Factory *f, float dt)
@@ -132,7 +155,7 @@ namespace Actor
 		Body::apply_Friction(which_actor, friction, &f->bodies);
 	}
 
-	void set_Sprite(int which_actor, int which_sprite, Factory *f)
+	void set_Animation(int which_actor, int which_sprite, Factory *f)
 	{
 		f->current_sprite[which_actor] = which_sprite;
 	}

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm>
+
 namespace NN
 {
 	namespace Single

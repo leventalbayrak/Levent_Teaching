@@ -9,7 +9,8 @@ namespace Grid_Camera
 
 	void grid_to_Screen(Shape::Rect::Data *screen_coord, const Shape::Rect::Data *world_coord, const Grid_Camera *cam);
 
-	void screen_to_Grid(Vec2D::Vec2D *grid_point, Vec2D::Vec2D *screen_point, const Grid_Camera *c);
+	void screen_to_Grid(Vec2D::Vec2D *grid_point, const Vec2D::Vec2D *screen_point, const Grid_Camera *c);
+	void screen_to_Grid(Vec2D::Vec2D *grid_point, float x, float y, const Grid_Camera *c);
 
 	//must perform this if camera width or height changes
 	//given a grid region that the camera grid_coord covers, recalculate tile data
@@ -33,11 +34,18 @@ namespace Grid_Camera
 		screen_coord->h = world_coord->h*cam->calibration.tile_h;
 	}
 
-	void screen_to_Grid(Vec2D::Vec2D *grid_point, Vec2D::Vec2D *screen_point, const Grid_Camera *c)
+	void screen_to_Grid(Vec2D::Vec2D *grid_point, const Vec2D::Vec2D *screen_point, const Grid_Camera *c)
 	{
 		
 		grid_point->x = c->world_coord.x + c->world_coord.w*(screen_point->x / c->init.screen_width);
 		grid_point->y = c->world_coord.y + c->world_coord.h*(screen_point->y / c->init.screen_height);
+	}
+
+	void screen_to_Grid(Vec2D::Vec2D *grid_point, float x, float y, const Grid_Camera *c)
+	{
+
+		grid_point->x = c->world_coord.x + c->world_coord.w*(x / c->init.screen_width);
+		grid_point->y = c->world_coord.y + c->world_coord.h*(y / c->init.screen_height);
 	}
 
 	//must perform this if camera width or height changes

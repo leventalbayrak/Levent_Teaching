@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 
 	QueryPerformanceCounter(&t1);
 
-	My_Game::init(800, 600);
+	My_Game::init(640, 480);
 	My_Game::begin_Play(Engine::time());
 
 	int measure_freq = 100;
