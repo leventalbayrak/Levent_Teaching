@@ -310,4 +310,16 @@ namespace Actor
 
 	}
 
+	int is_Spawned(int which_actor, const Factory *f)
+	{
+		return f->spawn_stack.spawned[which_actor];
+	}
+
+
+	void get_Grid_Collision(Grid::Region *r, const Grid::Grid *g, int which_actor, const Factory *f)
+	{
+		*r = {};
+		Grid::get_Region_Under_Shape(r, &f->world_coords.rect[which_actor]);
+		Grid::clip_Grid_Region(r, g->n_cols, g->n_rows);
+	}
 }

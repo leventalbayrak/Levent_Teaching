@@ -44,10 +44,10 @@ namespace Grid
 
 	inline void get_Region_Under_Shape(Region *g, const Shape::Rect::Data *r)
 	{
-		g->x0 = (r->x);
-		g->y0 = (r->y);
-		g->x1 = (r->x + r->w);
-		g->y1 = (r->y + r->h);
+		g->first_col = (r->x);
+		g->first_row = (r->y);
+		g->last_col = (r->x + r->w);
+		g->last_row = (r->y + r->h);
 	}
 
 	inline int tile(int x, int y, Grid *g)
@@ -65,12 +65,17 @@ namespace Grid
 		return g->data[(int)p->y*g->n_cols + (int)p->x];
 	}
 
+	int get_Tile(int x, int y, Grid *g)
+	{
+		return g->data[y*g->n_cols + x];
+	}
+
 	void clip_Grid_Region(Region *r, int n_cols, int n_rows)
 	{
-		if (r->x0 < 0) r->x0 = 0;
-		if (r->y0 < 0) r->y0 = 0;
-		if (r->x1 >= n_cols) r->x1 = n_cols - 1;
-		if (r->y1 >= n_rows) r->y1 = n_rows - 1;
+		if (r->first_col < 0) r->first_col = 0;
+		if (r->first_row < 0) r->first_row = 0;
+		if (r->last_col >= n_cols) r->last_col = n_cols - 1;
+		if (r->last_row >= n_rows) r->last_row = n_rows - 1;
 	}
 
 	void imprint_Set(Grid *g, int value, const Shape::Rect::Data *r)
@@ -107,27 +112,6 @@ namespace Grid
 		}
 	}
 
-	//returns -1 if no unignored tile is overlapped, tile_id otherwise
-	int get_First_Overlapped_Tile(int ignore_tile_id, const Shape::Rect::Data *rect, const Grid *g)
-	{
-		Region region;
-		get_Region_Under_Shape(&region, rect);
-		clip_Grid_Region(&region, g->n_cols, g->n_rows);
-
-		for (int y = region.y0; y <= region.y1; y++)
-		{
-			for (int x = region.x0; x <= region.x1; x++)
-			{
-				int tile_value = g->data[y*g->n_cols + x];
-				if (tile_value != ignore_tile_id)
-				{
-					return tile_value;
-				}
-			}
-		}
-
-		return -1;
-	}
 
 	void draw_Float(float *grid,int n_rows, int n_cols, const Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer)
 	{

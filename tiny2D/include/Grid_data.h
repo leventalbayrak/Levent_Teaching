@@ -19,6 +19,6 @@ namespace Grid
 	//top left and bottom right cells in a grid
 	struct Region
 	{
-		int x0, y0, x1, y1;
+		int first_col, first_row, last_col, last_row;
 	};
 }
