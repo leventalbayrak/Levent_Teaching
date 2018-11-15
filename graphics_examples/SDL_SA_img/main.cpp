@@ -4,94 +4,27 @@ using namespace std;
 
 //include SDL header
 #include "SDL2-2.0.8\include\SDL.h"
+#include "SDL2-2.0.8\include\SDL_image.h"
 
 //load libraries
 #pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2.lib")
 #pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2main.lib")
+#pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2_image.lib")
 
 #pragma comment(linker,"/subsystem:console")
 
 
-int collision(const SDL_Rect *a, const SDL_Rect *b)
+Uint32 get_pixel32(SDL_Surface *surface, int x, int y)
 {
-	if (a->x + a->w < b->x) return 0;
-	if (b->x + b->w < a->x) return 0;
-	if (a->y + a->h < b->y) return 0;
-	if (b->y + b->h < a->y) return 0;
-	return 1;
+	Uint32 *pixels = (Uint32 *)surface->pixels;
+	return pixels[(y * surface->w) + x];
 }
 
-
-namespace SA
+void put_pixel32(SDL_Surface *surface, int x, int y, Uint32 pixel)
 {
-	namespace internal
-	{
-
-		float evaluate_Solution_Fitness(SDL_Rect *boxes, int n_boxes)
-		{
-			float fitness = 0.0;
-			for (int i = 0; i < n_boxes; i++)
-			{
-				for (int j = i + 1; j < n_boxes; j++)
-				{
-					int r = collision(&boxes[i], &boxes[j]);
-					if (r == 1)
-					{
-						fitness -= 2;
-					}
-
-					if (boxes[i].x < 0 || boxes[i].y < 0) fitness -= 2;
-				}
-			}
-
-			return fitness;
-		}
-
-		void modify_Solution(SDL_Rect *src, int n_boxes)
-		{
-			int which_box = rand() % n_boxes;
-			src[which_box].x += 20.0*(1.0 - 2.0*rand() / RAND_MAX);
-			src[which_box].y += 20.0*(1.0 - 2.0*rand() / RAND_MAX);
-		}
-	}
-
-	void generate_Solution(SDL_Rect *dest, int n_boxes, int max_x, int max_y)
-	{
-		/*dest[0].x = 20;
-		dest[0].y = 20;
-		dest[0].w = 200;
-		dest[0].h = 200;*/
-		for (int i = 0; i < n_boxes; i++)
-		{
-			dest[i].w = 5 + rand() % 40;
-			dest[i].h = 5 + rand() % 40;
-			dest[i].x = rand() % (max_x - dest[i].w);
-			dest[i].y = rand() % (max_y - dest[i].h);
-		}
-	}
-
-	float update(SDL_Rect *current_solution, int n_boxes, SDL_Rect *tmp_solution, float temperature)
-	{
-		memcpy(tmp_solution, current_solution, sizeof(SDL_Rect)*n_boxes);
-
-		internal::modify_Solution(tmp_solution, n_boxes);
-
-		float fitness_current = internal::evaluate_Solution_Fitness(current_solution, n_boxes);
-		float fitness_new = internal::evaluate_Solution_Fitness(tmp_solution, n_boxes);
-
-		double p_accept_new_solution = exp((fitness_new - fitness_current) / temperature);
-		double p = (double)rand() / RAND_MAX;
-
-		if (p <= p_accept_new_solution)
-		{
-			memcpy(current_solution, tmp_solution, sizeof(SDL_Rect)*n_boxes);
-			return fitness_new;
-		}
-		return fitness_current;
-	}
-
+	Uint32 *pixels = (Uint32 *)surface->pixels;
+	pixels[(y * surface->w) + x] = pixel;
 }
-
 
 namespace Game
 {
@@ -99,7 +32,7 @@ namespace Game
 	int screen_width = 800;
 	int screen_height = 600;
 
-	float temperature = 2;
+	float temperature = 1.0;
 	float temperature_decay = 0.98;
 
 	const int n_boxes = 500;
@@ -109,8 +42,7 @@ namespace Game
 
 	unsigned char prev_key_state[256];
 	unsigned char *keys = NULL;
-
-	bool update_solver = true;
+	SDL_Window *window;
 
 	void init()
 	{
@@ -119,21 +51,57 @@ namespace Game
 		prev_key_state[256];
 		keys = (unsigned char*)SDL_GetKeyboardState(NULL);
 
-		SDL_Window *window = SDL_CreateWindow(
+		window = SDL_CreateWindow(
 			"Fortnite",
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			Game::screen_width, Game::screen_height, SDL_WINDOW_SHOWN);
 
 		Game::renderer = SDL_CreateRenderer(window,
-			-1, SDL_RENDERER_ACCELERATED);
+			-1, SDL_RENDERER_SOFTWARE);
 
-		SA::generate_Solution(boxes, n_boxes, screen_width, screen_height);
 
-		for (int i = 0; i < n_boxes; i++)
-		{
-			color[i] = 0;
-			color[i] = ((rand()%256)<<24) | ((rand() % 256) << 16) | ((rand() % 256) << 8);
-		}
+		SDL_Surface *original = IMG_Load("image.png");
+		SDL_Surface *surface_current = SDL_CreateRGBSurfaceWithFormat(0, original->w, original->h, 32, SDL_PIXELFORMAT_RGBA32);
+		SDL_Surface *surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, original->w, original->h, 32, SDL_PIXELFORMAT_RGBA32);
+
+		
+		
+		SDL_Surface* screen = SDL_GetWindowSurface(window);
+
+		unsigned int color0 = SDL_MapRGBA(surface_current->format, 255, 255, 255, 255);
+		unsigned int color1 = SDL_MapRGBA(surface_current->format, 255, 0, 0, 100);
+		unsigned int color2 = SDL_MapRGBA(surface_current->format, 0, 255, 0, 50);
+
+		SDL_SetSurfaceBlendMode(surface_current, SDL_BLENDMODE_BLEND);
+		//printf("%s\n", SDL_GetPixelFormatName(surface_current->format->format));
+		//getchar();
+
+		SDL_Rect wipe_rect = { 0,0,200,200 };
+		
+		SDL_FillRect(surface_tmp, &wipe_rect, color0);
+		SDL_Rect rect0 = { 10,10,100,100 };
+		SDL_FillRect(surface_tmp, &rect0, color0);
+		SDL_Rect src_rect = { 0,0,100,100 };
+		SDL_BlitSurface(surface_tmp, &src_rect, surface_current, &rect0);
+		
+		SDL_FillRect(surface_tmp, &wipe_rect, color0);
+		SDL_Rect rect1 = { 10,10,50,50 };
+		SDL_FillRect(surface_tmp, &rect1, color1);
+		src_rect = { 0,0,50,50 };
+		SDL_BlitSurface(surface_tmp, &src_rect, surface_current, &rect1);
+		
+		SDL_FillRect(surface_tmp, &wipe_rect, color0);
+		SDL_Rect rect2 = { 20,20,50,50 };
+		SDL_FillRect(surface_tmp, &rect2, color2);
+		src_rect = { 0,0,50,50 };
+		SDL_BlitSurface(surface_tmp, &src_rect, surface_current, &rect2);
+		
+	
+	//	int r = SDL_SetSurfaceBlendMode(screen, SDL_BLENDMODE_BLEND);
+	//	SDL_FillRect(surface_current, &rect0, color0);
+		SDL_Rect rect = {};
+		SDL_BlitSurface(surface_current, 0, screen, &rect);
+
 	}
 
 	void update()
@@ -151,44 +119,19 @@ namespace Game
 			}
 		}
 
-		if (update_solver)
-		{
-			float fitness = 0.0;
-			for (int i = 0; i < 100; i++)
-			{
-				fitness = SA::update(boxes, n_boxes, tmp_boxes, temperature);
-			}
-
-			printf("fitness: %f temperature: %f\n", fitness, temperature);
-
-			if (fitness >= 0.0)
-			{
-				update_solver = false;
-			}
-
-			temperature *= temperature_decay;
-		}
-
+	
 	}
 
 	void draw()
 	{
-		//set color to white
-		SDL_SetRenderDrawColor(Game::renderer, 255, 255, 255, 255);
-		//clear screen with white
-		SDL_RenderClear(Game::renderer);
 
-		for (int i = 0; i < n_boxes; i++)
-		{
-			int r = (color[i] & 0xFF000000) >> 24;
-			int g = (color[i] & 0x00FF0000) >> 16;
-			int b = (color[i] & 0x0000FF00) >> 8;
-			SDL_SetRenderDrawColor(Game::renderer, r, g, b, 255);
-			SDL_RenderDrawRect(renderer, &boxes[i]);
-		}
+		//clear screen with white
+		//SDL_RenderClear(Game::renderer);
+
+		SDL_UpdateWindowSurface(window);
 
 		//flip buffers
-		SDL_RenderPresent(Game::renderer);
+		//SDL_RenderPresent(Game::renderer);
 	}
 
 }
