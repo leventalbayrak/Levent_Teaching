@@ -61,7 +61,7 @@ namespace Vec2D
 
 	inline float mag(const Vec2D *a)
 	{
-		float m = a->x*a->x + a->y * a->y;
+		float m = a->x * a->x + a->y * a->y;
 		if (m == 0.0) return 0.0;
 		return sqrt(m);
 	}

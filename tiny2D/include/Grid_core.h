@@ -112,7 +112,6 @@ namespace Grid
 		}
 	}
 
-
 	void draw_Float(float *grid,int n_rows, int n_cols, const Grid_Camera::Grid_Camera *cam, SDL_Renderer *renderer)
 	{
 		int x0 = cam->world_coord.x;

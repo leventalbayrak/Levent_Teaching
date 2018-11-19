@@ -15,7 +15,7 @@ namespace My_Game
 
 		namespace Parameters
 		{
-			float bullet_force_magnitude = 500;
+			float bullet_force_magnitude = 2000;
 		}
 
 
@@ -118,9 +118,9 @@ namespace My_Game
 			Actor::add_Force(0, &World::player, &force);
 		}
 
-		if (Input::mouse_left == 1 && Input::prev_mouse_left == 0)
+		if (Input::mouse_left == 1 && Input::prev_mouse_left == 1)
 		{
-			int bullet_id = Actor::spawn(&World::bullet, 0.25, current_time);
+			int bullet_id = Actor::spawn(&World::bullet, .25, current_time);
 			Shape::Rect::Data *player_rect = Actor::get_World_Coord(0, &World::player);
 			Actor::set_Pos(bullet_id, player_rect->x + player_rect->w*0.5, player_rect->y + player_rect->h*0.5, &World::bullet);
 
@@ -153,11 +153,12 @@ namespace My_Game
 
 			Actor::update_Pos(i, &World::enemy, dt);
 
-			//CLIP POSITION BEFORE IMPRINT
-
+			Vec2D::Vec2D pos = *Actor::get_Pos(i, &World::enemy);
+			Vec2D::clip(&pos, 0, World::map.n_cols - 1, 0, World::map.n_rows - 1);
+			Actor::set_Pos(i, pos.x, pos.y, &World::enemy);
+			
 			Grid::imprint_Set(&World::imprint, i, Actor::get_World_Coord(i, &World::enemy));
 		}
-
 
 		for (int i = 0; i < World::bullet.array_size; i++)
 		{
@@ -222,9 +223,9 @@ namespace My_Game
 					if (Grid::get_Tile(x, y, &World::collision) == -1) continue;
 					
 					Shape::Rect::Data hbox;
-					Shape::Rect::rescale_Rect(&hbox, Actor::get_World_Coord(i, &World::bullet), 1.0, 0.2);
+					Shape::Rect::rescale_Rect(&hbox, Actor::get_World_Coord(i, &World::bullet), 1.0, .01);
 					Shape::Rect::Data vbox;
-					Shape::Rect::rescale_Rect(&vbox, Actor::get_World_Coord(i, &World::bullet), 0.2, 1.0);
+					Shape::Rect::rescale_Rect(&vbox, Actor::get_World_Coord(i, &World::bullet), .01, 1.0);
 
 					Shape::Rect::Data this_tile = { x,y,1.0,1.0 };
 					int rh = Shape::Rect::collision(&hbox, &this_tile);
@@ -240,14 +241,13 @@ namespace My_Game
 						Actor::get_Vel(i, &World::bullet)->y *= -1;
 						collision = true;
 					}
-
 					
 					Vec2D::Vec2D vel = *(Actor::get_Vel(i, &World::bullet));
 					vel.x *= -0.5;
 					vel.y *= -0.5;
-					Vec2D::Vec2D force_min = { -50,-50 };
-					Vec2D::Vec2D force_max = { 50, 50 };
-					Particle::spawn(&World::bullet_spark, 5, 0.1,
+					Vec2D::Vec2D force_min = {0,0 };
+					Vec2D::Vec2D force_max = { 0,0};
+					Particle::spawn(&World::bullet_spark,0, 0.1,
 						Actor::get_Pos(i, &World::bullet), &vel,
 						&force_min, &force_max, 500, 1000,
 						current_time);
