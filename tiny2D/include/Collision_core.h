@@ -6,21 +6,13 @@
 
 namespace Collision
 {
-	void box(Shape::Rect::Data *out, const Shape::Rect::Data *in, float shrink);
-
+	
 	void point_Feeler_Pos(Point_Feeler *p, const Shape::Rect::Data *r, float t_margin, float x_margin);
 
 }
 
 namespace Collision
 {
-	void box(Shape::Rect::Data *out, const Shape::Rect::Data *in, float shrink)
-	{
-		out->x = in->x + shrink * in->w;
-		out->y = in->y + shrink * in->h;
-		out->w = in->w - 2.0 * shrink * in->w;
-		out->h = in->h - 2.0 * shrink * in->h;
-	}
 
 	void point_Feeler_Pos(Point_Feeler *p, const Shape::Rect::Data *r, float t_margin, float x_margin)
 	{

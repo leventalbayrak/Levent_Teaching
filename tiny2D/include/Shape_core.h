@@ -8,6 +8,8 @@ namespace Shape
 	{
 		void init(Factory *f, int array_size);
 
+		void rescale_Rect(Data *out, const Data *in, float scale_width, float scale_height);
+
 		int make_Instance(Factory *f);
 
 		int collision(const Data *pa, const Data *pb);
@@ -29,6 +31,15 @@ namespace Shape
 			f->rect = (Data*)malloc(sizeof(Data)*f->array_size);
 
 			Spawn_Stack::init(&f->spawn_stack, array_size);
+		}
+
+		void rescale_Rect(Data *out, const Data *in, float scale_width, float scale_height)
+		{
+
+			out->w = in->w * scale_width;
+			out->x = in->x + 0.5*in->w*(1.0 - scale_width);
+			out->h = in->h * scale_height;
+			out->y = in->y + 0.5*in->h*(1.0 - scale_height);
 		}
 
 		int make_Instance(Factory *f)
