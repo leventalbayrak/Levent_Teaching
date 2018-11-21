@@ -69,9 +69,17 @@ namespace Body
 
 	void update_Vel(int index, Factory *a, float dt)
 	{
-		//implicit euler
 		Vec2D::Vec2D vel = { dt*a->force[index].x / a->mass[index],dt*a->force[index].y / a->mass[index] };
 		Vec2D::add(&a->vel[index], &vel);
+	}
+
+	void update_Vel_X(int index, Factory *a, float dt)
+	{
+		a->vel[index].x += dt*a->force[index].x / a->mass[index];
+	}
+	void update_Vel_Y(int index, Factory *a, float dt)
+	{
+		a->vel[index].y += dt*a->force[index].y / a->mass[index];
 	}
 
 	void update_Pos(int index, Factory *a, float dt)
@@ -81,6 +89,17 @@ namespace Body
 		t.x *= dt;
 		t.y *= dt;
 		Vec2D::add(&a->pos[index], &t);
+	}
+
+	void update_Pos_X(int index, Factory *a, float dt)
+	{
+		a->last_pos[index].x = a->pos[index].x;
+		a->pos[index].x += a->vel[index].x*dt;
+	}
+	void update_Pos_Y(int index, Factory *a, float dt)
+	{
+		a->last_pos[index].y = a->pos[index].y;
+		a->pos[index].y += a->vel[index].y*dt;
 	}
 
 	void apply_Friction(int index, const Vec2D::Vec2D *friction, Factory *a)
