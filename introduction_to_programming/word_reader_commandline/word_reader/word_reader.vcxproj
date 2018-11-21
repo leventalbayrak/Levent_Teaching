@@ -114,6 +114,7 @@
     <ClCompile Include="main_word_reader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Rhyme_Finder_core.h" />
     <ClInclude Include="String_core.h" />
     <ClInclude Include="String_Ext.h" />
     <ClInclude Include="Word_Reader_core.h" />

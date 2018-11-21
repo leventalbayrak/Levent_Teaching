@@ -8,6 +8,8 @@
 
 #include "Word_Stats_core.h"
 
+#include "Rhyme_Finder_core.h"
+
 int my_Getline(char *str)
 {
 	int length = 0;
@@ -68,6 +70,39 @@ int main()
 			{
 				printf("ERROR: enter a filename\n");
 			}
+		}
+		else if (strcmp(command, "rhyme") == 0)
+		{
+			if (r == 2)
+			{
+				RF::print_Rhyming_Words(&words, parameter);
+			}
+			else
+			{
+				printf("ERROR: enter a rhyme ending\n");
+			}
+
+		}
+		else if (strcmp(command, "length") == 0)
+		{
+			if (r == 2)
+			{
+				int length_parameter = atoi(parameter);
+				for (int i = 0; i < words.n_words; i++)
+				{
+					int word_length = Str_Ops::length(words.words[i]);
+
+					if (word_length == length_parameter)
+					{
+						printf("%s\n", words.words[i]);
+					}
+				}
+			}
+			else
+			{
+				printf("ERROR: enter a length\n");
+			}
+
 		}
 		else if (strcmp(command, "stats") == 0)
 		{
@@ -139,90 +174,7 @@ int main()
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	system("pause");
 
-	//for (;;)
-	//{
-	//	printf(">");
-
-	//	int r_command = scanf("%s", command);
-
-	//	printf("you entered %s\n", command);
-
-	//	int r_parameter = scanf("%s", parameter);
-
-	//	if (r_command == 1)
-	//	{
-	//		if (r_parameter == 1)
-	//		{
-
-	//			printf("your command has parameter: %s\n", parameter);
-	//		}
-	//		else
-	//		{
-	//			printf("your command does not have a parameter\n");
-	//		}
-	//		
-	//	}
-	//	else 
-	//	{
-	//		printf("unknown command\n");
-	//	}
-	//}
-
-
-
-
-
-
-
-
-
-
-	//WR::Data my_last_words;
-	//WR::load_File(&my_last_words, "words.txt");
-
-	//int palindrome_count = 0;
-	//
-	//for (int i = 0; i < my_last_words.n_words; i++)
-	//{
-	//	int r = Str_Ops::is_Palindrome(my_last_words.words[i]);
-	//	if (r == 1)
-	//	{
-	//		palindrome_count++;
-	//		printf("%d: %s\n", palindrome_count, my_last_words.words[i]);
-	//	}
-	//}
-
-	//printf("number of palindromes: %d\n", palindrome_count);
-	//printf("number of words read: %d\n", my_last_words.n_words);
-
-	//double ratio = (double)palindrome_count / my_last_words.n_words;
-
-	//printf("ratio of palindromes: %f\n", ratio);
-
-	////create a WS::Stats struct
-	//WS::Stats my_words_stats;
-	////call calculate_Stats
-	//WS::calculate_Stats(&my_words_stats, (const char**)my_last_words.words, my_last_words.n_words);
-	////call print_Stats
-	//WS::print_Stats(&my_words_stats);
-
-	//WR::Data filtered_words;
-	//WR::filter(&filtered_words, &my_last_words, 25, 50);
-
-	//WR::print(&filtered_words);
-
-	//getchar();
 	return 0;
 }

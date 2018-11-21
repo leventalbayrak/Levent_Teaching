@@ -38,5 +38,8 @@
     <ClInclude Include="Word_Stats_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Rhyme_Finder_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
