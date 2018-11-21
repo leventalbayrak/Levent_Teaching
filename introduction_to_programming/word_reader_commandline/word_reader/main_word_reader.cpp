@@ -9,7 +9,13 @@
 #include "Word_Stats_core.h"
 
 #include "Rhyme_Finder_core.h"
-
+//TODO
+/*
+longer
+shorter
+odd
+even
+*/
 int my_Getline(char *str)
 {
 	int length = 0;
