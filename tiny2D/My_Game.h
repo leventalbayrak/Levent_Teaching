@@ -15,7 +15,7 @@ namespace My_Game
 
 		namespace Parameters
 		{
-			float bullet_force_magnitude = 2000;
+			float bullet_force_magnitude = 200;
 		}
 
 
@@ -118,9 +118,9 @@ namespace My_Game
 			Actor::add_Force(0, &World::player, &force);
 		}
 
-		if (Input::mouse_left == 1 && Input::prev_mouse_left == 1)
+		if (Input::mouse_left == 1 && Input::prev_mouse_left == 0)
 		{
-			int bullet_id = Actor::spawn(&World::bullet, .25, current_time);
+			int bullet_id = Actor::spawn(&World::bullet, .1, current_time);
 			Shape::Rect::Data *player_rect = Actor::get_World_Coord(0, &World::player);
 			Actor::set_Pos(bullet_id, player_rect->x + player_rect->w*0.5, player_rect->y + player_rect->h*0.5, &World::bullet);
 
@@ -164,7 +164,7 @@ namespace My_Game
 		{
 			if (Actor::is_Spawned(i, &World::bullet) == 0) continue;
 		
-			if (current_time - World::bullet.creation_time[i] > 3000)
+			if (current_time - World::bullet.creation_time[i] > 6000)
 			{
 				Actor::destroy(i, &World::bullet);
 				continue;
@@ -222,25 +222,42 @@ namespace My_Game
 				{
 					if (Grid::get_Tile(x, y, &World::collision) == -1) continue;
 					
+					Shape::Rect::Data bullet_world = *Actor::get_World_Coord(i, &World::bullet);
 					Shape::Rect::Data hbox;
-					Shape::Rect::rescale_Rect(&hbox, Actor::get_World_Coord(i, &World::bullet), 1.0, .01);
+					Shape::Rect::rescale_Rect(&hbox,&bullet_world, 1.0, 0.5);
 					Shape::Rect::Data vbox;
-					Shape::Rect::rescale_Rect(&vbox, Actor::get_World_Coord(i, &World::bullet), .01, 1.0);
+					Shape::Rect::rescale_Rect(&vbox, &bullet_world, 0.5, 1.0);
 
 					Shape::Rect::Data this_tile = { x,y,1.0,1.0 };
 					int rh = Shape::Rect::collision(&hbox, &this_tile);
 					int rv = Shape::Rect::collision(&vbox, &this_tile);
+					
+					if (rh == 1 && rv == 1)
+					{
+						float vx = Actor::get_Vel(i, &World::bullet)->x;
+						float vy = Actor::get_Vel(i, &World::bullet)->y;
+						float px = Actor::get_Pos(i, &World::bullet)->x;
+						float py = Actor::get_Pos(i, &World::bullet)->y;
+						printf("before x %f y %f px %f py %f\n", vx, vy, px, py);
+
+					}
 
 					if (rh == 1)
 					{
+						
 						Actor::get_Vel(i, &World::bullet)->x *= -1;
 						collision = true;
+						
 					}
 					if (rv == 1)
 					{
+						
 						Actor::get_Vel(i, &World::bullet)->y *= -1;
 						collision = true;
+
 					}
+
+					
 					
 					Vec2D::Vec2D vel = *(Actor::get_Vel(i, &World::bullet));
 					vel.x *= -0.5;
@@ -262,6 +279,11 @@ namespace My_Game
 			if (collision)
 			{
 				Actor::undo_Pos_Update(i, &World::bullet);
+				float vx = Actor::get_Vel(i, &World::bullet)->x;
+				float vy = Actor::get_Vel(i, &World::bullet)->y;
+				float px = Actor::get_Pos(i, &World::bullet)->x;
+				float py = Actor::get_Pos(i, &World::bullet)->y;
+				printf("after x %f y %f px %f py %f\n", vx, vy, px, py);
 			}
 
 		}

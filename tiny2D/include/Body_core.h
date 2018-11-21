@@ -76,10 +76,10 @@ namespace Body
 
 	void update_Pos(int index, Factory *a, float dt)
 	{
+		a->last_pos[index] = a->pos[index];
 		Vec2D::Vec2D t = a->vel[index];
 		t.x *= dt;
 		t.y *= dt;
-		a->last_pos[index] = a->pos[index];
 		Vec2D::add(&a->pos[index], &t);
 	}
 
