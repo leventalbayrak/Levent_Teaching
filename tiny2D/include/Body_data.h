@@ -11,7 +11,6 @@ namespace Body
 
 		Vec2D::Vec2D *force;
 		Vec2D::Vec2D *pos;
-		Vec2D::Vec2D *last_pos;
 		Vec2D::Vec2D *vel;
 		float *mass;
 	};

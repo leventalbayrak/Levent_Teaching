@@ -36,7 +36,6 @@ namespace Body
 		a->vel = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->force = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->pos = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
-		a->last_pos = (Vec2D::Vec2D*)malloc(sizeof(Vec2D::Vec2D)*a->array_size);
 		a->mass = (float*)malloc(sizeof(float)*a->array_size);
 
 		Spawn_Stack::init(&a->spawn_stack, array_size);
@@ -57,7 +56,6 @@ namespace Body
 	{
 		a->vel[index] = {};
 		a->force[index] = {};
-		a->last_pos[index] = *pos;
 		a->pos[index] = *pos;
 		a->mass[index] = mass;
 	}
@@ -73,33 +71,12 @@ namespace Body
 		Vec2D::add(&a->vel[index], &vel);
 	}
 
-	void update_Vel_X(int index, Factory *a, float dt)
-	{
-		a->vel[index].x += dt*a->force[index].x / a->mass[index];
-	}
-	void update_Vel_Y(int index, Factory *a, float dt)
-	{
-		a->vel[index].y += dt*a->force[index].y / a->mass[index];
-	}
-
 	void update_Pos(int index, Factory *a, float dt)
 	{
-		a->last_pos[index] = a->pos[index];
 		Vec2D::Vec2D t = a->vel[index];
 		t.x *= dt;
 		t.y *= dt;
 		Vec2D::add(&a->pos[index], &t);
-	}
-
-	void update_Pos_X(int index, Factory *a, float dt)
-	{
-		a->last_pos[index].x = a->pos[index].x;
-		a->pos[index].x += a->vel[index].x*dt;
-	}
-	void update_Pos_Y(int index, Factory *a, float dt)
-	{
-		a->last_pos[index].y = a->pos[index].y;
-		a->pos[index].y += a->vel[index].y*dt;
 	}
 
 	void apply_Friction(int index, const Vec2D::Vec2D *friction, Factory *a)
@@ -107,5 +84,7 @@ namespace Body
 		a->vel[index].x *= 1.0 - friction->x;
 		a->vel[index].y *= 1.0 - friction->y;
 	}
+
+	
 
 }

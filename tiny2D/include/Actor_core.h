@@ -112,17 +112,6 @@ namespace Actor
 		f->bodies.force[which_actor] = {};
 	}
 
-	void update_Vel_X(int which_actor, Factory *f, float dt)
-	{
-		Body::update_Vel_X(which_actor, &f->bodies, dt);
-		f->bodies.force[which_actor].x = 0;
-	}
-	void update_Vel_Y(int which_actor, Factory *f, float dt)
-	{
-		Body::update_Vel_Y(which_actor, &f->bodies, dt);
-		f->bodies.force[which_actor].y = 0;
-	}
-
 	void update_Vel(Factory *f, float dt)
 	{
 		for (int i = 0; i < f->array_size; i++)
@@ -153,40 +142,6 @@ namespace Actor
 		f->world_coords.rect[which_actor].y = f->bodies.pos[which_actor].y;
 	}
 
-	void update_Pos_X(int which_actor, Factory *f, float dt)
-	{
-		Body::update_Pos_X(which_actor, &f->bodies, dt);
-		//copy physics body position to world coord
-		f->world_coords.rect[which_actor].x = f->bodies.pos[which_actor].x;
-	}
-	void update_Pos_Y(int which_actor, Factory *f, float dt)
-	{
-		Body::update_Pos_Y(which_actor, &f->bodies, dt);
-		//copy physics body position to world coord
-		f->world_coords.rect[which_actor].y = f->bodies.pos[which_actor].y;
-	}
-
-	void undo_Pos_Update_X(int which_actor, Factory *f)
-	{
-		f->bodies.pos[which_actor].x = f->bodies.last_pos[which_actor].x;
-		//copy physics body position to world coord
-		f->world_coords.rect[which_actor].x = f->bodies.pos[which_actor].x;
-	}
-	void undo_Pos_Update_Y(int which_actor, Factory *f)
-	{
-		f->bodies.pos[which_actor].y = f->bodies.last_pos[which_actor].y;
-		//copy physics body position to world coord
-		f->world_coords.rect[which_actor].y = f->bodies.pos[which_actor].y;
-	}
-
-	void undo_Pos_Update(int which_actor, Factory *f)
-	{
-		f->bodies.pos[which_actor] = f->bodies.last_pos[which_actor];
-		//copy physics body position to world coord
-		f->world_coords.rect[which_actor].x = f->bodies.pos[which_actor].x;
-		f->world_coords.rect[which_actor].y = f->bodies.pos[which_actor].y;
-	}
-
 	void apply_Friction(int which_actor, const Vec2D::Vec2D *friction, Factory *f)
 	{
 		Body::apply_Friction(which_actor, friction, &f->bodies);
@@ -204,7 +159,6 @@ namespace Actor
 	
 	void set_Pos(int which_actor,float x, float y, Factory *f)
 	{
-		f->bodies.last_pos[which_actor] = f->bodies.pos[which_actor];
 
 		f->world_coords.rect[which_actor].x = x;
 		f->world_coords.rect[which_actor].y = y;
@@ -230,10 +184,6 @@ namespace Actor
 	Vec2D::Vec2D *get_Pos(int which_actor, Factory *f)
 	{
 		return &f->bodies.pos[which_actor];
-	}
-	Vec2D::Vec2D *get_Last_Pos(int which_actor, Factory *f)
-	{
-		return &f->bodies.last_pos[which_actor];
 	}
 
 	RGBA::RGBA *get_Color(int which_actor, Factory *f)

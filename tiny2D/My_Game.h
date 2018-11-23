@@ -169,187 +169,61 @@ namespace My_Game
 				continue;
 			}
 
+			//update vel
+			Actor::update_Vel(i, &World::bullet, dt);
+
+			Grid::Region region;
+			Actor::get_Grid_Collision(&region, &World::collision, i, &World::bullet);
+
+			for (int y = region.first_row; y <= region.last_row; y++)
 			{
-				Actor::update_Vel_X(i, &World::bullet, dt);
-				Actor::update_Pos_X(i, &World::bullet, dt);
-
-				Grid::Region region;
-				Actor::get_Grid_Collision(&region, &World::collision, i, &World::bullet);
-
-				bool enemy_collision = false;
-				for (int y = region.first_row; y <= region.last_row; y++)
+				for (int x = region.first_col; x <= region.last_col; x++)
 				{
-					for (int x = region.first_col; x <= region.last_col; x++)
+					//there is a possible collision with wall
+					if (Grid::get_Tile(x, y, &World::collision) != -1)
 					{
-						int enemy_id = Grid::get_Tile(x, y, &World::imprint);
-						if (enemy_id == -1) continue;
 
-						Shape::Rect::Data enemy_rect;
-						Shape::Rect::rescale_Rect(&enemy_rect, Actor::get_World_Coord(enemy_id, &World::enemy), 0.5, 0.5);
-						int r = Shape::Rect::collision(Actor::get_World_Coord(i, &World::bullet), &enemy_rect);
-
-						if (r == 1)
-						{
-							Vec2D::Vec2D vel = *(Actor::get_Vel(i, &World::bullet));
-							Vec2D::Vec2D force = { 25 * vel.x,25 * vel.y };
-							Actor::add_Force(enemy_id, &World::enemy, &force);
-
-							Vec2D::Vec2D blood_vel = *(Actor::get_Vel(i, &World::bullet));
-							blood_vel.x *= -0.5;
-							blood_vel.y *= -0.5;
-							Vec2D::Vec2D force_min = { -50,-50 };
-							Vec2D::Vec2D force_max = { 50, 50 };
-							Particle::spawn(&World::bullet_spark, 10, 0.2,
-								Actor::get_Pos(i, &World::bullet), &blood_vel,
-								&force_min, &force_max, 500, 1000,
-								current_time);
-
-							Actor::destroy(i, &World::bullet);
-
-							enemy_collision = true;
-						}
-					}
-				}
-
-				bool collision = false;
-
-				for (int y = region.first_row; y <= region.last_row; y++)
-				{
-					for (int x = region.first_col; x <= region.last_col; x++)
-					{
-						if (Grid::get_Tile(x, y, &World::collision) == -1) continue;
-
-						Shape::Rect::Data bullet_world = *Actor::get_World_Coord(i, &World::bullet);
-						Shape::Rect::Data hbox;
-						Shape::Rect::rescale_Rect(&hbox, &bullet_world, 1.0, 0.5);
-						
-
+						Shape::Rect::Data *bullet_world = Actor::get_World_Coord(i, &World::bullet);
 						Shape::Rect::Data this_tile = { x,y,1.0,1.0 };
-						int r = Shape::Rect::collision(&hbox, &this_tile);
+						int r = Shape::Rect::collision(bullet_world, &this_tile);
+						
+						if (r == 1)
+						{
+							Shape::Rect::Data this_tile = { x,y,1.0,1.0 };
+							Vec2D::Vec2D *bullet_vel = Actor::get_Vel(i, &World::bullet);
+							for (int k = 0; k < 5; k++)
+							{
+								Collision::impulse(bullet_world, bullet_vel, 1.0, &this_tile);
+							}
+						}
+					}
+
+					//there is a possible collision with the enemy
+					if (Grid::get_Tile(x, y, &World::imprint) != -1)
+					{
+
+						int enemy_id = Grid::get_Tile(x, y, &World::imprint);
+						Shape::Rect::Data *bullet_world = Actor::get_World_Coord(i, &World::bullet);
+						Shape::Rect::Data *enemy_world = Actor::get_World_Coord(enemy_id, &World::enemy);
+						int r = Shape::Rect::collision(bullet_world,enemy_world);
 
 						if (r == 1)
 						{
-
-							Actor::get_Vel(i, &World::bullet)->x *= -1;
-							collision = true;
-
+							Vec2D::Vec2D *bullet_vel = Actor::get_Vel(i, &World::bullet);
+							Vec2D::Vec2D *enemy_vel = Actor::get_Vel(enemy_id, &World::enemy);
+							for (int k = 0; k < 5; k++)
+							{
+								Collision::impulse(bullet_world, bullet_vel, 1.0, enemy_world, enemy_vel, 1.0);
+							}
 						}
-						
-						Vec2D::Vec2D vel = *(Actor::get_Vel(i, &World::bullet));
-						vel.x *= -0.5;
-						vel.y *= -0.5;
-						Vec2D::Vec2D force_min = {-50,-50 };
-						Vec2D::Vec2D force_max = { 50,50 };
-						Particle::spawn(&World::bullet_spark, 5, 0.1,
-							Actor::get_Pos(i, &World::bullet), &vel,
-							&force_min, &force_max, 500, 1000,
-							current_time);
-
-						if (collision) break;
-
 					}
 
-					if (collision) break;
-
 				}
-
-				if (collision)
-				{
-					Actor::undo_Pos_Update_X(i, &World::bullet);
-				}
-
 			}
 
-			{
-				Actor::update_Vel_Y(i, &World::bullet, dt);
-				Actor::update_Pos_Y(i, &World::bullet, dt);
+			Actor::update_Pos(i, &World::bullet, dt);
 
-				Grid::Region region;
-				Actor::get_Grid_Collision(&region, &World::collision, i, &World::bullet);
-
-				bool enemy_collision = false;
-				for (int y = region.first_row; y <= region.last_row; y++)
-				{
-					for (int x = region.first_col; x <= region.last_col; x++)
-					{
-						int enemy_id = Grid::get_Tile(x, y, &World::imprint);
-						if (enemy_id == -1) continue;
-
-						Shape::Rect::Data enemy_rect;
-						Shape::Rect::rescale_Rect(&enemy_rect, Actor::get_World_Coord(enemy_id, &World::enemy), 0.5, 0.5);
-						int r = Shape::Rect::collision(Actor::get_World_Coord(i, &World::bullet), &enemy_rect);
-
-						if (r == 1)
-						{
-							Vec2D::Vec2D vel = *(Actor::get_Vel(i, &World::bullet));
-							Vec2D::Vec2D force = { 25 * vel.x,25 * vel.y };
-							Actor::add_Force(enemy_id, &World::enemy, &force);
-
-							Vec2D::Vec2D blood_vel = *(Actor::get_Vel(i, &World::bullet));
-							blood_vel.x *= -0.5;
-							blood_vel.y *= -0.5;
-							Vec2D::Vec2D force_min = { -50,-50 };
-							Vec2D::Vec2D force_max = { 50, 50 };
-							Particle::spawn(&World::bullet_spark, 10, 0.2,
-								Actor::get_Pos(i, &World::bullet), &blood_vel,
-								&force_min, &force_max, 500, 1000,
-								current_time);
-
-							Actor::destroy(i, &World::bullet);
-
-							enemy_collision = true;
-						}
-					}
-				}
-
-				bool collision = false;
-
-				for (int y = region.first_row; y <= region.last_row; y++)
-				{
-					for (int x = region.first_col; x <= region.last_col; x++)
-					{
-						if (Grid::get_Tile(x, y, &World::collision) == -1) continue;
-
-						Shape::Rect::Data bullet_world = *Actor::get_World_Coord(i, &World::bullet);
-						Shape::Rect::Data vbox;
-						Shape::Rect::rescale_Rect(&vbox, &bullet_world, 0.5, 1.0);
-
-
-						Shape::Rect::Data this_tile = { x,y,1.0,1.0 };
-						int r = Shape::Rect::collision(&vbox, &this_tile);
-
-						if (r == 1)
-						{
-
-							Actor::get_Vel(i, &World::bullet)->y *= -1;
-							collision = true;
-
-						}
-
-						Vec2D::Vec2D vel = *(Actor::get_Vel(i, &World::bullet));
-						vel.x *= -0.5;
-						vel.y *= -0.5;
-						Vec2D::Vec2D force_min = { -50,-50 };
-						Vec2D::Vec2D force_max = { 50,50 };
-						Particle::spawn(&World::bullet_spark, 5, 0.1,
-							Actor::get_Pos(i, &World::bullet), &vel,
-							&force_min, &force_max, 500, 1000,
-							current_time);
-
-						if (collision) break;
-
-					}
-
-					if (collision) break;
-
-				}
-
-				if (collision)
-				{
-					Actor::undo_Pos_Update_Y(i, &World::bullet);
-				}
-
-			}
+		
 		}
 
 		Particle::update_Vel_and_Life(&World::bullet_spark, current_time, dt);

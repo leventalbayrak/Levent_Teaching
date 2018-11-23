@@ -66,6 +66,12 @@ namespace Vec2D
 		return sqrt(m);
 	}
 
+	inline void scale(Vec2D *a, float s)
+	{
+		a->x *= s;
+		a->y *= s;
+	}
+
 	inline float norm(Vec2D *a)
 	{
 		float m = mag(a);
