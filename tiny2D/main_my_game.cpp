@@ -24,6 +24,8 @@ int main(int argc, char **argv)
 		last_frame_time = current_time;
 		
 		My_Game::update(current_time, dt);
+		
+		
 
 		My_Game::draw(current_time);
 

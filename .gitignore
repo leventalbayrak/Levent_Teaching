@@ -38,3 +38,8 @@ misc_examples/neuralnet_simulated_annealing_fancy/.vs/neuralnet_simulated_anneal
 tiny2D/.vs/SDL_grader/v15/.suo
 tiny2D/Release/SDL_grader.vcxprojAssemblyReference.cache
 introduction_to_programming/word_reader_commandline/.vs/word_reader/v15/.suo
+tiny2D/Release/main_my_game.obj
+tiny2D/Release/SDL_grader.exe
+tiny2D/Release/SDL_grader.log
+tiny2D/Release/SDL_grader.pdb
+tiny2D/Release/vc141.pdb

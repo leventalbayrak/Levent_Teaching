@@ -13,7 +13,7 @@ namespace My_Game
 
 		namespace Parameters
 		{
-			float bullet_force_magnitude = 800;
+			float bullet_force_magnitude = 600;
 		}
 
 
@@ -189,7 +189,7 @@ namespace My_Game
 						{
 							Vec2D::Vec2D *enemy_vel = Actor::get_Vel(i, &World::enemy);
 							Vec2D::Vec2D *target_enemy_vel = Actor::get_Vel(e, &World::enemy);
-							for (int k = 0; k < 2; k++)
+							for (int k = 0; k < 10; k++)
 							{
 								Collision::impulse(enemy_world, enemy_vel, 1.0, target_enemy_world, target_enemy_vel, 1.0);
 							}
@@ -223,7 +223,7 @@ namespace My_Game
 						if (r == 1)
 						{
 							Vec2D::Vec2D *enemy_vel = Actor::get_Vel(i, &World::enemy);
-							for (int k = 0; k < 2; k++)
+							for (int k = 0; k < 10; k++)
 							{
 								Collision::impulse(enemy_world, enemy_vel, 1.0, &this_tile);
 							}
@@ -274,7 +274,7 @@ namespace My_Game
 						if (r == 1)
 						{
 							Vec2D::Vec2D *bullet_vel = Actor::get_Vel(i, &World::bullet);
-							for (int k = 0; k < 2; k++)
+							for (int k = 0; k < 10; k++)
 							{
 								Collision::impulse(bullet_world, bullet_vel, 1.0, &this_tile);
 							}
@@ -294,7 +294,7 @@ namespace My_Game
 						{
 							Vec2D::Vec2D *bullet_vel = Actor::get_Vel(i, &World::bullet);
 							Vec2D::Vec2D *enemy_vel = Actor::get_Vel(enemy_id, &World::enemy);
-							for (int k = 0; k < 2; k++)
+							for (int k = 0; k < 10; k++)
 							{
 								Collision::impulse(bullet_world, bullet_vel, 1.0, enemy_world, enemy_vel, 1.0);
 							}
