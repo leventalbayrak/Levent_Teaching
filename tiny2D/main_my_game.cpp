@@ -25,9 +25,10 @@ int main(int argc, char **argv)
 		
 		My_Game::update(current_time, dt);
 		
-		
-
 		My_Game::draw(current_time);
+
+
+		Audio::play_Queue();
 
 		if (++measure_frame >= measure_freq)
 		{
