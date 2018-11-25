@@ -162,12 +162,17 @@ namespace My_Game
 			World::imprint.data[i] = -1;
 		}
 
+
 		for (int i = 0; i < World::enemy.array_size; i++)
 		{
 			if (Actor::is_Spawned(i, &World::enemy) == 0) continue;
-
+			
+		//	Vec2D::Vec2D gravity = { 0,4 };
+		//	Actor::add_Force(i, &World::enemy, &gravity);
 			Actor::update_Vel(i, &World::enemy, dt);
-			Vec2D::clip(Actor::get_Vel(i, &World::enemy), -3.0, 3.0, -3.0, 3.0);
+			Actor::get_Vel(i, &World::enemy)->x *= 0.95;
+			Actor::get_Vel(i, &World::enemy)->y *= 0.95;
+			Vec2D::clip(Actor::get_Vel(i, &World::enemy), -16.0, 16.0, -16.0, 16.0);
 
 			//ENEMY COLLISION
 			Grid::Region enemy_imprint_region;
@@ -198,7 +203,7 @@ namespace My_Game
 							Vec2D::Vec2D f_min = { -50,-50 };
 							Vec2D::Vec2D f_max = { 50,50 };
 							Vec2D::Vec2D pos = { 0.5*(enemy_world->x + target_enemy_world->x+ target_enemy_world->w), 0.5*(enemy_world->y + target_enemy_world->y + target_enemy_world->h) };
-							Particle::spawn(&World::bullet_spark, 5, 0.125, &pos, &initial_vel, &f_min, &f_max, 1000, 2000, current_time);
+							Particle::spawn(&World::bullet_spark, 2, 0.125, &pos, &initial_vel, &f_min, &f_max, 1000, 2000, current_time);
 							
 						}
 					}
