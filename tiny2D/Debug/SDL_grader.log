@@ -90,22 +90,22 @@ c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(160): warni
 c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(161): warning C4305: '*=': truncation from 'double' to 'float'
 c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(186): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(187): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(219): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(235): warning C4305: '*=': truncation from 'double' to 'float'
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(236): warning C4305: '*=': truncation from 'double' to 'float'
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(267): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(267): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(268): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(288): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(288): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(308): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(311): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(316): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(316): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(352): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(352): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(388): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(388): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(227): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(246): warning C4305: '*=': truncation from 'double' to 'float'
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(247): warning C4305: '*=': truncation from 'double' to 'float'
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(278): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(278): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(279): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(299): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(299): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(319): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(322): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(327): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(327): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(363): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(363): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(399): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\levent\documents\github\levent_development\tiny2d\my_game.h(399): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\levent\documents\github\levent_development\tiny2d\main_my_game.cpp(36): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   main_my_game.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link

@@ -84,12 +84,12 @@ namespace My_Game
 		int player_id = Actor::spawn(&World::player, 1.0, current_time);		
 		Actor::set_Pos(player_id, 4, 4, &World::player);
 		
-		for (int i = 0; i < 64; i++)
+		for (int i = 0; i < 16; i++)
 		{
 
 			double x = 1.0 + (World::map.n_cols - 2)*rand() / RAND_MAX;
 			double y = 1.0 + (World::map.n_rows - 2)*rand() / RAND_MAX;
-			int enemy_id = Actor::spawn(&World::enemy, 0.25, current_time);
+			int enemy_id = Actor::spawn(&World::enemy, 0.5, current_time);
 			Actor::set_Pos(enemy_id, x, y, &World::enemy);
 
 		}
@@ -186,25 +186,32 @@ namespace My_Game
 			Vec2D::scale(&avg_vel, 1.0 / n_active);
 			Vec2D::scale(&avg_pos, 1.0 / n_active);
 
+
+			//FLOCK
 			for (int i = 0; i < World::enemy.array_size; i++)
 			{
 				if (Actor::is_Spawned(i, &World::enemy) == 0) continue;
 
-				Vec2D::Vec2D force = {};
-
 				Vec2D::Vec2D v_force = avg_vel;
 				Vec2D::norm(&v_force);
-				Vec2D::scale(&v_force, 6.0);
+				Vec2D::scale(&v_force, 1.0);
 
 				Vec2D::Vec2D p_force = avg_pos;
 				Vec2D::sub(&p_force, Actor::get_Pos(i, &World::enemy));
 				Vec2D::norm(&p_force);
 				Vec2D::scale(&p_force, 8.0);
 
-				Vec2D::add(&force, &v_force);
-				Vec2D::add(&force, &p_force);
-				
-				Actor::add_Force(i, &World::enemy, &force);
+				Actor::add_Force(i, &World::enemy, &v_force);
+				Actor::add_Force(i, &World::enemy, &p_force);
+
+				//chase player
+				Vec2D::Vec2D a_force = *Actor::get_Pos(i, &World::enemy);
+				Vec2D::sub(&a_force, Actor::get_Pos(0, &World::player));
+				float p_dist = 1.0;// a_force.x*a_force.x + a_force.y*a_force.y;
+				Vec2D::norm(&a_force);
+				Vec2D::scale(&a_force, -2.0);
+				Actor::add_Force(i, &World::enemy, &a_force);
+
 
 				for (int j = i + 1; j < World::enemy.array_size; j++)
 				{
@@ -213,10 +220,11 @@ namespace My_Game
 					Vec2D::Vec2D c_force = *Actor::get_Pos(i, &World::enemy);
 					Vec2D::sub(&c_force, Actor::get_Pos(j, &World::enemy));
 
-					if (c_force.x*c_force.x + c_force.y*c_force.y >= 2) continue;
+					if (c_force.x*c_force.x + c_force.y*c_force.y >= 16) continue;
 
 					Vec2D::norm(&c_force);
-					Vec2D::scale(&c_force, 2024.0/n_active);
+					
+					Vec2D::scale(&c_force, 256.0/n_active);
 
 					Actor::add_Force(i, &World::enemy, &c_force);
 					Vec2D::scale(&c_force, -1.0);
@@ -229,12 +237,15 @@ namespace My_Game
 			{
 				if (Actor::is_Spawned(i, &World::enemy) == 0) continue;
 
-				//	Vec2D::Vec2D gravity = { 0,4 };
-				//	Actor::add_Force(i, &World::enemy, &gravity);
+				
+
+				//Vec2D::Vec2D gravity = { 0,8 };
+				//Actor::add_Force(i, &World::enemy, &gravity);
+
 				Actor::update_Vel(i, &World::enemy, dt);
-				Actor::get_Vel(i, &World::enemy)->x *= 0.95;
-				Actor::get_Vel(i, &World::enemy)->y *= 0.95;
-				Vec2D::clip(Actor::get_Vel(i, &World::enemy), -16.0, 16.0, -16.0, 16.0);
+				Actor::get_Vel(i, &World::enemy)->x *= 0.99;
+				Actor::get_Vel(i, &World::enemy)->y *= 0.99;
+				//Vec2D::clip(Actor::get_Vel(i, &World::enemy), -16.0, 16.0, -16.0, 16.0);
 
 				//ENEMY COLLISION
 				Grid::Region enemy_imprint_region;
@@ -391,6 +402,7 @@ namespace My_Game
 
 								Audio::queue_FX(2);
 
+								
 							}
 						}
 
