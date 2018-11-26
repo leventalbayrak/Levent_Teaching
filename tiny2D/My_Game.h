@@ -13,7 +13,18 @@ namespace My_Game
 
 		namespace Parameters
 		{
-			float bullet_force_magnitude = 600;
+			double separation_distance = 1.0;
+			double cohesion_distance = 6.0;
+			double alignment_distance = 4.0;
+
+			double separation_force_mag = 1.0;
+			double cohesion_force_mag = 1.0;
+			double alignment_force_mag = 2.0;
+			double target_force_mag = 12.0;
+
+			double friction = 0.95;
+
+			int n_boids = 1000;
 		}
 
 
@@ -24,17 +35,13 @@ namespace My_Game
 		Grid::Grid collision;
 		Grid::Grid imprint;
 
-		Actor::Factory player;
-		Actor::Factory enemy;
-		Actor::Factory bullet;
-		Particle::Emitter bullet_spark;
+		Actor::Factory boids;
+		
+		Particle::Emitter trace;
 
 		Grid_Camera::Grid_Camera camera;
 
 		Vec2D::Vec2D mouse_grid_point;
-
-		unsigned int last_bullet_time = 0;
-		unsigned int bullet_freq = 60;
 
 	}
 
@@ -44,34 +51,20 @@ namespace My_Game
 		//initialize all systems and open game window
 		Engine::init("hello", screen_w, screen_h);
 
-		
-		Audio::add_FX("marble.wav");
-		Audio::add_FX("bullet.wav");
-		Audio::add_FX("rico.wav");
-		Audio::set_FX_Volume(0, 128);
-		Audio::set_FX_Volume(1, 80);
-		Audio::set_FX_Volume(2, 80);
-
 		Font::init(&World::text, "font_tileset.txt", Engine::renderer);
 		
 		Tileset::init(&World::tileset, "map_tileset.txt", Engine::renderer);
 
 		Grid::load(&World::map, "sandbox_map.csv");
 		Grid::load(&World::collision, "sandbox_collision.csv");
-		Grid::init(&World::imprint, World::map.n_rows, World::map.n_cols);
 
-		Actor::init(&World::player, 2);
-		Actor::init(&World::enemy, 512);
-		Actor::init(&World::bullet, 1024);
+		Actor::init(&World::boids, 4096);
 
-		Actor::add_Animated_Sprite(&World::player, "saitama_pink_run.txt", Engine::renderer);
-		Actor::add_Animated_Sprite(&World::enemy, "box.txt", Engine::renderer);
-		Actor::add_Animated_Sprite(&World::bullet, "box.txt", Engine::renderer);
-
-		Particle::init(&World::bullet_spark, "dirt.txt", 4096, Engine::renderer);
+		Actor::add_Animated_Sprite(&World::boids, "box.txt", Engine::renderer);
 
 		Grid_Camera::init(&World::camera, Engine::screen_width, Engine::screen_height);
 	
+		Particle::init(&World::trace, "dirt.txt", 4096, Engine::renderer);
 	}
 
 	void begin_Play(unsigned int current_time)
@@ -81,17 +74,12 @@ namespace My_Game
 		World::camera.world_coord.w = 32;
 		World::camera.world_coord.h = 32 * Engine::screen_height/Engine::screen_width;
 
-		int player_id = Actor::spawn(&World::player, 1.0, current_time);		
-		Actor::set_Pos(player_id, 4, 4, &World::player);
-		
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < World::Parameters::n_boids; i++)
 		{
-
 			double x = 1.0 + (World::map.n_cols - 2)*rand() / RAND_MAX;
 			double y = 1.0 + (World::map.n_rows - 2)*rand() / RAND_MAX;
-			int enemy_id = Actor::spawn(&World::enemy, 0.5, current_time);
-			Actor::set_Pos(enemy_id, x, y, &World::enemy);
-
+			int enemy_id = Actor::spawn(&World::boids, 0.25, current_time);
+			Actor::set_Pos(enemy_id, x, y, &World::boids);
 		}
 	
 	}
@@ -101,8 +89,6 @@ namespace My_Game
 
 		Engine::event_Loop();
 
-		World::camera.world_coord.x = Actor::get_World_Coord(0, &World::player)->x - 0.5*World::camera.world_coord.w;
-		World::camera.world_coord.y = Actor::get_World_Coord(0, &World::player)->y - 0.5*World::camera.world_coord.h;
 
 		if (World::camera.world_coord.x < 0) World::camera.world_coord.x = 0;
 		if (World::camera.world_coord.y < 0) World::camera.world_coord.y = 0;
@@ -112,310 +98,144 @@ namespace My_Game
 		Grid_Camera::calibrate(&World::camera);
 		Grid_Camera::screen_to_Grid(&World::mouse_grid_point, Input::mouse_x, Input::mouse_y, &World::camera);
 		
-		if (Input::keys[SDL_SCANCODE_A])
+#pragma region FLOCKING
 		{
-			Vec2D::Vec2D force = { -450,0 };
-			Actor::add_Force(0, &World::player, &force);
-		}
-		if (Input::keys[SDL_SCANCODE_D])
-		{
-			Vec2D::Vec2D force = { 450,0 };
-			Actor::add_Force(0, &World::player, &force);
-		}
-		if (Input::keys[SDL_SCANCODE_W])
-		{
-			Vec2D::Vec2D force = { 0,-450 };
-			Actor::add_Force(0, &World::player, &force);
-		}
-		if (Input::keys[SDL_SCANCODE_S])
-		{
-			Vec2D::Vec2D force = { 0,450 };
-			Actor::add_Force(0, &World::player, &force);
-		}
-
-		if (Input::mouse_left == 1 && Input::prev_mouse_left == 1)
-		{
-			if (current_time - World::last_bullet_time > World::bullet_freq)
+			//stay away from others
+			//stay close to center of mass
+			//follow the flock
+			//FLOCKING BEHAVIOR
+			for (int i = 0; i < World::boids.array_size; i++)
 			{
-				World::last_bullet_time = current_time;
+				if (Actor::is_Spawned(i, &World::boids) == 0) continue;//skip inactive
 
-				int bullet_id = Actor::spawn(&World::bullet, 0.25, current_time);
-				Shape::Rect::Data *player_rect = Actor::get_World_Coord(0, &World::player);
-				Actor::set_Pos(bullet_id, player_rect->x + player_rect->w*0.5, player_rect->y + player_rect->h*0.5, &World::bullet);
-				Vec2D::Vec2D *bullet_pos = Actor::get_Pos(bullet_id, &World::bullet);
+				Vec2D::Vec2D avg_pos = { 0,0 };
+				Vec2D::Vec2D avg_vel = { 0,0 };
+				int n_neighbors_cohesion = 0;
+				int n_neighbors_alignment = 0;
 
-				Vec2D::Vec2D force = World::mouse_grid_point;
-				Vec2D::sub(&force, bullet_pos);
+				Vec2D::Vec2D *pos_i = Actor::get_Pos(i, &World::boids);
 
-				Vec2D::norm(&force);
-
-				Vec2D::scale(&force, World::Parameters::bullet_force_magnitude);
-				Actor::add_Force(bullet_id, &World::bullet, &force);
-
-				Audio::queue_FX(1);
-			}
-		}
-
-		Actor::update_Vel(0, &World::player, dt);
-		Actor::get_Vel(0, &World::player)->x *= 0.95;
-		Actor::get_Vel(0, &World::player)->y *= 0.95;
-		Vec2D::clip(Actor::get_Vel(0, &World::player), -6.0, 6.0, -6.0, 6.0);
-		Actor::update_Pos(0, &World::player, dt);
-
-		int len = World::imprint.n_rows*World::imprint.n_cols;
-		for (int i = 0; i < len; i++)
-		{
-			World::imprint.data[i] = -1;
-		}
-
-#pragma region ENEMY
-		{
-
-			//flocking behavior forces
-			Vec2D::Vec2D avg_vel = {};
-			Vec2D::Vec2D avg_pos = {};
-			int n_active = 0;
-			for (int i = 0; i < World::enemy.array_size; i++)
-			{
-				if (Actor::is_Spawned(i, &World::enemy) == 0) continue;
-
-				Vec2D::add(&avg_vel, Actor::get_Vel(i, &World::enemy));
-				Vec2D::add(&avg_pos, Actor::get_Pos(i, &World::enemy));
-				n_active++;
-			}
-			Vec2D::scale(&avg_vel, 1.0 / n_active);
-			Vec2D::scale(&avg_pos, 1.0 / n_active);
-
-
-			//FLOCK
-			for (int i = 0; i < World::enemy.array_size; i++)
-			{
-				if (Actor::is_Spawned(i, &World::enemy) == 0) continue;
-
-				Vec2D::Vec2D v_force = avg_vel;
-				Vec2D::norm(&v_force);
-				Vec2D::scale(&v_force, 1.0);
-
-				Vec2D::Vec2D p_force = avg_pos;
-				Vec2D::sub(&p_force, Actor::get_Pos(i, &World::enemy));
-				Vec2D::norm(&p_force);
-				Vec2D::scale(&p_force, 8.0);
-
-				Actor::add_Force(i, &World::enemy, &v_force);
-				Actor::add_Force(i, &World::enemy, &p_force);
-
-				//chase player
-				Vec2D::Vec2D a_force = *Actor::get_Pos(i, &World::enemy);
-				Vec2D::sub(&a_force, Actor::get_Pos(0, &World::player));
-				float p_dist = 1.0;// a_force.x*a_force.x + a_force.y*a_force.y;
-				Vec2D::norm(&a_force);
-				Vec2D::scale(&a_force, -2.0);
-				Actor::add_Force(i, &World::enemy, &a_force);
-
-
-				for (int j = i + 1; j < World::enemy.array_size; j++)
+				for (int j = 0; j < World::boids.array_size; j++)
 				{
-					if (Actor::is_Spawned(j, &World::enemy) == 0) continue;
+					if (Actor::is_Spawned(j, &World::boids) == 0) continue;//skip inactive
+					if (i == j) continue;//skip itself
 
-					Vec2D::Vec2D c_force = *Actor::get_Pos(i, &World::enemy);
-					Vec2D::sub(&c_force, Actor::get_Pos(j, &World::enemy));
+					Vec2D::Vec2D *pos_j = Actor::get_Pos(j, &World::boids);
 
-					if (c_force.x*c_force.x + c_force.y*c_force.y >= 16) continue;
+					double dx = (pos_i->x - pos_j->x)*(pos_i->x - pos_j->x);
+					double dy = (pos_i->y - pos_j->y)*(pos_i->y - pos_j->y);
+					double distance = sqrt(dx + dy);
 
-					Vec2D::norm(&c_force);
+					//push away from others
+					if (distance <= World::Parameters::separation_distance)
+					{
+						Vec2D::Vec2D separation_force = { pos_i->x - pos_j->x, pos_i->y - pos_j->y };
+						Vec2D::norm(&separation_force);
+
+						separation_force.x *= World::Parameters::separation_force_mag;
+						separation_force.y *= World::Parameters::separation_force_mag;
+
+						Actor::add_Force(i, &World::boids, &separation_force);//APPLY FORCE
+					}
+
+					//sum pos of the neighbors
+					if (distance <= World::Parameters::cohesion_distance)
+					{
+						avg_pos.x += pos_j->x;
+						avg_pos.y += pos_j->y;
+						n_neighbors_cohesion++;
+					}
+
+					//sum vel of the neighbors
+					Vec2D::Vec2D *vel_j = Actor::get_Vel(j, &World::boids);
+					if (distance <= World::Parameters::alignment_distance)
+					{
+						avg_vel.x += vel_j->x;
+						avg_vel.y += vel_j->y;
+						n_neighbors_alignment++;
+					}
+				}
+
+				//calculate avg
+				avg_pos.x /= n_neighbors_cohesion;
+				avg_pos.y /= n_neighbors_cohesion;
+				avg_vel.x /= n_neighbors_alignment;
+				avg_vel.y /= n_neighbors_alignment;
+
+				Vec2D::Vec2D cohesion_force = { avg_pos.x - pos_i->x, avg_pos.y - pos_i->y };
+				Vec2D::norm(&cohesion_force);
+
+				cohesion_force.x *= World::Parameters::cohesion_force_mag;
+				cohesion_force.y *= World::Parameters::cohesion_force_mag;
+
+				Actor::add_Force(i, &World::boids, &cohesion_force);//APPLY FORCE
+
+				Vec2D::Vec2D alignment_force = avg_vel;
+				Vec2D::norm(&alignment_force);
+
+				alignment_force.x *= World::Parameters::alignment_force_mag;
+				alignment_force.y *= World::Parameters::alignment_force_mag;
+
+				Actor::add_Force(i, &World::boids, &alignment_force);//APPLY FORCE
+
+			}
+		}
+
+
+		for (int i = 0; i < World::boids.array_size; i++)
+		{
+			if (Actor::is_Spawned(i, &World::boids) == 0) continue;//skip inactive
+			
+			Vec2D::Vec2D *pos_i = Actor::get_Pos(i, &World::boids);
+			Vec2D::Vec2D target_force = { World::mouse_grid_point.x - pos_i->x,World::mouse_grid_point.y - pos_i->y };
+			Vec2D::norm(&target_force);
+			
+			target_force.x *= World::Parameters::target_force_mag;
+			target_force.y *= World::Parameters::target_force_mag;
+
+			Actor::add_Force(i, &World::boids, &target_force);//APPLY FORCE
+		}
+
+
+		for (int i = 0; i < World::boids.array_size; i++)
+		{
+			if (Actor::is_Spawned(i, &World::boids) == 0) continue;//skip inactive
+
+			Actor::update_Vel(i, &World::boids, dt);
+
+			Shape::Rect::Data *world_coord = Actor::get_World_Coord(i, &World::boids);
+			Grid::Region region;
+			Grid::get_Region_Under_Shape(&region, world_coord);
+			for (int y = region.first_row; y <= region.last_row; y++)
+			{
+				for (int x = region.first_col; x <= region.last_col; x++)
+				{
+					int k = Grid::get_Tile(x, y, &World::collision);
 					
-					Vec2D::scale(&c_force, 256.0/n_active);
+					if (k == -1) continue;
 
-					Actor::add_Force(i, &World::enemy, &c_force);
-					Vec2D::scale(&c_force, -1.0);
-					Actor::add_Force(j, &World::enemy, &c_force);
+					Vec2D::Vec2D *boid_vel = Actor::get_Vel(i, &World::boids);
+					Shape::Rect::Data tile_world = { x,y,1.0,1.0 };
+					Collision::impulse(world_coord, boid_vel, 1.0, &tile_world);
 				}
-				
 			}
 
-			for (int i = 0; i < World::enemy.array_size; i++)
-			{
-				if (Actor::is_Spawned(i, &World::enemy) == 0) continue;
 
-				
+			Actor::get_Vel(i, &World::boids)->x *= World::Parameters::friction;
+			Actor::get_Vel(i, &World::boids)->y *= World::Parameters::friction;
+			Actor::update_Pos(i, &World::boids, dt);
 
-				//Vec2D::Vec2D gravity = { 0,8 };
-				//Actor::add_Force(i, &World::enemy, &gravity);
+			Vec2D::Vec2D initial_vel = {};
+			Vec2D::Vec2D f_min = { -50,-50 };
+			Vec2D::Vec2D f_max = { 50,50 };
+			Vec2D::Vec2D pos = { Actor::get_Pos(i,&World::boids)->x , Actor::get_Pos(i,&World::boids)->y};
+			Particle::spawn(&World::trace, 1, 0.2, &pos, &initial_vel, &f_min, &f_max, 1000, 2000, current_time);
 
-				Actor::update_Vel(i, &World::enemy, dt);
-				Actor::get_Vel(i, &World::enemy)->x *= 0.99;
-				Actor::get_Vel(i, &World::enemy)->y *= 0.99;
-				//Vec2D::clip(Actor::get_Vel(i, &World::enemy), -16.0, 16.0, -16.0, 16.0);
-
-				//ENEMY COLLISION
-				Grid::Region enemy_imprint_region;
-				Actor::get_Grid_Collision(&enemy_imprint_region, &World::imprint, i, &World::enemy);
-
-				for (int y = enemy_imprint_region.first_row; y <= enemy_imprint_region.last_row; y++)
-				{
-					for (int x = enemy_imprint_region.first_col; x <= enemy_imprint_region.last_col; x++)
-					{
-						//there is a possible collision another enemy
-						int e = Grid::get_Tile(x, y, &World::imprint);
-						if (e != -1 && e != i)
-						{
-							Shape::Rect::Data *enemy_world = Actor::get_World_Coord(i, &World::enemy);
-							Shape::Rect::Data *target_enemy_world = Actor::get_World_Coord(e, &World::enemy);
-							int r = Shape::Rect::collision(enemy_world, target_enemy_world);
-
-							if (r == 1)
-							{
-								Vec2D::Vec2D *enemy_vel = Actor::get_Vel(i, &World::enemy);
-								Vec2D::Vec2D *target_enemy_vel = Actor::get_Vel(e, &World::enemy);
-								for (int k = 0; k < 10; k++)
-								{
-									Collision::impulse(enemy_world, enemy_vel, 1.0, target_enemy_world, target_enemy_vel, 1.0);
-								}
-
-								Vec2D::Vec2D initial_vel = {};
-								Vec2D::Vec2D f_min = { -50,-50 };
-								Vec2D::Vec2D f_max = { 50,50 };
-								Vec2D::Vec2D pos = { 0.5*(enemy_world->x + target_enemy_world->x + target_enemy_world->w), 0.5*(enemy_world->y + target_enemy_world->y + target_enemy_world->h) };
-								Particle::spawn(&World::bullet_spark, 1, 0.2, &pos, &initial_vel, &f_min, &f_max, 1000, 2000, current_time);
-								
-								Audio::queue_FX(0);
-							}
-						}
-					}
-				}
-
-				//WALL COLLISION
-				Grid::Region region;
-				Actor::get_Grid_Collision(&region, &World::collision, i, &World::enemy);
-
-				for (int y = region.first_row; y <= region.last_row; y++)
-				{
-					for (int x = region.first_col; x <= region.last_col; x++)
-					{
-						//there is a possible collision with wall
-						if (Grid::get_Tile(x, y, &World::collision) != -1)
-						{
-							Shape::Rect::Data *enemy_world = Actor::get_World_Coord(i, &World::enemy);
-							Shape::Rect::Data this_tile = { x,y,1.0,1.0 };
-							int r = Shape::Rect::collision(enemy_world, &this_tile);
-
-							if (r == 1)
-							{
-								Vec2D::Vec2D *enemy_vel = Actor::get_Vel(i, &World::enemy);
-								for (int k = 0; k < 10; k++)
-								{
-									Collision::impulse(enemy_world, enemy_vel, 1.0, &this_tile);
-								}
-
-								Audio::queue_FX(0);
-							}
-						}
-					}
-				}
-
-				Actor::update_Pos(i, &World::enemy, dt);
-				Shape::Rect::Data *enemy_world = Actor::get_World_Coord(i, &World::enemy);
-				Vec2D::Vec2D pos = *Actor::get_Pos(i, &World::enemy);
-				Vec2D::clip(&pos, 1, World::map.n_cols - 1, 1, World::map.n_rows - 1);
-				Actor::set_Pos(i, pos.x, pos.y, &World::enemy);
-
-				float p_size = 0.2;
-				Vec2D::Vec2D initial_vel = *Actor::get_Vel(i, &World::enemy);
-				Vec2D::scale(&initial_vel, -1.0);
-				Vec2D::Vec2D f_min = { -40,-40 };
-				Vec2D::Vec2D f_max = { 40,40 };
-				Vec2D::Vec2D epos = { enemy_world->x + 0.5*enemy_world->w - p_size*0.5, enemy_world->y + 0.5*enemy_world->h - p_size * 0.5 };
-				Particle::spawn(&World::bullet_spark, 1, p_size, &epos, &initial_vel, &f_min, &f_max, 500, 1000, current_time);
-
-				Grid::imprint_Set(&World::imprint, i, Actor::get_World_Coord(i, &World::enemy));
-			}
 		}
 
-#pragma region BULLETS
-		{
-			for (int i = 0; i < World::bullet.array_size; i++)
-			{
-				if (Actor::is_Spawned(i, &World::bullet) == 0) continue;
 
-				if (current_time - World::bullet.creation_time[i] > 3000)
-				{
-					Actor::destroy(i, &World::bullet);
-
-					continue;
-				}
-
-				//update vel
-				Actor::update_Vel(i, &World::bullet, dt);
-				Vec2D::clip(Actor::get_Vel(i, &World::bullet), -16.0, 16.0, -16.0, 16.0);
-
-				Grid::Region region;
-				Actor::get_Grid_Collision(&region, &World::collision, i, &World::bullet);
-
-				for (int y = region.first_row; y <= region.last_row; y++)
-				{
-					for (int x = region.first_col; x <= region.last_col; x++)
-					{
-						//there is a possible collision with wall
-						if (Grid::get_Tile(x, y, &World::collision) != -1)
-						{
-
-							Shape::Rect::Data *bullet_world = Actor::get_World_Coord(i, &World::bullet);
-							Shape::Rect::Data this_tile = { x,y,1.0,1.0 };
-							int r = Shape::Rect::collision(bullet_world, &this_tile);
-
-							if (r == 1)
-							{
-								Vec2D::Vec2D *bullet_vel = Actor::get_Vel(i, &World::bullet);
-								for (int k = 0; k < 10; k++)
-								{
-									Collision::impulse(bullet_world, bullet_vel, 1.0, &this_tile);
-								}
-
-								Audio::queue_FX(2);
-							}
-						}
-
-						//there is a possible collision with the enemy
-						if (Grid::get_Tile(x, y, &World::imprint) != -1)
-						{
-
-							int enemy_id = Grid::get_Tile(x, y, &World::imprint);
-							Shape::Rect::Data *bullet_world = Actor::get_World_Coord(i, &World::bullet);
-							Shape::Rect::Data *enemy_world = Actor::get_World_Coord(enemy_id, &World::enemy);
-							int r = Shape::Rect::collision(bullet_world, enemy_world);
-
-							if (r == 1)
-							{
-								Vec2D::Vec2D *bullet_vel = Actor::get_Vel(i, &World::bullet);
-								Vec2D::Vec2D *enemy_vel = Actor::get_Vel(enemy_id, &World::enemy);
-								for (int k = 0; k < 10; k++)
-								{
-									Collision::impulse(bullet_world, bullet_vel, 1.0, enemy_world, enemy_vel, 1.0);
-								}
-
-								Vec2D::Vec2D initial_vel = {};
-								Vec2D::Vec2D f_min = { -50,-50 };
-								Vec2D::Vec2D f_max = { 50,50 };
-								Vec2D::Vec2D pos = { enemy_world->x + 0.5*enemy_world->w, enemy_world->y + 0.5*enemy_world->h };
-								Particle::spawn(&World::bullet_spark, 1, 0.125, &pos, &initial_vel, &f_min, &f_max, 500, 2000, current_time);
-								Actor::destroy(i, &World::bullet);
-
-								Audio::queue_FX(2);
-
-								
-							}
-						}
-
-					}
-				}
-
-				Actor::update_Pos(i, &World::bullet, dt);
-			}
-		}
-
-		Particle::update_Vel_and_Life(&World::bullet_spark, current_time, dt);
-		Particle::update_Pos(&World::bullet_spark, current_time, dt);
-
+		Particle::update_Vel_and_Life(&World::trace, current_time, dt);
+		Particle::update_Pos(&World::trace, current_time, dt);
 	}
 
 	void draw(unsigned int current_time)
@@ -423,14 +243,10 @@ namespace My_Game
 		SDL_RenderClear(Engine::renderer);
 
 		Tileset::draw_Grid(&World::tileset, &World::camera, &World::map, &RGBA::default, Engine::renderer);
+	
+		Actor::draw(&World::boids, &World::camera, current_time, Engine::renderer);
+		//Particle::draw(&World::trace, &World::camera, current_time, Engine::renderer);
 
-		
-
-		Actor::draw(&World::player, &World::camera, current_time, Engine::renderer);
-		Actor::draw(&World::enemy, &World::camera, current_time, Engine::renderer);
-		Actor::draw(&World::bullet, &World::camera, current_time, Engine::renderer);
-		Particle::draw(&World::bullet_spark, &World::camera, current_time, Engine::renderer);
-		
 
 		//flip buffers
 		SDL_RenderPresent(Engine::renderer);
