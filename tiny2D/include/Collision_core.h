@@ -7,7 +7,7 @@
 
 namespace Collision
 {
-	void impulse(Shape::Rect::Data *a_rect,Vec2D::Vec2D *a_vel, float a_inv_mass, Shape::Rect::Data *b_rect, Vec2D::Vec2D *b_vel,  float b_inv_mass)
+	void impulse(const Shape::Rect::Data *a_rect,Vec2D::Vec2D *a_vel, float a_inv_mass, const Shape::Rect::Data *b_rect, Vec2D::Vec2D *b_vel,  float b_inv_mass)
 	{
 		Vec2D::Vec2D normal;
 		
@@ -61,7 +61,7 @@ namespace Collision
 	}
 
 	//impulse against immovable object
-	void impulse(Shape::Rect::Data *a_rect, Vec2D::Vec2D *a_vel, float a_inv_mass, Shape::Rect::Data *b_rect)
+	void impulse(const Shape::Rect::Data *a_rect, Vec2D::Vec2D *a_vel, float a_inv_mass, const Shape::Rect::Data *b_rect)
 	{
 		Vec2D::Vec2D normal;
 
