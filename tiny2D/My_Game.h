@@ -13,7 +13,13 @@ namespace My_Game
 
 		namespace Parameters
 		{
+			float separation_force_mag = 40.0;
+			float cohesion_force_mag = 40.0;
+			float alignment_force_mag = 20.0;
+			float target_force_mag = 120.0;
 
+			float radius = 2.0;
+			float target_radius = 4.0;
 		}
 
 		Tileset::Tileset tileset;
@@ -29,8 +35,8 @@ namespace My_Game
 
 		Vec2D::Vec2D mouse_grid_point;
 
-		int n_boids = 2000;
-		int *neighbor_array = NULL;
+		int n_boids = 2000;// 4096;
+		unsigned char *neighbor_array = NULL;
 
 	}
 
@@ -51,7 +57,7 @@ namespace My_Game
 		Actor::init(&World::boids, World::n_boids);
 		Actor::add_Animated_Sprite(&World::boids, "box.txt", Engine::renderer);
 
-		World::neighbor_array = (int*)malloc(sizeof(int) * World::n_boids);
+		World::neighbor_array = (unsigned char*)malloc(sizeof(unsigned char) * World::n_boids);
 
 		Grid_Camera::init(&World::camera, Engine::screen_width, Engine::screen_height);
 
@@ -66,10 +72,10 @@ namespace My_Game
 
 		for (int i = 0; i < World::n_boids; i++)
 		{
-			float x = 10 + rand() % 3;// 1.0 + (float)(World::map.n_cols - 4.0)*rand() / RAND_MAX;
-			float y = 10 + rand() % 3;// 1.0 + (float)(World::map.n_rows - 4.0)*rand() / RAND_MAX;
+			float x = 2.0 + (float)(World::map.n_cols - 5.0)*rand() / RAND_MAX;
+			float y = 2.0 + (float)(World::map.n_rows - 5.0)*rand() / RAND_MAX;
 
-			int id = Actor::spawn(&World::boids, 0.5, current_time);
+			int id = Actor::spawn(&World::boids, 0.25, current_time);
 			Actor::set_Pos(id, x, y, &World::boids);
 		}
 
@@ -109,18 +115,22 @@ namespace My_Game
 
 			Shape::Rect::Data *actor_world = Actor::get_World_Coord(i, &World::boids);
 			
-			
-
 			Shape::Rect::Data radius;		
-			radius.w = 4.0;
-			radius.h = 4.0;
+			radius.w = 2.0*World::Parameters::radius;
+			radius.h = 2.0*World::Parameters::radius;
 			radius.x = actor_world->x - 0.5*radius.w;
 			radius.y = actor_world->y - 0.5*radius.h;
 
-			memset(World::neighbor_array, 0, sizeof(int)*World::boids.array_size);
+			memset(World::neighbor_array, 0, sizeof(unsigned char)*World::boids.array_size);
+
 			Grid::Region region;
 			Grid::get_Region_Under_Shape(&region, &radius);
 			Grid::clip_Grid_Region(&region, World::map.n_cols, World::map.n_rows);
+
+			int n_neighbors = 0;
+			Vec2D::Vec2D avg_pos = { 0,0 };
+			Vec2D::Vec2D avg_vel = { 0,0 };
+
 			for (int y = region.first_row; y <= region.last_row; y++)
 			{
 				for (int x = region.first_col; x <= region.last_col; x++)
@@ -129,37 +139,30 @@ namespace My_Game
 					if (k == -1) continue;
 					if (k == i) continue;
 
-					World::neighbor_array[k] = 1;
-					
-				}
-			}
+					Vec2D::Vec2D *neighbor_pos = Actor::get_Pos(k, &World::boids);
+					float distance = sqrt((neighbor_pos->x - actor_world->x)*(neighbor_pos->x - actor_world->x) + (neighbor_pos->y - actor_world->y)*(neighbor_pos->y - actor_world->y));
 
-
-			int n_neighbors = 0;
-			Vec2D::Vec2D avg_pos = { 0,0 };
-			Vec2D::Vec2D avg_vel = { 0,0 };
-			for (int j = 0; j < World::boids.array_size; j++)
-			{
-				if (World::neighbor_array[j] == 1)
-				{
 					//you found an agent within your radius
-					Vec2D::Vec2D *neighbor_pos = Actor::get_Pos(j, &World::boids);
-					avg_pos.x += neighbor_pos->x;
-					avg_pos.y += neighbor_pos->y;
+					if (World::neighbor_array[k] == 0 && distance <= World::Parameters::radius)
+					{
+						World::neighbor_array[k] = 1;
+						
+						avg_pos.x += neighbor_pos->x;
+						avg_pos.y += neighbor_pos->y;
 
 
-					Vec2D::Vec2D *neighbor_vel = Actor::get_Vel(j, &World::boids);
-					avg_vel.x += neighbor_vel->x;
-					avg_vel.y += neighbor_vel->y;
+						Vec2D::Vec2D *neighbor_vel = Actor::get_Vel(k, &World::boids);
+						avg_vel.x += neighbor_vel->x;
+						avg_vel.y += neighbor_vel->y;
 
-					n_neighbors++;
+						n_neighbors++;
 
-					Vec2D::Vec2D separation_force = { actor_world->x - neighbor_pos->x,actor_world->y - neighbor_pos->y };
-					Vec2D::norm(&separation_force);
-					Vec2D::scale(&separation_force, 10.0);
+						Vec2D::Vec2D separation_force = { actor_world->x - neighbor_pos->x,actor_world->y - neighbor_pos->y };
+						Vec2D::norm(&separation_force);
+						Vec2D::scale(&separation_force, World::Parameters::separation_force_mag);
 
-					Actor::add_Force(i, &World::boids, &separation_force);
-
+						Actor::add_Force(i, &World::boids, &separation_force);
+					}
 				}
 			}
 
@@ -173,54 +176,61 @@ namespace My_Game
 
 				Vec2D::Vec2D cohesion_force = { avg_pos.x - actor_world->x,avg_pos.y - actor_world->y };
 				Vec2D::norm(&cohesion_force);
-				Vec2D::scale(&cohesion_force, 20.0);
+				Vec2D::scale(&cohesion_force, World::Parameters::cohesion_force_mag);
 
 				Actor::add_Force(i, &World::boids, &cohesion_force);
 
 				Vec2D::Vec2D alignment_force = { avg_vel.x, avg_vel.y };
 				Vec2D::norm(&alignment_force);
-				Vec2D::scale(&alignment_force, 10.0);
+				Vec2D::scale(&alignment_force, World::Parameters::alignment_force_mag);
 
 				Actor::add_Force(i, &World::boids, &alignment_force);
-		
-
 			}
 
-			Vec2D::Vec2D target_force = { World::mouse_grid_point.x - actor_world->x,World::mouse_grid_point.y - actor_world->y };
-			Vec2D::norm(&target_force);
-			Vec2D::scale(&target_force, 20.0);
+	
+			float distance = sqrt((World::mouse_grid_point.x - actor_world->x)*(World::mouse_grid_point.x - actor_world->x) + (World::mouse_grid_point.y - actor_world->y)*(World::mouse_grid_point.y - actor_world->y));
+			if (distance <= World::Parameters::target_radius)
+			{
+				Vec2D::Vec2D target_force = { World::mouse_grid_point.x - actor_world->x,World::mouse_grid_point.y - actor_world->y };
+				Vec2D::norm(&target_force);
+				Vec2D::scale(&target_force, World::Parameters::target_force_mag);
 
-			Actor::add_Force(i, &World::boids, &target_force);
-
+				Actor::add_Force(i, &World::boids, &target_force);
+			}
 			//DONE ADDING FORCES
 			//DO COLLISION
-
-			Actor::update_Vel(i, &World::boids, dt);
-
-			Actor::get_Vel(i, &World::boids)->x *= 0.95;
-			Actor::get_Vel(i, &World::boids)->y *= 0.95;
-
-
-			Grid::get_Region_Under_Shape(&region, actor_world);
-			Grid::clip_Grid_Region(&region, World::map.n_cols, World::map.n_rows);
-			for (int y = region.first_row; y <= region.last_row; y++)
+			int n_steps = 5;
+			for (int j = 0; j < n_steps; j++)
 			{
-				for (int x = region.first_col; x <= region.last_col; x++)
+				float dt2 = dt / n_steps;
+				Actor::update_Vel(i, &World::boids, dt2);
+
+				Vec2D::Vec2D *vel = Actor::get_Vel(i, &World::boids);
+				vel->x *= 0.95;
+				vel->y *= 0.95;
+
+
+				Grid::get_Region_Under_Shape(&region, actor_world);
+				Grid::clip_Grid_Region(&region, World::map.n_cols, World::map.n_rows);
+				for (int y = region.first_row; y <= region.last_row; y++)
 				{
-					if (Grid::get_Tile(x, y, &World::collision) == -1) continue;
-					Shape::Rect::Data tile_rect = { x,y,1.0,1.0 };
-					Collision::impulse(actor_world, Actor::get_Vel(i, &World::boids), 1.0, &tile_rect);
+					for (int x = region.first_col; x <= region.last_col; x++)
+					{
+						if (Grid::get_Tile(x, y, &World::collision) == -1) continue;
+						Shape::Rect::Data tile_rect = { x,y,1.0,1.0 };
+						Collision::impulse(actor_world, vel, 1.0, &tile_rect);
+					}
 				}
+
+				Actor::update_Pos(i, &World::boids, dt2);
+				if (actor_world->x < 1.0) actor_world->x = 1.0;
+				if (actor_world->y < 1.0) actor_world->y = 1.0;
+				if (actor_world->x + actor_world->w >= World::map.n_cols-1) actor_world->x = World::map.n_cols - 1 - actor_world->w;
+				if (actor_world->y + actor_world->h >= World::map.n_rows-1) actor_world->y = World::map.n_rows - 1 - actor_world->h;
 			}
-			Actor::update_Pos(i, &World::boids, dt);
 
-
-
-		}
-
-
-
-		
+			Actor::reset_Forces(i, &World::boids);
+		}	
 
 	}
 

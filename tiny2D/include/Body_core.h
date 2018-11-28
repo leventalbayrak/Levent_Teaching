@@ -41,13 +41,13 @@ namespace Body
 		Spawn_Stack::init(&a->spawn_stack, array_size);
 	}
 
-	void clear_Forces(Factory *a)
+	inline void clear_Forces(Factory *a)
 	{
 		//possibly fix this...
 		memset(a->force, 0, sizeof(Vec2D::Vec2D)*a->array_size);
 	}
 
-	int make_Instance(Factory *a)
+	inline int make_Instance(Factory *a)
 	{
 		return Spawn_Stack::make(&a->spawn_stack);
 	}
@@ -60,7 +60,7 @@ namespace Body
 		a->mass[index] = mass;
 	}
 
-	void add_Force(int index, Factory *a, const Vec2D::Vec2D *f)
+	inline void add_Force(int index, Factory *a, const Vec2D::Vec2D *f)
 	{
 		Vec2D::add(&a->force[index], f);
 	}
@@ -79,7 +79,7 @@ namespace Body
 		Vec2D::add(&a->pos[index], &t);
 	}
 
-	void apply_Friction(int index, const Vec2D::Vec2D *friction, Factory *a)
+	inline void apply_Friction(int index, const Vec2D::Vec2D *friction, Factory *a)
 	{
 		a->vel[index].x *= 1.0 - friction->x;
 		a->vel[index].y *= 1.0 - friction->y;

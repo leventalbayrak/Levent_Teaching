@@ -101,14 +101,18 @@ namespace Actor
 		f->n_sprites++;
 	}
 
-	void add_Force(int which_actor, Factory *f, Vec2D::Vec2D *force)
+	inline void add_Force(int which_actor, Factory *f, Vec2D::Vec2D *force)
 	{
 		Body::add_Force(which_actor, &f->bodies, force);
 	}
 
-	void update_Vel(int which_actor, Factory *f, float dt)
+	inline void update_Vel(int which_actor, Factory *f, float dt)
 	{
 		Body::update_Vel(which_actor, &f->bodies, dt);
+	}
+
+	inline void reset_Forces(int which_actor, Factory *f)
+	{
 		f->bodies.force[which_actor] = {};
 	}
 
@@ -119,6 +123,17 @@ namespace Actor
 			if (f->spawn_stack.spawned[i] == 1)
 			{
 				update_Vel(i, f, dt);
+			}
+		}
+	}
+
+	void reset_Forces(Factory *f, float dt)
+	{
+		for (int i = 0; i < f->array_size; i++)
+		{
+			if (f->spawn_stack.spawned[i] == 1)
+			{
+				f->bodies.force[i] = {};
 			}
 		}
 	}

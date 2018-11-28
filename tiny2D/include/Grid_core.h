@@ -84,7 +84,12 @@ namespace Grid
 		int y0 = r->y;
 		int x1 = r->x + r->w;
 		int y1 = r->y + r->h;
-		
+
+		if (x0 < 0) return;
+		if (y0 < 0) return;
+		if (x1 >= g->n_cols) return;
+		if (y1 >= g->n_cols) return;
+
 		for (int y = y0; y <= y1; y++)
 		{
 			for (int x = x0; x <= x1; x++)
