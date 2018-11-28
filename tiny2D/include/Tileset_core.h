@@ -75,6 +75,11 @@ namespace Tileset
 		int x1 = cam->world_coord.x + cam->world_coord.w;
 		int y1 = cam->world_coord.y + cam->world_coord.h;
 
+		if (x0 < 0) x0 = 0;
+		if (y0 < 0) y0 = 0;
+		if (x1 >= g->n_cols - 1) x1 = g->n_cols - 1;
+		if (y1 >= g->n_rows - 1) y1 = g->n_rows - 1;
+
 		int ty = cam->calibration.tile_y;
 		for (int i = y0; i <= y1; i++)
 		{
