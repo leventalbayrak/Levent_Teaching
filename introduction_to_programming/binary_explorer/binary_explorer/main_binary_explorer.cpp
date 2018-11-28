@@ -61,7 +61,7 @@ int main()
 		}
 		else if (state == 1)
 		{
-			if (is_lower_case || is_upper_case || position_in_tmp_str >= 256)
+			if ((is_lower_case || is_upper_case) && position_in_tmp_str < 256)
 			{
 				tmp_str[position_in_tmp_str] = buffer[position_in_buffer];
 				position_in_tmp_str++;
