@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{DC20225F-F33D-4EF3-8394-9D07CE5DF084}</ProjectGuid>
-    <RootNamespace>workingproject</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{03CBDCD1-9146-4BA7-BF1A-A04DCFA5AC0C}</ProjectGuid>
+    <RootNamespace>bst</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -115,10 +115,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main_Trie_Example.cpp" />
+    <ClCompile Include="main_Binary_Search_Tree_Example.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Trie_Example.h" />
+    <ClInclude Include="Binary_Search_Tree_Example.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

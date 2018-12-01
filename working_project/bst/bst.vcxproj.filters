@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Trie_Example.h">
+    <ClInclude Include="Binary_Search_Tree_Example.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main_Trie_Example.cpp">
+    <ClCompile Include="main_Binary_Search_Tree_Example.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
