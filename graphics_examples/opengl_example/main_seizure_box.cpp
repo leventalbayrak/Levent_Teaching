@@ -21,8 +21,9 @@
 unsigned int vertex_buffer_object = 0;
 unsigned int index_buffer_object = 0;
 SDL_Window *window = NULL;
-int transform_id = 0;
+int wiggle_id = 0;
 int tint_id = 0;
+int size_id = 0;
 
 int load(char *buffer,int buffer_size, const char *filename)
 {
@@ -101,8 +102,9 @@ void init_OpenGL()
 	glVertexAttribPointer(0, 3, GL_FLOAT, 0, sizeof(float) * 3, NULL);
 	glEnableVertexAttribArray(0);
 
-	transform_id = glGetUniformLocation(program_id, "transform");
+	wiggle_id = glGetUniformLocation(program_id, "wiggle");
 	tint_id = glGetUniformLocation(program_id, "tint");
+	size_id = glGetUniformLocation(program_id, "size");
 }
 
 void init()
@@ -143,34 +145,41 @@ int main(int argc, char **argv)
 
 		//render
 		glClearColor(0.5, 0.5, 0.5, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
-		/*glUniform4f(tint_id,
-			(1.0*rand() / RAND_MAX),
-			(1.0*rand() / RAND_MAX),
-			(1.0*rand() / RAND_MAX),
-			1.0);*/
+		glUniform2f(size_id,
+			(1.0 - 2.0*rand() / RAND_MAX),
+			(1.0 - 2.0*rand() / RAND_MAX));
+		glUniform3f(wiggle_id,
+			0.01*(1.0 - 2.0*rand() / RAND_MAX),
+			0.01*(1.0 - 2.0*rand() / RAND_MAX),
+			0.01*(1.0 - 2.0*rand() / RAND_MAX));
 
 		glUniform4f(tint_id,
-			0.0,
-			0.0,
-			1.0,
+			(1.0*rand() / RAND_MAX),
+			(1.0*rand() / RAND_MAX),
+			(1.0*rand() / RAND_MAX),
 			1.0);
-
-
-		float transform_matrix[16] = { 
-			0.5, 0.0, 0.0, 0.5,
-			0.0, 0.5, 0.0, 0.5,
-			0.0, 0.0, 0.5, 0.0,
-			0.0, 0.0, 0.0, 1.0,
-		};
-
-		glUniformMatrix4fv(transform_id, 1, GL_TRUE, transform_matrix);
-
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object);
 		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
 
+		glUniform2f(size_id,
+			(1.0 - 2.0*rand() / RAND_MAX),
+			(1.0 - 2.0*rand() / RAND_MAX));
+		glUniform3f(wiggle_id,
+			0.1*(1.0 - 2.0*rand() / RAND_MAX),
+			0.1*(1.0 - 2.0*rand() / RAND_MAX),
+			0.1*(1.0 - 2.0*rand() / RAND_MAX));
+
+		glUniform4f(tint_id,
+			(1.0*rand() / RAND_MAX),
+			(1.0*rand() / RAND_MAX),
+			(1.0*rand() / RAND_MAX),
+			1.0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object);
+		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
 
 		SDL_GL_SwapWindow(window);
 	}
