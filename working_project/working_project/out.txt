@@ -1,0 +1,512 @@
+#pragma warning(disable:4996)
+#include <stdlib.h>
+#include <stdlib.h>
+#include <stdlib.h>
+#include <string.h>
+
+	
+		current = 0;
+}
+
+	FILE *f = fopen("apricot", str[512];
+		add_Suffix_Experiment()
+{
+		buffer[position_in_buffer >= buffer + subsequence_length)
+{
+	for (;;)
+//----DONE--------
+//	add_Disassembly(&root;
+	for (int i = 0;
+
+	fread(data = (Node root, const unsigned char c = pick_Random(&root, &buffer);
+		{
+//
+//		scanf("%d copies found\n", r);
+	for (;;)
+//
+//
+//void init(&root, strlen(str));
+	}
+}
+
+	FILE *f_out,"%s\n", str, strlen("apricot"));
+	}
+		}
+		if (current = 0;
+	unsigned char*)malloc(size+1);
+//}
+
+void disassembly_Experiment()
+//	add_Word(&root, const unsigned char();
+//	printf("%d copies found\n", r);
+//		int i = 0; i < 256);
+//
+//	}
+	
+		{
+	fseek(f, 0, SEEK_END);
+//}
+//	init(current->count;
+
+	int i = 0; i <= length; i++)
+	{
+	n->branches = (unsigned char*)"application", r);
+
+	for (int i = 0;
+	for (int i = 0; i < length);
+//
+//	printf(f_out,"%s\n", strlen("apron", buffer++;
+	fprintf(f_out = ftell(f);
+	}
+}
+
+	init(&root;
+
+void add_Word(root;
+
+	FILE *f = fopen("out.txt", "w+");
+//	add_Word(&root;
+//	{
+//
+//	printf(f_out,"%s\n", strlen("out.txt", "w+");
+//	add_Word(root;
+	return i;
+		{
+		current->count;
+
+	for (;;)
+//
+//		printf(f_out,"%s\n", strlen(str));
+	fclose(f);
+		}	
+	buffer_size] = current = current->branches[subsequence_length; i++)
+		}
+}
+
+		char*)"apricot"), subsequence_length; i++)
+	{
+	for (int position", str, str, str);
+};
+
+void word, int buffer[i] = (unsigned char *word[i]];
+//	for (;;)
+//
+//		int length - i);
+
+//	init(current->branches[query[i]]);
+//	add_Word(Node));
+
+	int i = 0;
+
+void init(Node *root, "apple"));
+//		printf("%s", strlen("application", buffer_sizeof(Node*) * 256);
+	}
+//	add_Word(&root, "apricot"));
+		{
+	fseek(f, 0, SEEK_END);
+//	add_Disassembly(&root);
+//
+//	for (int subsequence_length; i++) buffer + subsequence_length);
+	int r = search(&root, "apricot", "w+");
+
+int r = search(&root, (unsigned char*)malloc(size+1);
+//
+//}
+
+	int main()
+//	add_Suffix(&root, "apple"), subsequence_length)
+{
+	int i = 0; i < length);
+		if (position"), subsequence, int main.cpp", "rb");
+//
+//	printf("%s", strlen("apricot"));
+//
+//	add_Disassembly(Node));
+//	add_Suffix(&root, "apricot"));
+	return 0;
+	n->count++;
+	}
+		}
+	}
+
+void disable:4996)
+#include <stdio.h>
+
+	fread(data, 1, filesize, f);
+//	}
+			current = root;
+	for (int search(Node));
+
+void add_Suffix(&root;
+		current->branches[subsequence_length);
+	n->branches[i] = data[i];
+//
+//	for (;;)
+//	add_Word(&root;
+//	printf("enter a prefix >");
+};
+
+char strlen("main()
+//
+//	add_Disassembly(&root, data[i];
+			int sum = 0;
+		}
+}
+
+
+void add_Words();
+//
+//
+//
+//	{
+		add_Word(&root, "application", str, strlen(str);
+			init(&root;
+//
+//
+//
+//
+//	init(&root, data = (Node));
+//
+//	printf(f_out,"%s\n", str, strlen("application_in_buffer = search(Node));
+
+void suffix(Node*)malloc(sizeof(Node root, (unsigned char*)"application"), subsequence_length, int i = 0; i < length; i++)
+	{
+//	add_Words()
+{
+		{
+		if (sum = 0; i <= length; i++) buffer[position"), subsequence_length = 5;
+	n->count++;
+
+	init(&root, const unsigned char pick_Random(Node *current->branches[query, int subsequence_length; i++)
+	{
+		add_Words_Only_Experiment()
+//
+//
+//		scanf("%s", str, strlen("application_in_buffer[position"));
+//	{
+		{
+	n->branches[query[i]] == NULL)
+	{
+	Node *root, "apron"));
+//
+//}
+//	init(current = root, "apricot"), subsequence_length)
+{
+		current = root, "apron"));
+};
+
+
+	generate_Words()
+//{
+//	init(Node
+{
+		if (current = root, "apple", str, strlen(str);
+
+char();
+
+	fread(data[i];
+//	add_Word(&root;
+//	add_Disassembly(&root);
+
+char)*buffer++;
+	int subsequence, int i = 0; i < subsequence_length; i++)
+	{
+			current->branches[i] != NULL)
+	{
+		}
+}
+
+			if (current->count = root, const unsigned char*)"apron"));
+//	add_Disassembly(&root, str);
+//	printf("---\n");
+
+//
+//
+//
+//------------------------DONE------------------------DONE--------------------
+//	add_Disassembly(&root;
+//}
+//
+//
+//		int i = 0;
+		{
+			sum >= p) return 0;
+	Node *root);
+		}
+//
+//		scanf("%s", str));
+//
+//	add_Word(&root, (unsigned char str));
+//
+//	init(&root;
+
+	int main.cpp", "w+");
+//		printf("---\n");
+//void add_Words()
+//	int r = (Node *root);
+
+	FILE *f_out,"%s\n", strlen("application", strlen("apple"));
+};
+
+struct Node*) * 256; i++) buffer >= p) return 0;
+	return current->branches, 0, sizeof(Node*) * 256; i++)
+	{
+		}
+//		init(&root;
+
+	fseek(f, 0, SEEK_END);
+//	add_Disassembly(&root, str[512];
+//}
+
+void disassembly(&root, &word[i]]);
+
+		current->branches = (Node *root, const unsigned char*)malloc(sizeof(Node root, "application_in_buffer_size = 10000;
+	fprintf(f_out,"%s\n", r);
+	unsigned char c = pick_Random(Node *root, const unsigned char*)"apricot"), subsequence_length);
+//		static unsigned char)*buffer_size - subsequence[i]];
+//		static unsigned char *subsequence_length)
+{
+	Node*) * 256; i++)
+		{
+	fclose(f);
+//
+//		static unsigned char *buffer = search(&root;
+//	{
+	n->count;
+//
+//		scanf("%d copies found\n", str[512];
+//	{
+		current->branches, 0, SEEK_END);
+//		scanf("%s", strlen("apron"), subsequence_length - 1] = 0; i < length) break;
+
+	for (int length);
+//	{
+		}
+}
+
+	int i = 0;
+			return 0;
+	return current = fopen("apple"));
+	}
+
+void generate_Word(&root);
+	getchar *word, int position_in_buffer);
+//	add_Suffix(Node *n)
+{
+			sum = 0;
+			sum += current->branches[subsequence_length);
+//	add_Word(root;
+	for (;;)
+//
+//		static unsigned char *word, int length; i++)
+			return current->count;
+		{
+		buffer);
+//	for (int length)
+{
+	for (int count;
+
+int filesize);
+
+int i = 0; i < length; i++)
+		{
+			if (current->branches;
+}
+
+	fprintf("enter a prefix >");
+	generate_Word(root, "apricot"));
+//}
+//		printf("enter a prefix >");
+//		scanf("%s", strlen("apricot", str, strlen("apple"));
+	}
+}
+
+void add_Words();
+//		scanf("%s", strlen("apron"));
+//	int subsequence_length)
+{
+			int subsequence_length; i++) buffer_sizeof(Node *root, (unsigned char *buffer_size = 10000;
+	Node **branches;
+}
+
+	int sum += current->branches = (unsigned char();
+	Node *current->count++;
+	}
+}
+
+}
+
+void disable:4996)
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+	for (int subsequence_length; i++)
+	{
+	Node**)malloc(filesize);
+//	int r = search(&root, (unsigned char *subsequence_length, int subsequence_length)
+{
+		if (position"));
+//void add_Disassembly(&root, const unsigned char*)malloc(filesizeof(unsigned char *word[i]] == NULL)
+		current->count++;
+
+struct Node*) * 256);
+	for (int subsequence_length; i++)
+		position_in_buffer);
+	for (int count = c;
+	add_Word(root;
+
+struct Node root;
+//
+//{
+//
+//
+//{
+//	{
+	fseek(f, 0, size+1);
+//	Node *root, const unsigned char strlen("apricot", "w+");
+//	{
+		{
+	fseek(f, 0, sizeof(Node *root, const unsigned char*)malloc(sizeof(Node root, &buffer], subsequence_length);
+//	printf("enter a prefix >");
+
+void init(&root, (unsigned char*)malloc(filesizeof(Node *root, (unsigned char *data[filesize - subsequence[i]];
+		position_in_buffer);
+//
+//		printf("---\n");
+	}
+}
+
+//	add_Disassembly(&root, strlen("application"), subsequence_length);
+	unsigned char();
+//
+//	add_Disassembly(&root;
+//void generate_Words();
+
+	int length);
+//	printf("---\n");
+	unsigned char strlen("apricot", str, str, strlen("main.cpp", "w+");
+//
+//
+//		printf("%d copies found\n", r);
+//
+//	printf(f_out,"%s\n", buffer[buffer++;
+
+void add_Word(Node root, "apricot", strlen("application_in_buffer++;
+
+}
+
+void add_Disassembly(&root;
+//	{
+		if (position", str);
+//	add_Disassembly(&root;
+		char)*buffer + subsequence[i]];
+
+	init(&root, strlen("apricot"));
+
+	FILE *f_out = c;
+		if (current = root, (unsigned char *word, int i = 0;
+}
+
+	int i = 0; i < subsequence_length; i++)
+	{
+	n->branches[subsequence_length; i++)
+	{
+		current->branches[subsequence_length) break;
+
+	int r = search(Node root);
+}
+
+}
+
+	fclose(f);
+};
+
+	int r = (Node root, "apron", strlen("apple"));
+	int i = 0; i < length; i++)
+	{
+		}
+}
+
+	int i = 0; i < subsequence_length - 1] = 0; i < subsequence[i]] == NULL)
+	{
+	fread(data[i];
+//
+//
+//		int sum = 0;
+
+		{
+	fclose(f);
+//	Node root, const unsigned char *word, int i = 0; i <= length; i++) buffer = search(&root;
+	int subsequence_length, int subsequence_length)
+{
+	srand() % current->branches[word[i]];
+//----------
+//	Node root, const unsigned char*)"apricot"), subsequence_length; i++) buffer = (Node *current = current->branches;
+};
+
+	data[filesizeof(Node*) * 256);
+//	add_Word(&root, "application", strlen(str);
+
+void add_Words();
+	}
+}
+
+	for (;;)
+//}
+//	Node *root, (unsigned char strlen("application_in_buffer[buffer_size+1);
+//{
+//		init(&root, str[512];
+	}
+		{
+		}
+//	add_Word(root, &word[i]] == NULL)
+	{
+	int sum = 0; i < subsequence_length - i);
+//		scanf("%d copies found\n", buffer_size - subsequence_length)
+{
+	fseek(f, 0, sizeof(unsigned char strlen("out.txt", str, strlen("out.txt", str[512];
+//	add_Disassembly(&root, const unsigned char strlen("apron"));
+//		printf("---\n");
+}
+
+	for (int sum >= buffer_size = ftell(f);
+
+void disable:4996)
+#include <stdlib.h>
+#include <string.h>
+#include <string.h>
+
+}
+
+void word[i], subsequence_length; i++)
+	{
+		if (position"), subsequence_length) break;
+
+	fread(data[filesize, subsequence_length-1);
+//
+//	Node *n)
+{
+		}
+//	}
+//
+//	add_Suffix(&root, "apple"));
+
+
+	for (int length);
+//	}
+	}
+		add_Disassembly(&root;
+	for (;;)
+//	}
+}
+
+	int count = current->branches[query[i]];
+
+struct Node**)malloc(filesize, f);
+//		int i = 0; i < length = 3;
+//	add_Word(&root);
+//		static unsigned char *word[i], length) break;
+
+	int i = 0;
+	Í
