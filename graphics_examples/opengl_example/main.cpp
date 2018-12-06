@@ -4,6 +4,7 @@
 //LOAD LIBRARIES
 #pragma comment(lib,"SDL2-2.0.9\\lib\\x86\\SDL2.lib")
 #pragma comment(lib,"SDL2-2.0.9\\lib\\x86\\SDL2main.lib")
+#pragma comment(lib,"SDL2-2.0.9\\lib\\x86\\SDL2_image.lib")
 
 #pragma comment(lib,"glew-2.1.0\\lib\\Release\\Win32\\glew32.lib")
 #pragma comment(lib,"opengl32.lib")
@@ -12,7 +13,14 @@
 #include "glew-2.1.0\include\GL\glew.h"
 #include "SDL2-2.0.9\include\SDL.h"
 #include "SDL2-2.0.9\include\SDL_opengl.h"
+#include "SDL2-2.0.9\include\SDL_image.h"
 
+#include "glm/glm.hpp"
+#include "glm/vec3.hpp"
+#include "glm/vec4.hpp"
+#include "glm/mat4x4.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 #include <Windows.h>
 #include <stdio.h>
@@ -23,6 +31,8 @@ unsigned int index_buffer_object = 0;
 SDL_Window *window = NULL;
 int transform_id = 0;
 int tint_id = 0;
+unsigned int texture_id = 0;
+
 
 int load(char *buffer,int buffer_size, const char *filename)
 {
@@ -79,10 +89,10 @@ void init_OpenGL()
 
 	float vertex_data[] = 
 	{
-		-0.5, -0.5, 0.0,
-		0.5, -0.5, 0.0,
-		0.5, 0.5, 0.0,
-		-0.5, 0.5, 0.0
+		-1.0f, -1.0f, 0.0f,   1.0f,1.0f,
+		1.0f, -1.0f, 0.0f,    1.0f,0.0f,
+		1.0f, 1.0f, 0.0f,     0.0f,0.0f,
+		-1.0f, 1.0f, 0.0f,    0.0f,1.0f
 	};
 
 	unsigned int index_data[] =
@@ -92,17 +102,34 @@ void init_OpenGL()
 
 	glGenBuffers(1, &vertex_buffer_object);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
-	glBufferData(GL_ARRAY_BUFFER, 3 * 4 * sizeof(float), vertex_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 5 * 4 * sizeof(float), vertex_data, GL_STATIC_DRAW);
 	
 	glGenBuffers(1, &index_buffer_object);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(unsigned int), index_data, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, 0, sizeof(float) * 3, NULL);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	transform_id = glGetUniformLocation(program_id, "transform");
 	tint_id = glGetUniformLocation(program_id, "tint");
+
+	SDL_Surface *surface = IMG_Load("test.png");
+
+	glGenTextures(1, &texture_id);
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
+	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void init()
@@ -145,28 +172,32 @@ int main(int argc, char **argv)
 		glClearColor(0.5, 0.5, 0.5, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		/*glUniform4f(tint_id,
-			(1.0*rand() / RAND_MAX),
-			(1.0*rand() / RAND_MAX),
-			(1.0*rand() / RAND_MAX),
-			1.0);*/
-
 		glUniform4f(tint_id,
-			0.0,
-			0.0,
-			1.0,
+			(1.0*rand() / RAND_MAX),
+			(1.0*rand() / RAND_MAX),
+			(1.0*rand() / RAND_MAX),
 			1.0);
 
+		//set active texture
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture_id);
 
-		float transform_matrix[16] = { 
-			0.5, 0.0, 0.0, 0.5,
-			0.0, 0.5, 0.0, 0.5,
-			0.0, 0.0, 0.5, 0.0,
-			0.0, 0.0, 0.0, 1.0,
-		};
+		//CAMERA
+		glm::mat4 projection = glm::perspective(glm::radians(90.0f), 4.0f / 3.0f, 0.1f, 100.f);
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -4.0));//move camera -4 units in Z axis
 
-		glUniformMatrix4fv(transform_id, 1, GL_TRUE, transform_matrix);
+		//MODEL
+		glm::mat4 model(1.0f);//identity matrix (1.0s in the diagonal)
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));//no translation/movement
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));//reduce original size by half
+		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));//rotate 45 degrees on Z axis
+	
+		//multiply projection view model
+		glm::mat4 transform = projection * view * model;
 
+		glUniformMatrix4fv(transform_id, 1, GL_TRUE, glm::value_ptr(transform));
+
+		//bind buffers and draw
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object);
 		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
