@@ -1,4 +1,4 @@
-#pragma warning(disable:4996)
+﻿#pragma warning(disable:4996)
 #pragma comment(linker,"/subsystem:console")
 
 //LOAD LIBRARIES
@@ -26,13 +26,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned int vertex_buffer_object = 0;
-unsigned int index_buffer_object = 0;
+
+unsigned int vertex_array = 0;
 SDL_Window *window = NULL;
 int transform_id = 0;
-int tint_id = 0;
 unsigned int texture_id = 0;
-
+int program_id = 0;
 
 int load(char *buffer,int buffer_size, const char *filename)
 {
@@ -54,7 +53,9 @@ void init_OpenGL()
 
 	printf("%s\n", glGetString(GL_VERSION));
 
-	int program_id = glCreateProgram();
+	glEnable(GL_TEXTURE_2D);
+
+	program_id = glCreateProgram();
 	int compile_status = 0;
 
 	unsigned int vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
@@ -89,52 +90,81 @@ void init_OpenGL()
 
 	float vertex_data[] = 
 	{
-		-1.0f, -1.0f, 0.0f,   1.0f,1.0f,
-		1.0f, -1.0f, 0.0f,    1.0f,0.0f,
-		1.0f, 1.0f, 0.0f,     0.0f,0.0f,
-		-1.0f, 1.0f, 0.0f,    0.0f,1.0f
+		// positions          // colors           // texture coords
+			0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+			0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+		   -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+		   -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
 	};
+
+
 
 	unsigned int index_data[] =
 	{
-		0, 1, 2, 3
+		0, 1, 3, // first triangle
+		1, 2, 3  // second triangle
 	};
 
+	unsigned int vertex_buffer_object = 0;
+	unsigned int index_buffer_object = 0;
+
+	glGenVertexArrays(1, &vertex_array);
 	glGenBuffers(1, &vertex_buffer_object);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
-	glBufferData(GL_ARRAY_BUFFER, 5 * 4 * sizeof(float), vertex_data, GL_STATIC_DRAW);
-	
 	glGenBuffers(1, &index_buffer_object);
+
+	glBindVertexArray(vertex_array);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
+	glBufferData(GL_ARRAY_BUFFER, 8 * 4 * sizeof(float), vertex_data, GL_STATIC_DRAW);
+	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(unsigned int), index_data, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), index_data, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	int attribute_location = glGetAttribLocation(program_id, "v_in_pos");
+	glVertexAttribPointer(attribute_location, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(attribute_location);
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	attribute_location = glGetAttribLocation(program_id, "v_in_color");
+	glVertexAttribPointer(attribute_location, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(attribute_location);
+
+	attribute_location = glGetAttribLocation(program_id, "v_in_tex_coord");
+	glVertexAttribPointer(attribute_location, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(attribute_location);
 
 	transform_id = glGetUniformLocation(program_id, "transform");
-	tint_id = glGetUniformLocation(program_id, "tint");
 
-	SDL_Surface *surface = IMG_Load("test.png");
+	SDL_Surface *surface = IMG_Load("wall.jpg");
 
 	glGenTextures(1, &texture_id);
+
 	glBindTexture(GL_TEXTURE_2D, texture_id);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	////int number_of_mipmaps = 2;
+	////glTexStorage2D(GL_TEXTURE_2D, 2, GL_RGB8, surface->w, surface->h);
+	////glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h, GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
+	////glGenerateMipmap(GL_TEXTURE_2D);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+	printf("w: %d h: %d bits: %d\n", surface->w, surface->h, surface->format->BitsPerPixel);
+
+	SDL_FreeSurface(surface);
+
+	glUniform1i(glGetUniformLocation(program_id, "color_tex"), 0);
+	
 }
 
 void init()
 {
 	SDL_Init(SDL_INIT_VIDEO);
+
+	//IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -166,21 +196,12 @@ int main(int argc, char **argv)
 				done = true;
 			}
 		}
-
+		
+		glUseProgram(program_id);
 
 		//render
 		glClearColor(0.5, 0.5, 0.5, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glUniform4f(tint_id,
-			(1.0*rand() / RAND_MAX),
-			(1.0*rand() / RAND_MAX),
-			(1.0*rand() / RAND_MAX),
-			1.0);
-
-		//set active texture
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture_id);
 
 		//CAMERA
 		glm::mat4 projection = glm::perspective(glm::radians(90.0f), 4.0f / 3.0f, 0.1f, 100.f);
@@ -189,7 +210,7 @@ int main(int argc, char **argv)
 		//MODEL
 		glm::mat4 model(1.0f);//identity matrix (1.0s in the diagonal)
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));//no translation/movement
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));//reduce original size by half
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));//reduce original size by half
 		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));//rotate 45 degrees on Z axis
 	
 		//multiply projection view model
@@ -197,10 +218,14 @@ int main(int argc, char **argv)
 
 		glUniformMatrix4fv(transform_id, 1, GL_TRUE, glm::value_ptr(transform));
 
+
+		//set active texture
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+
 		//bind buffers and draw
-		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object);
-		glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL);
+		glBindVertexArray(vertex_array);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
 
 		SDL_GL_SwapWindow(window);
