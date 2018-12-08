@@ -102,7 +102,7 @@ namespace Game
 	float temperature = 2;
 	float temperature_decay = 0.98;
 
-	const int n_boxes = 500;
+	const int n_boxes = 200;
 	SDL_Rect boxes[n_boxes];
 	SDL_Rect tmp_boxes[n_boxes];
 	unsigned int color[n_boxes];
