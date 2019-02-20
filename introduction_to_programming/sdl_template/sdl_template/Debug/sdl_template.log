@@ -1,9 +1,0 @@
-﻿  main.cpp
-c:\users\levent.albayrak\documents\visual studio 2017\projects\sdl_template\sdl_template\main.cpp(19): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\levent.albayrak\documents\visual studio 2017\projects\sdl_template\sdl_template\main.cpp(20): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\levent.albayrak\documents\visual studio 2017\projects\sdl_template\sdl_template\main.cpp(62): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent.albayrak\documents\visual studio 2017\projects\sdl_template\sdl_template\main.cpp(63): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent.albayrak\documents\visual studio 2017\projects\sdl_template\sdl_template\main.cpp(68): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\levent.albayrak\documents\visual studio 2017\projects\sdl_template\sdl_template\main.cpp(69): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-  sdl_template.vcxproj -> C:\Users\levent.albayrak\documents\visual studio 2017\Projects\sdl_template\Debug\sdl_template.exe
-  sdl_template.vcxproj -> C:\Users\levent.albayrak\documents\visual studio 2017\Projects\sdl_template\Debug\sdl_template.pdb (Partial PDB)
