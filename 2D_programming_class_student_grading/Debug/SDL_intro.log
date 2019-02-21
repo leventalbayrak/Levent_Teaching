@@ -1,23 +1,26 @@
 ﻿  main.cpp
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(60): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(61): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(62): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(63): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(127): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(147): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(208): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(223): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(224): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(231): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(232): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(257): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(263): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(268): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(272): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(286): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(287): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(294): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(295): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(335): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(343): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(29): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(30): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(32): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(71): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(73): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(75): warning C4309: '=': truncation of constant value
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(76): warning C4309: '=': truncation of constant value
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(77): warning C4309: '=': truncation of constant value
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(83): warning C4326: return type of 'wmain' should be 'int' instead of 'void'
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(84): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(100): warning C4309: '=': truncation of constant value
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(106): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(111): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(117): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(122): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(135): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(136): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(138): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(146): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(147): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(148): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(165): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class_student_grading\main.cpp(166): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   SDL_intro.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\2D_programming_class_student_grading\Debug\SDL_intro.exe
