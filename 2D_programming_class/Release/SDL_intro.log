@@ -1,0 +1,12 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\main.cpp(68): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\main.cpp(69): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\main.cpp(76): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\main.cpp(77): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\main.cpp(127): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Generating code
+  1 of 2 functions (50.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  SDL_intro.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\2D_programming_class\Release\SDL_intro.exe

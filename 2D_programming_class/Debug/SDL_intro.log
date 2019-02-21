@@ -1,0 +1,11 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\rect.h(17): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\rect.h(19): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\collision.h(9): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\collision.h(10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\collision.h(11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\collision.h(12): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\main.cpp(22): warning C4326: return type of 'wmain' should be 'int' instead of 'void'
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\main.cpp(40): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\2d_programming_class\main.cpp(57): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  SDL_intro.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\2D_programming_class\Debug\SDL_intro.exe
