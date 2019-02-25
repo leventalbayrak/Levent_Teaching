@@ -1,14 +1,1 @@
-﻿  main.cpp
-main.cpp(49): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-main.cpp(113): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-main.cpp(116): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-main.cpp(119): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-main.cpp(155): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-main.cpp(156): warning C4129: '%': unrecognized character escape sequence
-main.cpp(156): warning C4778: 'printf' : unterminated format string '%\n'
-  Generating code
-  1 of 8 functions (12.5%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  sdl_template.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\introduction_to_programming\graphics_examples\FPS_AIM_BETTER\Release\sdl_template.exe
+﻿  sdl_template.vcxproj -> C:\Users\levent\Documents\GitHub\Levent_Development\introduction_to_programming\graphics_examples\FPS_AIM_BETTER\Release\sdl_template.exe
