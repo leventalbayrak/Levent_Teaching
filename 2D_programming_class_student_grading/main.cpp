@@ -1,405 +1,347 @@
-#pragma once
-#include <iostream>
-#include <assert.h>
-#include <math.h>
-#include <ctime>
-#include <cstdlib>
-using namespace std;
+#pragma warning(disable : 4996)
 
-//include SDL header
-#include "SDL2-2.0.8/include/SDL.h"
-
-//load libraries
+#include "SDL2-2.0.8\include\SDL.h"
 #pragma comment(lib, "SDL2-2.0.8\\lib\\x86\\SDL2.lib")
 #pragma comment(lib, "SDL2-2.0.8\\lib\\x86\\SDL2main.lib")
-#pragma comment(linker, "/subsystem:console")
 
-void fill_rectangle(unsigned char*buffer, int buffer_width, int buffer_height, int rect_x, int rect_y, int rect_w, int rect_h, int r, int g, int b, int a)
-{
-	for (int y = 0; y < rect_h; y++)
-	{
-		for (int x = 0; x < rect_w; x++)
-		{
-			int index = 4 * (rect_y + y)*buffer_width + 4 * (x + rect_x);
-			buffer[index] = r;
-			buffer[index + 1] = g;
-			buffer[index + 2] = b;
-			buffer[index + 3] = a;
-		}
+#include <stdio.h>
+#include <stdlib.h>
+#include <Windows.h>
+#include <time.h>
 
-	}
-}
-
-SDL_Renderer *renderer = NULL;
-int screen_width = 800;
-int screen_height = 600;
-
-SDL_Window *window = NULL;
-
-struct Box
+struct Float_Pair
 {
 	float x, y;
-	float w, h;
-	float speed_x, speed_y;
-	int r, g, b, a;
-	int count_hits;
 };
 
-struct Border
+struct Color_Set
 {
-	float x, y;
-	float w, h;
+	unsigned char r, g, b, a;
 };
 
-
-// int collision_with_Dir(const Data *a, const Data *b)
-int collision_with_dir(float *rect_A_x, float *rect_A_y, float *rect_A_w, float *rect_A_h, float *rect_B_x, float *rect_B_y, float *rect_B_w, float *rect_B_h)
+namespace OM
 {
-	enum { NO_COLLISION, TOP_OF_B, RIGHT_OF_B, BOTTOM_OF_B, LEFT_OF_B };
-
-	float w = 0.5 * (*rect_A_w + *rect_B_w);
-	float h = 0.5 * (*rect_A_h + *rect_B_h);
-	float dx = *rect_A_x - *rect_B_x + 0.5*(*rect_A_w - *rect_B_w);
-	float dy = *rect_A_y - *rect_B_y + 0.5*(*rect_A_h - *rect_B_h);
-
-	if (dx*dx <= w * w && dy*dy <= h * h)
+	struct Rect
 	{
-		float wy = w * dy;
-		float hx = h * dx;
+		Float_Pair position;
+		Color_Set color;
+	};
 
-		if (wy > hx)
+	struct Entity
+	{
+		Rect body;
+		Float_Pair velocity;
+	};
+
+	unsigned char find_Next_Open_Box(unsigned short boxN, const unsigned char *box_state)
+	{
+		for (unsigned short i = 0; i < boxN; i++)
 		{
-			return (wy + hx > 0) ? BOTTOM_OF_B : LEFT_OF_B;
+			if (box_state[i] == 0) return i + 1;
 		}
-		else
+		return 0;
+	}
+
+	void spawn(Entity *obj, unsigned char *state, unsigned short box_size, unsigned char max_vel, unsigned short screen_width, unsigned short screen_height)
+	{
+		*state = 1;
+		obj->body.position.x = screen_width / 2.0 - (box_size / 2.0);
+		obj->body.position.y = screen_height / 2.0 - (box_size / 2.0);
+		obj->velocity.x = max_vel * (1.0 - 2.0 * rand() / RAND_MAX);
+		obj->velocity.y = max_vel * (1.0 - 2.0 * rand() / RAND_MAX);
+		obj->body.color.r = rand() % 256;
+		obj->body.color.g = rand() % 256;
+		obj->body.color.b = rand() % 256;
+		int random = rand() % 3;
+		if (random % 3 == 0) obj->body.color.r = 255;
+		else if (random % 3 == 1) obj->body.color.g = 255;
+		else obj->body.color.b = 255;
+	}
+
+	void despawn(unsigned char *state, unsigned short *bounce)
+	{
+		*bounce = 0;
+		*state = 0;
+	}
+
+	void update(Float_Pair *position, const Float_Pair *velocity)
+	{
+		position->x += velocity->x;
+		position->y += velocity->y;
+	}
+
+	void draw(Color_Set *canvas, const Rect *obj, unsigned short obj_w, unsigned short obj_h, unsigned short canvas_w)
+	{
+		for (int y = obj->position.y; y < obj->position.y + obj_h; y++)
 		{
-			return (wy + hx > 0) ? RIGHT_OF_B : TOP_OF_B;
+			for (int x = obj->position.x; x < obj->position.x + obj_w; x++)
+			{
+				canvas[y * canvas_w + x].r = obj->color.r;
+				canvas[y * canvas_w + x].g = obj->color.g;
+				canvas[y * canvas_w + x].b = obj->color.b;
+			}
 		}
 	}
-	return NO_COLLISION;
+
+	int check_Collision(const Float_Pair *obj_position_1, const Float_Pair *obj_position_2, unsigned short box_size)
+	{
+		enum { NO_COLLISION = 0, TOP_2, RIGHT_2, BOTTOM_2, LEFT_2 };
+
+		float avg_w = box_size;
+		float avg_h = box_size;
+
+		float diff_x = obj_position_1->x - obj_position_2->x;
+		float diff_y = obj_position_1->y - obj_position_2->y;
+
+		if (diff_x * diff_x <= avg_w * avg_w && diff_y * diff_y <= avg_h * avg_h)
+		{
+			float wy = avg_w * diff_y;
+			float hx = avg_h * diff_x;
+
+			if (wy > hx)
+			{
+				return (wy + hx > 0) ? BOTTOM_2 : LEFT_2;
+			}
+			else
+			{
+				return (wy + hx > 0) ? RIGHT_2 : TOP_2;
+			}
+		}
+		else return NO_COLLISION;
+	}
+
+	int check_Collision(const Float_Pair *box_position, unsigned short box_size, const Float_Pair *border_position, unsigned short border_width, unsigned short border_height)
+	{
+		float avg_w = 0.5 * (box_size + border_width);
+		float avg_h = 0.5 * (box_size + border_height);
+
+		float diff_x = box_position->x - border_position->x + 0.5 * (box_size - border_width);
+		float diff_y = box_position->y - border_position->y + 0.5 * (box_size - border_height);
+
+		if (diff_x * diff_x <= avg_w * avg_w && diff_y * diff_y <= avg_h * avg_h)
+		{
+			return 1;
+		}
+		else return 0;
+	}
+
+	void impulse(Float_Pair *obj_velocity_1, Float_Pair *obj_velocity_2, unsigned char direction)
+	{
+		enum { NO_COLLISION = 0, TOP_2, RIGHT_2, BOTTOM_2, LEFT_2 };
+
+		Float_Pair normal;
+
+		if (direction == TOP_2) normal = { 0, -1 };
+		else if (direction == RIGHT_2) normal = { 1, 0 };
+		else if (direction == BOTTOM_2) normal = { 0, 1 };
+		else if (direction == LEFT_2) normal = { -1, 0 };
+		else normal = { 0,0 };
+
+		Float_Pair relative_velocity = *obj_velocity_2;
+		relative_velocity.x -= obj_velocity_1->x;
+		relative_velocity.y -= obj_velocity_1->y;
+
+		float dot = relative_velocity.x * normal.x + relative_velocity.y * normal.y;
+
+		if (dot < 0) return;
+
+		float loss = -1.0 * dot;
+
+		Float_Pair impulse = { normal.x * loss, normal.y * loss };
+
+		obj_velocity_1->x -= impulse.x;
+		obj_velocity_1->y -= impulse.y;
+
+		obj_velocity_2->x += impulse.x;
+		obj_velocity_2->y += impulse.y;
+
+		float mt = 0.5;
+		Float_Pair tangent = { normal.y, -normal.x };
+		float tangent_dot = relative_velocity.x * tangent.x + relative_velocity.y * tangent.y;
+		tangent.x *= -tangent_dot / 2.0;
+		tangent.y *= -tangent_dot / 2.0;
+
+		obj_velocity_1->x -= tangent.x;
+		obj_velocity_1->y -= tangent.y;
+
+		obj_velocity_2->x += tangent.x;
+		obj_velocity_2->y += tangent.y;
+	}
+
+	void impulse(Float_Pair *obj_velocity, unsigned char direction)
+	{
+		enum { NO_COLLISION = 0, TOP_2, RIGHT_2, BOTTOM_2, LEFT_2 };
+
+		Float_Pair normal;
+
+		if (direction == TOP_2) normal = { 0, -1 };
+		else if (direction == RIGHT_2) normal = { 1, 0 };
+		else if (direction == BOTTOM_2) normal = { 0, 1 };
+		else if (direction == LEFT_2) normal = { -1, 0 };
+		else normal = { 0,0 };
+
+		Float_Pair relative_velocity = { -obj_velocity->x, -obj_velocity->y };
+
+		float dot = relative_velocity.x * normal.x + relative_velocity.y * normal.y;
+
+		if (dot < 0) return;
+
+		float loss = -2.0 * dot;
+		Float_Pair impulse = { normal.x * loss, normal.y * loss };
+
+		obj_velocity->x -= impulse.x;
+		obj_velocity->y -= impulse.y;
+	}
+
+	void inc_Bounce(unsigned short *bounce_count_1, unsigned short *bounce_count_2)
+	{
+		*bounce_count_1++;
+		*bounce_count_2++;
+	}
+
+	void inc_Bounce(unsigned short *bounce_count)
+	{
+		*bounce_count++;
+
+	}
 }
 
-//void impulse
-void impulse(float *rect_A_x, float *rect_A_y, float *rect_A_w, float *rect_A_h, float *rect_A_speed_x, float *rect_A_speed_y, float *a_inv_mass,
-	float *rect_B_x, float *rect_B_y, float *rect_B_w, float *rect_B_h, float *rect_B_speed_x, float *rect_B_speed_y, float *b_inv_mass)
+void wmain()
 {
-	float normal_x;
-	float normal_y;
+	srand(time(0));
 
-	int k = collision_with_dir(rect_A_x, rect_A_y, rect_A_w, rect_A_h, rect_B_x, rect_B_y, rect_B_w, rect_B_h);
-	if (k == 1)
-	{
-		normal_x = 0;
-		normal_y = -1;
-	}
-	else if (k == 2)
-	{
-		normal_x = 1;
-		normal_y = 0;
-	}
-	else if (k == 3)
-	{
-		normal_x = 0;
-		normal_y = 1;
-	}
-	else if (k == 4)
-	{
-		normal_x = -1;
-		normal_y = 0;
-	}
-	else
-	{
-		normal_x = 0;
-		normal_y = 0;
-	}
-
-	float relative_speed_x = *rect_B_speed_x;
-	float relative_speed_y = *rect_B_speed_y;
-
-	relative_speed_x -= *rect_A_speed_x;
-	relative_speed_y -= *rect_A_speed_y;
-
-	float d = relative_speed_x * normal_x + relative_speed_y * normal_y; // dot product
-
-	if (d < 0) return;
-
-	float e = 1.0; // 1.0 is for elastic bounce, 0.0 for mud
-	float j = -(1.0 + e)*d / (*a_inv_mass + *b_inv_mass); // mass of tile is infinity (1/ma+1/mb), if you use the actual mass then objects will bounce
-
-	float impulse_a_x = normal_x;
-	float impulse_a_y = normal_y;
-
-	impulse_a_x *= j * *a_inv_mass;  //scale
-	impulse_a_y *= j * *a_inv_mass;
-
-	float impulse_b_x = normal_x;
-	float impulse_b_y = normal_y;
-
-	impulse_b_x *= j * *b_inv_mass;  //scale
-	impulse_b_y *= j * *b_inv_mass;
-
-	*rect_A_speed_x -= impulse_a_x;  // sub
-	*rect_A_speed_y -= impulse_a_y;
-
-	*rect_B_speed_x += impulse_b_x;	//add
-	*rect_B_speed_y += impulse_b_y;
-
-	float mt = 1.0 / (*a_inv_mass + *b_inv_mass);
-
-	float tangent_x = normal_y;
-	float tangent_y = -normal_x;
-
-	float tangent_d = relative_speed_x * tangent_x + relative_speed_y * tangent_y; // dot product
-
-	tangent_x *= (-tangent_d)*mt; //scale
-	tangent_y *= (-tangent_d)*mt;
-
-	*rect_A_speed_x -= tangent_x;  //sub
-	*rect_A_speed_y -= tangent_y;
-
-	*rect_B_speed_x += tangent_x;  //add
-	*rect_B_speed_y += tangent_y;
-
-}
-
-//impulse against immovable object
-void impulse(float *rect_A_x, float *rect_A_y, float *rect_A_w, float *rect_A_h, float *rect_A_speed_x, float *rect_A_speed_y, float *a_inv_mass,
-	float *rect_B_x, float *rect_B_y, float *rect_B_w, float *rect_B_h)
-{
-	float normal_x;
-	float normal_y;
-
-	int k = collision_with_dir(rect_A_x, rect_A_y, rect_A_w, rect_A_h, rect_B_x, rect_B_y, rect_B_w, rect_B_h);
-	if (k == 1)
-	{
-		normal_x = { 0 };
-		normal_y = { -1 };
-	}
-	else if (k == 2)
-	{
-		normal_x = { 1 };
-		normal_y = { 0 };
-	}
-	else if (k == 3)
-	{
-		normal_x = { 0 };
-		normal_y = { 1 };
-	}
-	else if (k == 4)
-	{
-		normal_x = { -1 };
-		normal_y = { 0 };
-	}
-	else
-	{
-		normal_x = { 0 };
-		normal_y = { 0 };
-	}
-
-
-	float relative_vel_x = -*rect_A_speed_x;
-	float relative_vel_y = -*rect_A_speed_y;
-
-	float d = relative_vel_x * normal_x + relative_vel_y * normal_y;
-
-	if (d < 0) return;
-
-	float e = 1.0;//1.0 is for elastic bounce, 0.0 for mud
-	float j = -(1.0 + e) * d / (*a_inv_mass);//mass of tile is infinity (1/ma+1/mb), if you use actual mass then objects will bounce
-
-	float impulse_x = normal_x;
-	float impulse_y = normal_y;
-
-	impulse_x *= j;
-	impulse_y *= j;
-
-	*rect_A_speed_x -= impulse_x;
-	*rect_A_speed_y -= impulse_y;
-}
-
-
-void Update_inicial_values(float *box_x, float *box_y, float *box_w, float *box_h, int *box_r, int *box_g, int *box_b, int *box_a, float *box_speed_x, float *box_speed_y, int *box_count_hits)
-{
-	*box_x = screen_width / 2;
-	*box_y = screen_height / 2;
-	*box_w = 25;
-	*box_h = 25;
-	*box_r = rand() % 256;
-	*box_g = rand() % 256;
-	*box_b = rand() % 256;
-	*box_a = 256;
-	*box_speed_x = 1.0 - 2.0*rand() / RAND_MAX;
-	*box_speed_y = 1.0 - 2.0*rand() / RAND_MAX;
-	*box_count_hits = 0;
-}
-
-int main(int argc, char**argv)
-{
 	SDL_Init(SDL_INIT_VIDEO);
 
-	window = SDL_CreateWindow("ALEJANDRA", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		screen_width, screen_height, SDL_WINDOW_SHOWN);
+	unsigned short screen_width = 800;
+	unsigned short screen_height = 600;
+	unsigned int screen_area = screen_width * screen_height;
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+	SDL_Window *window = SDL_CreateWindow("object managing simulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN);
 
-	SDL_Surface*your_draw_buffer = SDL_CreateRGBSurfaceWithFormat(0, screen_width, screen_height, 32, SDL_PIXELFORMAT_RGBA32);
-	SDL_Surface*screen = SDL_GetWindowSurface(window);
+	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-	SDL_SetSurfaceBlendMode(your_draw_buffer, SDL_BLENDMODE_NONE);
+	SDL_Surface *print_surface = SDL_GetWindowSurface(window);
+	SDL_Surface *work_surface = SDL_CreateRGBSurfaceWithFormat(0, screen_width, screen_height, 32, SDL_PIXELFORMAT_RGBA32);
 
-	unsigned char *my_own_buffer = (unsigned char*)malloc(sizeof(unsigned char)*screen_width*screen_height * 4);
+	Color_Set *p = (Color_Set*)work_surface->pixels;
+	Color_Set *canvas = (Color_Set*)calloc(screen_area, sizeof(Color_Set));
+	for (unsigned int i = 0; i < screen_area; i++) canvas[i].a = 255;
 
-	// BORDERS
-	Border *border = (Border*)malloc(sizeof(Border) * 10);
-	{	// TOP
-		border[1].x = 1;
-		border[1].y = 1;
-		border[1].w = screen_width - 1;
-		border[1].h = 5;
-		//BOTTOM
-		border[2].x = 1;
-		border[2].h = 5;
-		border[2].y = screen_height - border[2].h - 1;
-		border[2].w = screen_width - 1;
-		//LEFT
-		border[3].x = 1;
-		border[3].y = 1;
-		border[3].w = 5;
-		border[3].h = screen_height - 1;
-		//RIGHT
-		border[4].y = 1;
-		border[4].w = 5;
-		border[4].h = screen_height - 1;
-		border[4].x = screen_width - border[4].w - 1;
-	}
+	OM::Rect back;
+	back.position.x = 0;
+	back.position.y = 0;
+	back.color.r = 0;
+	back.color.g = 0;
+	back.color.b = 0;
+	back.color.a = 255;
 
-	float a_inv_mass = 1;
-	float b_inv_mass = 1;
-
-	int n_current_boxes = 0;
-	int n_boxes_max = 200;
-	int n_max_hits = 20;
-
-	Box *box = (Box*)malloc(sizeof(Box)*n_boxes_max);
-	for (int i = 0; i < n_boxes_max; i++)
+	float border_size = 10;
+	unsigned short border_width[5];
+	unsigned short border_height[5];
+	OM::Rect border[5];
+	for (int i = 1; i < 5; i++)
 	{
-		box[i].x = screen_width / 2;
-		box[i].y = screen_height / 2;
-		box[i].w = 20;
-		box[i].h = 20;
-		box[i].r = rand() % 256;
-		box[i].g = rand() % 256;
-		box[i].b = rand() % 256;
-		box[i].a = 256;
-		box[i].speed_x = 1.0 - 2.0*rand() / RAND_MAX;
-		box[i].speed_y = 1.0 - 2.0*rand() / RAND_MAX;
-		box[i].count_hits = 0;
+		border[i].color.r = 100;
+		border[i].color.g = 100;
+		border[i].color.b = 100;
+		border[i].color.a = 255;
 	}
 
-	// CLOCk 
-	clock_t TimeZero = clock(); //Start timer
-	double deltaTime = 0;
-	double secondsToDelay = 1; // 
+	border_width[1] = screen_width;
+	border_height[1] = border_size;
+	border[1].position.x = 0;
+	border[1].position.y = screen_height - border_size;
+
+	border_width[2] = border_size;
+	border_height[2] = screen_height;
+	border[2].position.x = 0;
+	border[2].position.y = 0;
+
+	border_width[3] = screen_width;
+	border_height[3] = border_size;
+	border[3].position.x = 0;
+	border[3].position.y = 0;
+
+	border_width[4] = border_size;
+	border_height[4] = screen_height;
+	border[4].position.x = screen_width - border_size;
+	border[4].position.y = 0;
+
+	unsigned short boxN = 999;
+	unsigned short box_size = 10;
+	unsigned char max_box_vel = 5;
+	unsigned char *box_state = (unsigned char*)calloc(boxN, sizeof(unsigned char));
+	unsigned short *box_bounce = (unsigned short*)calloc(boxN, sizeof(unsigned short));
+	OM::Entity *box = (OM::Entity*)calloc(boxN, sizeof(OM::Entity));
+	for (unsigned short i = 0; i < boxN; i++) box[i].body.color.a = 255;
+
+	unsigned int spawn_timer_start = 0;
+	unsigned int spawn_timer_end = SDL_GetTicks();
+	unsigned char box_spawn_time = 1;
+	unsigned char max_box_bounce = 10;
 
 	for (;;)
 	{
-		//Consume all window events first
 		SDL_Event event;
-		while (SDL_PollEvent(&event))
+		while (SDL_PollEvent(&event) == 1)
 		{
-			if (event.type == SDL_QUIT)
+			if (event.type == SDL_QUIT) exit(0);
+			if (event.type == SDL_KEYDOWN)
 			{
-				exit(0);
+				if (event.key.keysym.sym == SDLK_ESCAPE) exit(0);
 			}
 		}
 
-		// TO DELETE BOXES : currently not working
-		for (int i = 0; i < n_current_boxes; i++)
+		if ((spawn_timer_end - spawn_timer_start) / 1000 == box_spawn_time)
 		{
-			if (box[i].count_hits > n_max_hits)
+			spawn_timer_start = spawn_timer_end;
+			unsigned short offset_next_open_box = OM::find_Next_Open_Box(boxN, box_state);
+			if (offset_next_open_box != 0)
 			{
-				box[i].r = 0;
-				box[i].g = 0;
-				box[i].b = 0;
-				box[i].a = 256;
-				Update_inicial_values(&box[i].x, &box[i].y, &box[i].w, &box[i].h, &box[i].r, &box[i].g, &box[i].b, &box[i].a, &box[i].speed_x, &box[i].speed_y, &box[i].count_hits);
+				offset_next_open_box--;
+				OM::spawn(&box[offset_next_open_box], &box_state[offset_next_open_box], box_size, max_box_vel, screen_width, screen_height);
 			}
-
 		}
+		spawn_timer_end = SDL_GetTicks();
 
-		memset(my_own_buffer, 0, 4 * screen_width*screen_height);
-
-		// TO FILL BOXES
-		for (int i = 0; i < n_current_boxes; i++)
+		for (unsigned short i = 0; i < boxN; i++)
 		{
-			fill_rectangle(my_own_buffer, screen_width, screen_height, box[i].x, box[i].y, box[i].w, box[i].h, box[i].r, box[i].g, box[i].b, box[i].a);
-			box[i].x += box[i].speed_x;
-			box[i].y += box[i].speed_y;
-		}
-
-		// TO FILL THE BORDERS 
-		for (int j = 1; j <= 4; j++)
-		{
-			fill_rectangle(my_own_buffer, screen_width, screen_height, border[j].x, border[j].y, border[j].w, border[j].h, 255, 0, 0, 255);
-		}
-
-		// COLLISION / IMPULSE
-		for (int i = 0; i < n_current_boxes; i++)
-		{
-			for (int j = i + 1; j < n_current_boxes; j++)
+			if (box_state[i] == 1)
 			{
-				impulse(&box[i].x, &box[i].y, &box[i].w, &box[i].h, &box[i].speed_x, &box[i].speed_y, &a_inv_mass,
-					&box[j].x, &box[j].y, &box[j].w, &box[j].h, &box[j].speed_x, &box[j].speed_y, &b_inv_mass);
-			}
-			// TO COLLIDE WITH THE BORDERS
-			for (int k = 1; k <= 4; k++)
-			{
-				impulse(&box[i].x, &box[i].y, &box[i].w, &box[i].h, &box[i].speed_x, &box[i].speed_y, &a_inv_mass, &border[k].x, &border[k].y, &border[k].w, &border[k].h);
+				for (unsigned short j = i + 1; j < boxN; j++)
+				{
+					if (box_state[j] == 1)
+					{
+						unsigned char direction = OM::check_Collision(&box[i].body.position, &box[j].body.position, box_size);
+						if (direction != 0)
+						{
+							OM::impulse(&box[i].velocity, &box[j].velocity, direction);
+							OM::inc_Bounce(&box_bounce[i], &box_bounce[j]);
+						}
+					}
+				}
+				for (unsigned char j = 1; j <= 4; j++)
+				{
+					if (OM::check_Collision(&box[i].body.position, box_size, &border[j].position, border_width[j], border_height[j]) == 1)
+					{
+						OM::impulse(&box[i].velocity, j);
+						OM::inc_Bounce(&box_bounce[i]);
+					}
+				}
+				if (box_bounce[i] == max_box_bounce) OM::despawn(&box_state[i], &box_bounce[i]);
+				OM::update(&box[i].body.position, &box[i].velocity);
 			}
 		}
 
-		int k_box = 0;
-		int k_border = 0;
-		// COUNT HITS
-		for (int i = 0; i < n_current_boxes; i++)
-		{
-			for (int j = i + 1; j < n_current_boxes; j++)
-			{
-				k_box = collision_with_dir(&box[j].x, &box[j].y, &box[j].w, &box[j].h, &box[i].x, &box[i].y, &box[i].w, &box[i].h);
-				if (k_box != 0) box[i].count_hits++;
-			}
+		OM::draw(canvas, &back, screen_width, screen_height, screen_width);
 
-			for (int j = 0; j <= 4; j++)
-			{
-				k_border = collision_with_dir(&border[j].x, &border[j].y, &border[j].w, &border[j].h, &box[i].x, &box[i].y, &box[i].w, &box[i].h);
-				if (k_border != 0) box[i].count_hits++;
-			}
-		}
+		for (unsigned short i = 0; i < boxN; i++) if (box_state[i] == 1) OM::draw(canvas, &box[i].body, box_size, box_size, screen_width);
 
-		memcpy(your_draw_buffer->pixels, my_own_buffer, sizeof(unsigned char)*screen_width*screen_height * 4);
+		for (unsigned char i = 1; i <= 4; i++) OM::draw(canvas, &border[i], border_width[i], border_height[i], screen_width);
 
-		//BLIT BUFFER TO SCREEN
-		SDL_BlitScaled(your_draw_buffer, NULL, screen, NULL);
+		memcpy(p, canvas, sizeof(Color_Set) * screen_area);
+		SDL_BlitScaled(work_surface, NULL, print_surface, NULL);
+
 		SDL_UpdateWindowSurface(window);
-
-		// CLOCK CLOCK
-		deltaTime = (clock() - TimeZero) / CLOCKS_PER_SEC;
-		if (deltaTime > secondsToDelay)
-		{
-			printf("\n\nTimer working every 1 seconds");
-			if (n_current_boxes < n_boxes_max) n_current_boxes++;
-			cout << "\nBalls on screen: " << n_current_boxes;
-
-			//reset the clock timers
-			deltaTime = clock();
-			TimeZero = clock();
-
-			// PRINT HITS
-			for (int i = 0; i < n_current_boxes; i++)
-			{
-				printf("\nBall # %d: Current Hits: %d", i + 1, box[i].count_hits);
-			}
-		}
 	}
-	return 0;
 }
