@@ -46,7 +46,7 @@ namespace My_Game
 		Vec2D::Vec2D mouse_grid_point;
 
 		int n_obstacles = 1000;
-		int n_boids = 5000;// 4096;
+		int n_boids = 1000;// 4096;
 
 		unsigned char *neighbor_array = NULL;
 
