@@ -1,212 +1,96 @@
-#include <iostream>
-#include <assert.h>
-using namespace std;
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 
-//include SDL header
 #include "SDL2-2.0.8\include\SDL.h"
+#include "SDL2-2.0.8\include\SDL_image.h"
 
 //load libraries
 #pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2.lib")
 #pragma comment(lib,"SDL2-2.0.8\\lib\\x86\\SDL2main.lib")
+#pragma comment(lib,"SDL2_image-2.0.3\\lib\\x86\\SDL2_image.lib")
 
 #pragma comment(linker,"/subsystem:console")
 
+#include <iostream>
+#include <fstream>
+#include "Table_File_core.h"
+using namespace std;
 
-int collision(const SDL_Rect *a, const SDL_Rect *b)
+
+int main(int argc, char **argv)
 {
-	if (a->x + a->w < b->x) return 0;
-	if (b->x + b->w < a->x) return 0;
-	if (a->y + a->h < b->y) return 0;
-	if (b->y + b->h < a->y) return 0;
-	return 1;
-}
+	//SDL
+	SDL_Init(SDL_INIT_VIDEO);
 
+	SDL_ShowCursor(SDL_DISABLE);
 
-namespace SA
-{
-	namespace internal
+	int screen_width = 32 * 32;
+	int screen_height = 32 * 16;
+
+	SDL_Window *window = SDL_CreateWindow(
+		"tilemap",
+		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+		screen_width, screen_height, SDL_WINDOW_SHOWN);
+
+	SDL_Renderer *renderer = SDL_CreateRenderer(window,
+		-1, SDL_RENDERER_ACCELERATED);
+
+	SDL_Surface *surface = IMG_Load("run.png");
+	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+
+	int first_frame_pos_x = 0;
+	int first_frame_pos_y = 0;
+	int frame_w = 108;
+	int frame_h = 140;
+	int n_frames = 8;
+	int frame_duration = 100;
+	unsigned int last_frame_change_time = 0;
+	int current_frame = 0;
+
+	bool done = false;
+
+	while (!done)
 	{
+		unsigned int current_time = SDL_GetTicks();
 
-		float evaluate_Solution_Fitness(SDL_Rect *boxes, int n_boxes)
-		{
-			float fitness = 0.0;
-			for (int i = 0; i < n_boxes; i++)
-			{
-				for (int j = i + 1; j < n_boxes; j++)
-				{
-					int r = collision(&boxes[i], &boxes[j]);
-					if (r == 1)
-					{
-						fitness -= 2;
-					}
-
-					if (boxes[i].x < 0 || boxes[i].y < 0) fitness -= 2;
-				}
-			}
-
-			return fitness;
-		}
-
-		void modify_Solution(SDL_Rect *src, int n_boxes)
-		{
-			int which_box = rand() % n_boxes;
-			src[which_box].x += 20.0*(1.0 - 2.0*rand() / RAND_MAX);
-			src[which_box].y += 20.0*(1.0 - 2.0*rand() / RAND_MAX);
-		}
-	}
-
-	void generate_Solution(SDL_Rect *dest, int n_boxes, int max_x, int max_y)
-	{
-		/*dest[0].x = 20;
-		dest[0].y = 20;
-		dest[0].w = 200;
-		dest[0].h = 200;*/
-		for (int i = 0; i < n_boxes; i++)
-		{
-			dest[i].w = 5 + rand() % 40;
-			dest[i].h = 5 + rand() % 40;
-			dest[i].x = rand() % (max_x - dest[i].w);
-			dest[i].y = rand() % (max_y - dest[i].h);
-		}
-	}
-
-	float update(SDL_Rect *current_solution, int n_boxes, SDL_Rect *tmp_solution, float temperature)
-	{
-		memcpy(tmp_solution, current_solution, sizeof(SDL_Rect)*n_boxes);
-
-		internal::modify_Solution(tmp_solution, n_boxes);
-
-		float fitness_current = internal::evaluate_Solution_Fitness(current_solution, n_boxes);
-		float fitness_new = internal::evaluate_Solution_Fitness(tmp_solution, n_boxes);
-
-		double p_accept_new_solution = exp((fitness_new - fitness_current) / temperature);
-		double p = (double)rand() / RAND_MAX;
-
-		if (p <= p_accept_new_solution)
-		{
-			memcpy(current_solution, tmp_solution, sizeof(SDL_Rect)*n_boxes);
-			return fitness_new;
-		}
-		return fitness_current;
-	}
-
-}
-
-
-namespace Game
-{
-	SDL_Renderer *renderer = NULL;
-	int screen_width = 800;
-	int screen_height = 600;
-
-	float temperature = 2;
-	float temperature_decay = 0.98;
-
-	const int n_boxes = 200;
-	SDL_Rect boxes[n_boxes];
-	SDL_Rect tmp_boxes[n_boxes];
-	unsigned int color[n_boxes];
-
-	unsigned char prev_key_state[256];
-	unsigned char *keys = NULL;
-
-	bool update_solver = true;
-
-	void init()
-	{
-		SDL_Init(SDL_INIT_VIDEO);
-
-		prev_key_state[256];
-		keys = (unsigned char*)SDL_GetKeyboardState(NULL);
-
-		SDL_Window *window = SDL_CreateWindow(
-			"Fortnite",
-			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			Game::screen_width, Game::screen_height, SDL_WINDOW_SHOWN);
-
-		Game::renderer = SDL_CreateRenderer(window,
-			-1, SDL_RENDERER_ACCELERATED);
-
-		SA::generate_Solution(boxes, n_boxes, screen_width, screen_height);
-
-		for (int i = 0; i < n_boxes; i++)
-		{
-			color[i] = 0;
-			color[i] = ((rand()%256)<<24) | ((rand() % 256) << 16) | ((rand() % 256) << 8);
-		}
-	}
-
-	void update()
-	{
-
-		memcpy(Game::prev_key_state, Game::keys, 256);
-
-		//consume all window events first
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT)
 			{
-				exit(0);
+				done = true;
 			}
 		}
 
-		if (update_solver)
+		if (current_time - last_frame_change_time >= frame_duration)
 		{
-			float fitness = 0.0;
-			for (int i = 0; i < 100; i++)
-			{
-				fitness = SA::update(boxes, n_boxes, tmp_boxes, temperature);
-			}
-
-			printf("fitness: %f temperature: %f\n", fitness, temperature);
-
-			if (fitness >= 0.0)
-			{
-				update_solver = false;
-			}
-
-			temperature *= temperature_decay;
+			current_frame = (current_frame + 1) % n_frames;
+			last_frame_change_time = current_time;
 		}
 
+		//DRAW
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+
+		SDL_Rect src;
+		src.x = first_frame_pos_x + current_frame * frame_w;
+		src.y = first_frame_pos_y;
+		src.w = frame_w;
+		src.h = frame_h;
+
+		SDL_Rect dest;
+		dest.x = screen_width / 2;
+		dest.y = screen_height / 2;
+		dest.w = frame_w;
+		dest.h = frame_h;
+
+		SDL_RenderCopyEx(renderer, texture, &src, &dest, 0, NULL, SDL_FLIP_NONE);
+
+		SDL_RenderPresent(renderer);
 	}
-
-	void draw()
-	{
-		//set color to white
-		SDL_SetRenderDrawColor(Game::renderer, 255, 255, 255, 255);
-		//clear screen with white
-		SDL_RenderClear(Game::renderer);
-
-		for (int i = 0; i < n_boxes; i++)
-		{
-			int r = (color[i] & 0xFF000000) >> 24;
-			int g = (color[i] & 0x00FF0000) >> 16;
-			int b = (color[i] & 0x0000FF00) >> 8;
-			SDL_SetRenderDrawColor(Game::renderer, r, g, b, 255);
-			SDL_RenderDrawRect(renderer, &boxes[i]);
-		}
-
-		//flip buffers
-		SDL_RenderPresent(Game::renderer);
-	}
-
-}
-int main(int argc, char **argv)
-{
-	
-
-	Game::init();
-
-
-	for(;;)
-	{
-		Game::update();
-		
-		Game::draw();
-	}
-
-
 
 	return 0;
+
 }
