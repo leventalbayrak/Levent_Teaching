@@ -1,0 +1,4 @@
+2.9	400	T	Tesla
+6.8	150	T	Toyota
+3.5	600	H	Honda
+2.5	1200	B	Bugatti
