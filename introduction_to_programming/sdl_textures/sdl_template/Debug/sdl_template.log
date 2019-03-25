@@ -1,0 +1,6 @@
+﻿  main_SDL_sprites_and_tiles.cpp
+c:\users\levent\documents\github\levent_development\introduction_to_programming\sdl_textures\sdl_template\main_sdl_sprites_and_tiles.cpp(45): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\levent\documents\github\levent_development\introduction_to_programming\sdl_textures\sdl_template\main_sdl_sprites_and_tiles.cpp(153): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent\documents\github\levent_development\introduction_to_programming\sdl_textures\sdl_template\main_sdl_sprites_and_tiles.cpp(171): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent\documents\github\levent_development\introduction_to_programming\sdl_textures\sdl_template\main_sdl_sprites_and_tiles.cpp(172): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  sdl_template.vcxproj -> C:\Users\levent\Documents\GitHub\Levent_Development\introduction_to_programming\sdl_textures\Debug\sdl_template.exe
