@@ -1,0 +1,5 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_3\main.cpp(11): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_3\main.cpp(41): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_3\main.cpp(60): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  OOP_3.vcxproj -> C:\Users\levent.albayrak\Documents\Visual Studio 2017\Projects\OOP_1\Debug\OOP_3.exe

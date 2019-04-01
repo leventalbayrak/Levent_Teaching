@@ -1,0 +1,7 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_7\main.cpp(41): error C2248: 'A::a': cannot access private member declared in class 'A'
+  c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_7\main.cpp(32): note: see declaration of 'A::a'
+  c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_7\main.cpp(29): note: see declaration of 'A'
+c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_7\main.cpp(44): error C2248: 'A::a': cannot access private member declared in class 'A'
+  c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_7\main.cpp(32): note: see declaration of 'A::a'
+  c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_7\main.cpp(29): note: see declaration of 'A'
