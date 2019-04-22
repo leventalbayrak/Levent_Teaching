@@ -23,6 +23,7 @@
     <ProjectGuid>{767E8A3E-010E-45CA-BF01-B8C99AD38577}</ProjectGuid>
     <RootNamespace>boxmanagerdod</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>DoD</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
