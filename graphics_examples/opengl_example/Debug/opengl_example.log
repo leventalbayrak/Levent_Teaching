@@ -1,0 +1,4 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\github\levent_development\graphics_examples\opengl_example\main.cpp(67): warning C4018: '>=': signed/unsigned mismatch
+  opengl_example.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\graphics_examples\Debug\opengl_example.exe
+  opengl_example.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\graphics_examples\Debug\opengl_example.pdb (Partial PDB)

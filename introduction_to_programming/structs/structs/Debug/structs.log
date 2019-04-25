@@ -1,0 +1,6 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\visual studio 2017\projects\structs\structs\main.cpp(19): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\levent.albayrak\documents\visual studio 2017\projects\structs\structs\main.cpp(24): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\levent.albayrak\documents\visual studio 2017\projects\structs\structs\main.cpp(24): warning C4305: 'initializing': truncation from 'double' to 'float'
+  structs.vcxproj -> c:\users\levent.albayrak\documents\visual studio 2017\Projects\structs\Debug\structs.exe
+  structs.vcxproj -> c:\users\levent.albayrak\documents\visual studio 2017\Projects\structs\Debug\structs.pdb (Partial PDB)

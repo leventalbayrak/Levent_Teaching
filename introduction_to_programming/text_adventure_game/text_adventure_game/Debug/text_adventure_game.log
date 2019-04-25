@@ -1,0 +1,4 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\visual studio 2017\projects\text_adventure_game\text_adventure_game\main.cpp(226): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  text_adventure_game.vcxproj -> c:\users\levent.albayrak\documents\visual studio 2017\Projects\text_adventure_game\Debug\text_adventure_game.exe
+  text_adventure_game.vcxproj -> c:\users\levent.albayrak\documents\visual studio 2017\Projects\text_adventure_game\Debug\text_adventure_game.pdb (Partial PDB)

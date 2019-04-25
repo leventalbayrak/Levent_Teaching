@@ -1,0 +1,5 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\dynamic_programming_1\dynamic_programming_1\main.cpp(30): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type '__int64'
+  c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\dynamic_programming_1\dynamic_programming_1\main.cpp(30): note: consider using '%lld' in the format string
+  c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\dynamic_programming_1\dynamic_programming_1\main.cpp(30): note: consider using '%I64d' in the format string
+  dynamic_programming_1.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\Advanced_Programming_Examples\dynamic_programming_1\Debug\dynamic_programming_1.exe

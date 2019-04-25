@@ -1,0 +1,5 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_2\main.cpp(24): warning C4477: 'printf' : format string '%x' requires an argument of type 'unsigned int', but variadic argument 1 has type 'Vehicle *'
+c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_2\main.cpp(47): warning C4477: 'printf' : format string '%x' requires an argument of type 'unsigned int', but variadic argument 1 has type 'Vehicle *'
+c:\users\levent.albayrak\documents\visual studio 2017\projects\oop_1\oop_2\main.cpp(53): warning C4477: 'printf' : format string '%x' requires an argument of type 'unsigned int', but variadic argument 1 has type 'Vehicle *'
+  OOP_2.vcxproj -> C:\Users\levent.albayrak\Documents\Visual Studio 2017\Projects\OOP_1\Debug\OOP_2.exe
