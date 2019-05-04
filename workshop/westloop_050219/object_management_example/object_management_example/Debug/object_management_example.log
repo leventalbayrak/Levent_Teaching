@@ -1,0 +1,9 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\visual studio 2017\projects\object_management_example\object_management_example\main.cpp(124): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\visual studio 2017\projects\object_management_example\object_management_example\main.cpp(125): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+c:\users\levent.albayrak\documents\visual studio 2017\projects\object_management_example\object_management_example\main.cpp(125): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\visual studio 2017\projects\object_management_example\object_management_example\main.cpp(126): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+c:\users\levent.albayrak\documents\visual studio 2017\projects\object_management_example\object_management_example\main.cpp(126): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\visual studio 2017\projects\object_management_example\object_management_example\main.cpp(172): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+  object_management_example.vcxproj -> c:\users\levent.albayrak\documents\visual studio 2017\Projects\object_management_example\Debug\object_management_example.exe
+  object_management_example.vcxproj -> c:\users\levent.albayrak\documents\visual studio 2017\Projects\object_management_example\Debug\object_management_example.pdb (Partial PDB)
