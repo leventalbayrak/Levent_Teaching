@@ -11,7 +11,7 @@
 
 #pragma comment(linker,"/subsystem:console")
 
-#include "Vec2D_core.h"
+#include "Vec2D_data.h"
 SDL_Renderer *renderer = NULL;
 namespace Sprite
 {

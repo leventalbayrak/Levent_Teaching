@@ -1,0 +1,24 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\github\levent_development\workshop\westloop_050219\object_management_example\object_management_example\main.cpp(124): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\workshop\westloop_050219\object_management_example\object_management_example\main.cpp(125): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+c:\users\levent.albayrak\documents\github\levent_development\workshop\westloop_050219\object_management_example\object_management_example\main.cpp(125): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\workshop\westloop_050219\object_management_example\object_management_example\main.cpp(126): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+c:\users\levent.albayrak\documents\github\levent_development\workshop\westloop_050219\object_management_example\object_management_example\main.cpp(126): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\workshop\westloop_050219\object_management_example\object_management_example\main.cpp(172): warning C4244: 'initializing': conversion from 'unsigned int' to 'float', possible loss of data
+main.obj : error LNK2019: unresolved external symbol SDL_FreeSurface referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_CreateWindow referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_PollEvent referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_CreateRenderer referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_CreateTextureFromSurface referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_SetRenderDrawColor referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_RenderClear referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_RenderCopyEx referenced in function "void __cdecl Sprite::draw(struct Sprite::Sprite *)" (?draw@Sprite@@YAXPEAU11@@Z)
+main.obj : error LNK2019: unresolved external symbol SDL_RenderPresent referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_GetTicks referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_Init referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol IMG_Load referenced in function SDL_main
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+SDL2-2.0.8\lib\x86\SDL2.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+SDL2-2.0.8\lib\x86\SDL2main.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+SDL2-2.0.8\lib\x86\SDL2_image.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\workshop\westloop_050219\object_management_example\x64\Debug\object_management_example.exe : fatal error LNK1120: 13 unresolved externals

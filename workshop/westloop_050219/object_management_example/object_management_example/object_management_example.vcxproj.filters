@@ -23,8 +23,5 @@
     <ClInclude Include="Vec2D_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vec2D_core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
