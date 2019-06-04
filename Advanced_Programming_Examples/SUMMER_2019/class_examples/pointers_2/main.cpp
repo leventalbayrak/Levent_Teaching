@@ -45,12 +45,7 @@ int main()
 
 	free(f);
 
-	for (int i = 0; i < 100000; i++)
-	{
-		int *p = (int*)malloc(sizeof(int) * 1000000);
-		printf("%d\n", p[0]);
-		
-	}
+	
 
 	getchar();
 	return 0;
