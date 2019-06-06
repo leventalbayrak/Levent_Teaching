@@ -1,0 +1,6 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\file_io\read_file\main.cpp(62): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Generating code
+  All 7 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  read_file.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\Advanced_Programming_Examples\SUMMER_2019\file_io\Release\read_file.exe
