@@ -1,0 +1,3 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\arrays_files\arrays_files\main.cpp(80): warning C4305: 'argument': truncation from 'double' to 'float'
+  arrays_files.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\Advanced_Programming_Examples\SUMMER_2019\arrays_files\Debug\arrays_files.exe
