@@ -1,0 +1,2 @@
+<map width = "15" height = "16" infinite = "0" name = "Dota spaces space">
+<map width = "10" height = "111" infinite = "0" name = "TFT">
