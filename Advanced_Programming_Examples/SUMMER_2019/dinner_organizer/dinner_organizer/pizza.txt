@@ -1,0 +1,11 @@
+pizza
+5
+tomato
+7
+peperoni
+6
+pepper
+5
+sausage
+4
+cheese

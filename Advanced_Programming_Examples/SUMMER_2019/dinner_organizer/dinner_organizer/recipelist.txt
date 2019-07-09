@@ -1,0 +1,10 @@
+friedchicken.txt
+friedegg.txt
+singaporenoodle.txt
+mashedpotato.txt
+pizza.txt
+padthai.txt
+pho.txt
+tacos.txt
+steamedfish.txt
+soup.txt
