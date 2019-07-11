@@ -1,0 +1,9 @@
+s o u p
+1
+water
+1
+veggie
+3
+carrot
+4
+poptato
