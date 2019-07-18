@@ -1,0 +1,50 @@
+﻿  main.cpp
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(91,20): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(92,20): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(108,18): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(115,50): warning C4244:  '+=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(116,50): warning C4244:  '+=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(132,18): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(142,40): warning C4244:  '-=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(143,40): warning C4244:  '-=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(144,40): warning C4244:  '+=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(145,40): warning C4244:  '+=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(147,26): warning C4305:  'initializing': truncation from 'double' to 'float'
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(177,18): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(182,40): warning C4244:  '-=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(183,40): warning C4244:  '-=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(184,40): warning C4244:  '+=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(185,40): warning C4244:  '+=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(201,18): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(211,40): warning C4244:  '-=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(212,40): warning C4244:  '-=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(213,40): warning C4244:  '+=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(214,40): warning C4244:  '+=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(216,26): warning C4305:  'initializing': truncation from 'double' to 'float'
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(246,18): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(268,18): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(279,26): warning C4305:  'initializing': truncation from 'double' to 'float'
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(301,18): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(316,48): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(316,48): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(316,90): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(316,90): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(316,108): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(316,108): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(316,126): warning C4838:  conversion from 'float' to 'int' requires a narrowing conversion
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(316,126): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(349,67): warning C4244:  'argument': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(354,22): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(361,22): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(362,31): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(369,22): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(375,31): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(376,22): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(404,69): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(405,69): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(411,14): warning C4244:  'initializing': conversion from 'Sint32' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(412,14): warning C4244:  'initializing': conversion from 'Sint32' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(415,69): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(416,69): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\android_test\SDL_android_test\verlett_balls\main.cpp(437,27): warning C4305:  'initializing': truncation from 'double' to 'float'
+  verlett_balls.vcxproj -> D:\GitHub\Levent_Development\android_test\SDL_android_test\Debug\verlett_balls.exe
