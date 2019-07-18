@@ -1,0 +1,9 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\marks_boring_game\marks_boring_game\main.cpp(28): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\marks_boring_game\marks_boring_game\main.cpp(44): warning C4305: '*=': truncation from 'double' to 'float'
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\marks_boring_game\marks_boring_game\main.cpp(62): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\marks_boring_game\marks_boring_game\main.cpp(69): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\marks_boring_game\marks_boring_game\main.cpp(78): warning C4305: '*=': truncation from 'double' to 'float'
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\marks_boring_game\marks_boring_game\main.cpp(111): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\marks_boring_game\marks_boring_game\main.cpp(120): warning C4305: '*=': truncation from 'double' to 'float'
+  marks_boring_game.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\Advanced_Programming_Examples\SUMMER_2019\marks_boring_game\Debug\marks_boring_game.exe

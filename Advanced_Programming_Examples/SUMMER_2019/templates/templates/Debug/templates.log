@@ -1,0 +1,3 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (templates.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  main.cpp
+  templates.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\Advanced_Programming_Examples\SUMMER_2019\templates\Debug\references.exe
