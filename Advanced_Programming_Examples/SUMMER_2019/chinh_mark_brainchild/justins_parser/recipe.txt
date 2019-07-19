@@ -1,0 +1,22 @@
+recipe:
+FRIED EGGS
+and STEAK
+ingredients:
+2 eggs
+4 butter
+6 salt
+method:
+crack the eggs
+fry them
+fry them more
+
+recipe:
+FRIED EGGS 2
+ingredients:
+1 eggs
+1 butter
+1 salt
+method:
+crack the eggs
+fry them
+eat them
