@@ -1,0 +1,13 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\walk_around\skeet_shooter\main.cpp(40): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\walk_around\skeet_shooter\main.cpp(40): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\walk_around\skeet_shooter\main.cpp(63): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\walk_around\skeet_shooter\main.cpp(96): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\walk_around\skeet_shooter\main.cpp(97): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\documents\github\levent_development\advanced_programming_examples\summer_2019\walk_around\skeet_shooter\main.cpp(102): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Generating code
+  1 of 5 functions (20.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  skeet_shooter.vcxproj -> C:\Users\levent.albayrak\Documents\GitHub\Levent_Development\Advanced_Programming_Examples\SUMMER_2019\walk_around\Release\skeet_shooter.exe
