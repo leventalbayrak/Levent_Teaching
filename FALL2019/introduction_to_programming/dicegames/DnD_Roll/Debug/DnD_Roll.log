@@ -1,0 +1,3 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\visual studio 2017\projects\dicegames\dnd_roll\main.cpp(10): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  DnD_Roll.vcxproj -> C:\Users\levent.albayrak\Documents\Visual Studio 2017\Projects\dicegames\Debug\DnD_Roll.exe

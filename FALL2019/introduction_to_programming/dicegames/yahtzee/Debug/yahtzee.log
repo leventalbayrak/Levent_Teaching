@@ -1,0 +1,9 @@
+﻿  main.cpp
+c:\users\levent.albayrak\documents\visual studio 2017\projects\dicegames\yahtzee\main.cpp(8): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\levent.albayrak\documents\visual studio 2017\projects\dicegames\yahtzee\main.cpp(12): warning C4129: ' ': unrecognized character escape sequence
+c:\users\levent.albayrak\documents\visual studio 2017\projects\dicegames\yahtzee\main.cpp(13): warning C4129: ' ': unrecognized character escape sequence
+c:\users\levent.albayrak\documents\visual studio 2017\projects\dicegames\yahtzee\main.cpp(14): warning C4129: '_': unrecognized character escape sequence
+c:\users\levent.albayrak\documents\visual studio 2017\projects\dicegames\yahtzee\main.cpp(15): warning C4129: 'o': unrecognized character escape sequence
+c:\users\levent.albayrak\documents\visual studio 2017\projects\dicegames\yahtzee\main.cpp(16): warning C4129: ' ': unrecognized character escape sequence
+c:\users\levent.albayrak\documents\visual studio 2017\projects\dicegames\yahtzee\main.cpp(17): warning C4129: ' ': unrecognized character escape sequence
+  yahtzee.vcxproj -> C:\Users\levent.albayrak\Documents\Visual Studio 2017\Projects\dicegames\Debug\yahtzee.exe
