@@ -1,0 +1,20 @@
+﻿  main.cpp
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(47): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(48): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(49): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(50): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(89): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(99): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(100): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(157): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(173): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(185): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(222): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(223): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(224): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(225): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(232): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(233): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(234): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\levent.albayrak\desktop\masterofuniverse\sdl_intro\main.cpp(235): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  sdl_intro.vcxproj -> C:\Users\levent.albayrak\Desktop\masterofuniverse\Debug\sdl_intro.exe
