@@ -1,0 +1,12 @@
+﻿  main_opengl_texture.cpp
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(64,20): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(65,20): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(66,20): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(68,30): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(69,30): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(70,30): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(72,28): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(73,28): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(74,28): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(102,21): warning C4305:  '+=': truncation from 'double' to 'float'
+  opengl_textures.vcxproj -> D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\Debug\opengl_textures.exe

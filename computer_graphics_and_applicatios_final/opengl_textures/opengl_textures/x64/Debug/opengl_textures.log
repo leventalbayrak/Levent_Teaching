@@ -1,0 +1,46 @@
+﻿  main_opengl_texture.cpp
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(64,20): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(65,20): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(66,20): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(68,30): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(69,30): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(70,30): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(72,28): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(73,28): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(74,28): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\opengl_textures\main_opengl_texture.cpp(102,21): warning C4305:  '+=': truncation from 'double' to 'float'
+main_opengl_texture.obj : error LNK2019: unresolved external symbol __imp_glewInit referenced in function "void __cdecl init(void)" (?init@@YAXXZ)
+main_opengl_texture.obj : error LNK2019: unresolved external symbol SDL_FreeSurface referenced in function "void __cdecl init_OpenGL(void)" (?init_OpenGL@@YAXXZ)
+main_opengl_texture.obj : error LNK2019: unresolved external symbol SDL_CreateWindow referenced in function "void __cdecl init(void)" (?init@@YAXXZ)
+main_opengl_texture.obj : error LNK2019: unresolved external symbol SDL_GL_SetAttribute referenced in function "void __cdecl init(void)" (?init@@YAXXZ)
+main_opengl_texture.obj : error LNK2019: unresolved external symbol SDL_GL_CreateContext referenced in function "void __cdecl init(void)" (?init@@YAXXZ)
+main_opengl_texture.obj : error LNK2019: unresolved external symbol SDL_GL_SwapWindow referenced in function SDL_main
+main_opengl_texture.obj : error LNK2019: unresolved external symbol SDL_PollEvent referenced in function SDL_main
+main_opengl_texture.obj : error LNK2019: unresolved external symbol SDL_Init referenced in function "void __cdecl init(void)" (?init@@YAXXZ)
+main_opengl_texture.obj : error LNK2019: unresolved external symbol IMG_Load referenced in function "void __cdecl init_OpenGL(void)" (?init_OpenGL@@YAXXZ)
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewBindBuffer
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewBufferData
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewGenBuffers
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewAttachShader
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewCompileShader
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewCreateProgram
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewCreateShader
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewEnableVertexAttribArray
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewGetAttribLocation
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewGetShaderInfoLog
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewGetShaderiv
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewGetUniformLocation
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewLinkProgram
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewShaderSource
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewUniformMatrix4fv
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewUseProgram
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewVertexAttribPointer
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewBindVertexArray
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp___glewGenVertexArrays
+main_opengl_texture.obj : error LNK2001: unresolved external symbol __imp_glewExperimental
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+SDL2-2.0.8\lib\x86\SDL2.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+SDL2-2.0.8\lib\x86\SDL2main.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+SDL2-2.0.8\lib\x86\SDL2_image.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+glew-2.1.0\lib\Release\Win32\glew32.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+D:\GitHub\Levent_Development\computer_graphics_and_applicatios_final\opengl_textures\x64\Debug\opengl_textures.exe : fatal error LNK1120: 30 unresolved externals
