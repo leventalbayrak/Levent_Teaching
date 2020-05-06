@@ -1,0 +1,9 @@
+﻿  main.cpp
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Render_Color.h(23,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Render_Color.h(24,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Render_Color.h(25,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Render_Color.h(26,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\main.cpp(44,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\main.cpp(45,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\main.cpp(69,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  sdl_template.vcxproj -> D:\GitHub\Levent_Development\SDL_ECS\Debug\sdl_template.exe

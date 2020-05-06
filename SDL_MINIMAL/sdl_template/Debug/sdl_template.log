@@ -1,0 +1,9 @@
+﻿  main.cpp
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(49): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(124): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(127): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(130): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(171): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(172): warning C4129: '%': unrecognized character escape sequence
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(172): warning C4778: 'printf' : unterminated format string '%\n'
+  sdl_template.vcxproj -> C:\Users\levent\Documents\GitHub\FPS_AIM_BETTER\Debug\sdl_template.exe

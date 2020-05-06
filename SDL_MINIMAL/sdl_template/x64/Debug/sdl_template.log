@@ -1,0 +1,21 @@
+﻿  main.cpp
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(49): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(113): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(116): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(119): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(155): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(156): warning C4129: '%': unrecognized character escape sequence
+c:\users\levent\documents\github\fps_aim_better\sdl_template\main.cpp(156): warning C4778: 'printf' : unterminated format string '%\n'
+main.obj : error LNK2019: unresolved external symbol SDL_CreateWindow referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_PollEvent referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_CreateRenderer referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_SetRenderDrawColor referenced in function "void __cdecl draw_Target(int,int,int,int)" (?draw_Target@@YAXHHHH@Z)
+main.obj : error LNK2019: unresolved external symbol SDL_RenderClear referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_RenderFillRect referenced in function "void __cdecl draw_Target(int,int,int,int)" (?draw_Target@@YAXHHHH@Z)
+main.obj : error LNK2019: unresolved external symbol SDL_RenderPresent referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_GetTicks referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol SDL_Init referenced in function SDL_main
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+SDL2-2.0.9\lib\x86\SDL2.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+SDL2-2.0.9\lib\x86\SDL2main.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+C:\Users\levent\Documents\GitHub\FPS_AIM_BETTER\x64\Debug\sdl_template.exe : fatal error LNK1120: 10 unresolved externals

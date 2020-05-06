@@ -1,0 +1,17 @@
+﻿  main.cpp
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Render_Color.h(23,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Render_Color.h(24,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Render_Color.h(25,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Render_Color.h(26,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Pawn_Input.h(22,12): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Pawn_Input.h(23,12): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\System_Pawn_Input.h(27,14): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\main.cpp(54,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\main.cpp(55,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\GitHub\Levent_Development\SDL_ECS\sdl_template\main.cpp(81,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating code
+  1 of 14 functions ( 7.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  sdl_template.vcxproj -> D:\GitHub\Levent_Development\SDL_ECS\Release\sdl_template.exe
