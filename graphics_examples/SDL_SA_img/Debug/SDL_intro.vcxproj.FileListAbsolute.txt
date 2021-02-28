@@ -1,0 +1,2 @@
+D:\GitHub\Levent_Development\graphics_examples\SDL_SA_img\Debug\SDL_intro.exe
+D:\GitHub\Levent_Development\graphics_examples\SDL_SA_img\Debug\SDL_intro.pdb

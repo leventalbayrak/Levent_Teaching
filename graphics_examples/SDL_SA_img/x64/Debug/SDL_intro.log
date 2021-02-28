@@ -1,0 +1,15 @@
+﻿  main.cpp
+main.obj : error LNK2019: unresolved external symbol SDL_CreateRGBSurfaceWithFormat referenced in function "void __cdecl Game::init(void)" (?init@Game@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_UpperBlitScaled referenced in function "void __cdecl Game::draw_1(void)" (?draw_1@Game@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_CreateWindow referenced in function "void __cdecl Game::init(void)" (?init@Game@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_GetWindowSurface referenced in function "void __cdecl Game::init(void)" (?init@Game@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_UpdateWindowSurface referenced in function "void __cdecl Game::draw_1(void)" (?draw_1@Game@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_GetKeyboardState referenced in function "void __cdecl Game::init(void)" (?init@Game@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_PollEvent referenced in function "void __cdecl Game::update(void)" (?update@Game@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_CreateRenderer referenced in function "void __cdecl Game::init(void)" (?init@Game@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol SDL_Init referenced in function "void __cdecl Game::init(void)" (?init@Game@@YAXXZ)
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+SDL2-2.0.8\lib\x86\SDL2.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+SDL2-2.0.8\lib\x86\SDL2main.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+SDL2-2.0.8\lib\x86\SDL2_image.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+D:\GitHub\Levent_Development\graphics_examples\SDL_SA_img\x64\Debug\SDL_intro.exe : fatal error LNK1120: 10 unresolved externals
